@@ -16,9 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\SISO_APC_GbE.rc2">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="res\SISO_APC_GbE.ico">
       <Filter>资源文件</Filter>
     </None>

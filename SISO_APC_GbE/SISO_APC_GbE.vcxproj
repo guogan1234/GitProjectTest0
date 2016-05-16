@@ -185,7 +185,6 @@
   <ItemGroup>
     <None Include="ReadMe.txt" />
     <None Include="res\SISO_APC_GbE.ico" />
-    <None Include="res\SISO_APC_GbE.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frameGrabberInit.h" />

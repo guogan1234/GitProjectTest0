@@ -185,7 +185,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG1,data->port,data->mem,picNr); 
 	void* iPtrJPEG1 = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
 	m_pthis->actualYLength1 = m_pthis->height1;
-	m_pthis->DealJPEG(dmalenJPEG1,iPtrJPEG1,strFile1,m_pthis->width1,m_pthis->actualYLength1,m_pthis->writeToFile1,m_pthis->ShowImage,IDC_ImgDisplay1,&jpe1);
+	m_pthis->DealJPEG(dmalenJPEG1,iPtrJPEG1,strFile1,m_pthis->width1,m_pthis->actualYLength1,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay1,&jpe1);
 
 	//Calculate fps
 	m_pthis->statusJPEG1 = picNr;
@@ -200,7 +200,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	/*********用于统计进回调的次数和进出回调的时间*************/
 
 
-	if (m_pthis->writeToFile1)
+	if (m_pthis->writeToFile)
 	{
 		m_pthis->fileWriteCount1++;
 	}
@@ -263,7 +263,7 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SaveJpeg, M_SaveJpeg);
-	DDX_Control(pDX, IDC_SaveJpeg1, M_SaveJpeg1);
+	//DDX_Control(pDX, IDC_SaveJpeg1, M_SaveJpeg1);
 	DDX_Control(pDX, IDC_ShowImg, M_ShowImg);
 	//DDX_Text(pDX, IDC_SetQuality, JpegQuality);
 	DDV_MinMaxUInt(pDX, JpegQuality, 0, 100);
@@ -272,7 +272,7 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_Fps1, m_stc_fps1);
 	//DDX_Text(pDX, IDC_JpegQuality, M_Edit_JpegQuality);
 	//DDX_Text(pDX, IDC_Fps, M_Fps);
-	DDX_Control(pDX, IDC_Title, m_staticTitle);
+	//DDX_Control(pDX, IDC_Title, m_staticTitle);
 }
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
@@ -290,7 +290,7 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_Exit, &CSISO_APC_GbEDlg::OnClickedExit)
 	ON_BN_CLICKED(IDC_ShowImg, &CSISO_APC_GbEDlg::OnClickedShowimg)
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_SaveJpeg1, &CSISO_APC_GbEDlg::OnBnClickedSavejpeg1)
+	//ON_BN_CLICKED(IDC_SaveJpeg1, &CSISO_APC_GbEDlg::OnBnClickedSavejpeg1)
 END_MESSAGE_MAP()
 
 
@@ -331,7 +331,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	M_SaveJpeg.SetCheck(BST_CHECKED);
-	M_SaveJpeg1.SetCheck(BST_CHECKED);
+	//M_SaveJpeg1.SetCheck(BST_CHECKED);
 	M_ShowImg.SetCheck(BST_CHECKED);
 
 	//读取配置文件，
@@ -373,7 +373,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	//ticks_a=GetTickCount();
 	writeToFile = false;
-	writeToFile1 =false;
+	//writeToFile1 =false;
 	ShowImage = false;
 	fileWriteCount = 0;
 	 JPEGQuality = 70;
@@ -671,26 +671,28 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 	// TODO: 在此添加控件通知处理程序代码
 	// ====================================================
 	ichk =M_SaveJpeg.GetCheck();
-	ichk1 =M_SaveJpeg1.GetCheck();
+	//ichk1 =M_SaveJpeg1.GetCheck();
 
 	if (!ichk)
 	{
 		writeToFile =false;
+		//writeToFile1 =false;
 	} 
 	else
 	{
 		writeToFile =true;
+		//writeToFile1 =true;
 	}
 
 
-	if (!ichk1)
-	{
-		writeToFile1 =false;
-	} 
-	else
-	{
-		writeToFile1 =true;
-	}
+	//if (!ichk1)
+	//{
+	//	writeToFile1 =false;
+	//} 
+	//else
+	//{
+	//	writeToFile1 =true;
+	//}
 
 
 
@@ -1118,17 +1120,17 @@ void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void CSISO_APC_GbEDlg::OnBnClickedSavejpeg1()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	ichk1= M_SaveJpeg1.GetCheck();
-	if (!ichk1)
-	{
-		writeToFile1 =false;
-	} 
-	else
-	{
-		writeToFile1 =true;
-	}
-
-}
+//void CSISO_APC_GbEDlg::OnBnClickedSavejpeg1()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	ichk1= M_SaveJpeg1.GetCheck();
+//	if (!ichk1)
+//	{
+//		writeToFile1 =false;
+//	} 
+//	else
+//	{
+//		writeToFile1 =true;
+//	}
+//
+//}

@@ -93,7 +93,7 @@ public:
 	int JPEGQuality;
 	//int JPEGQuality1;
 	bool writeToFile;
-	bool writeToFile1;
+	//bool writeToFile1;
 	bool ShowImage;
 	int Is_show;
 	unsigned int fileWriteCount;
@@ -142,7 +142,7 @@ public:
 	//afx_msg void OnDoubleclickedSavejpe();
 	//afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	CButton M_SaveJpeg;
-	CButton M_SaveJpeg1;
+	//CButton M_SaveJpeg1;
 	CButton M_ShowImg;
 	afx_msg void OnBnClickedSavejpeg();
 	afx_msg void OnClickedActivequality();
@@ -152,14 +152,14 @@ public:
 	CStatic m_stc_fps1;
 
 	//CString M_Fps;
-	CStatic m_staticTitle;
+	//CStatic m_staticTitle;
 	
 	//»­Í¼
-	CDBP m_srcTitle;
-	SDrawInterface	m_ImgPinter;
+	//CDBP m_srcTitle;
+	//SDrawInterface	m_ImgPinter;
 
 	afx_msg void OnClickedExit();
 	afx_msg void OnClickedShowimg();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	afx_msg void OnBnClickedSavejpeg1();
+	//afx_msg void OnBnClickedSavejpeg1();
 };
