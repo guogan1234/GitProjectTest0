@@ -2,7 +2,7 @@
 ConfigFileVersion=2.0;
 Hersteller='Generic-CameraLink';
 Typ='vas';
-HapName='D:/Program Files/SiliconSoftware/Runtime5.4.1.2/Hardware Applets/mE5-MA-VCL/DualBaseJPEG_OnlyJpeg_V02.hap';
+HapName='c:/Program Files/SiliconSoftware/Runtime5.4.1.2/Hardware Applets/mE5-MA-VCL/DualBaseJPEG_OnlyJpeg_V02.hap';
 Version='1.5';
 LoadAppletId=0;
 AktivePort=0;
