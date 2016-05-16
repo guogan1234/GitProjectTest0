@@ -328,7 +328,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	
-	 UpdateData(false);
+	 
 
 	 M_SaveJpeg.SetCheck(BST_CHECKED);
 	 M_SaveJpeg1.SetCheck(BST_CHECKED);
@@ -362,6 +362,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	ShowImage = false;
 	fileWriteCount = 0;
 	 JPEGQuality = 70;
+	 M_JpegQuality.Format(L"%d", JPEGQuality);
 	 ichk = 0;
 	 ichk1=0;
 	 Is_show = 0;
@@ -446,14 +447,14 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	// For Image Process and Display
 
 	//初始化画图
-	CDC* pdc=m_staticTitle.GetDC();
-	m_ImgPinter.SetDrawDC(pdc);
-	m_ImgPinter.LoadCDBP("./Title.bmp",&m_srcTitle);
-	CRect wrect;
-	m_staticTitle.GetWindowRect(&wrect);
-	m_ImgPinter.DrawCDBP(m_srcTitle,pdc,0,0,wrect.Width(),wrect.Height(),true);
-	m_staticTitle.ReleaseDC(pdc);
-
+	//CDC* pdc=m_staticTitle.GetDC();
+	//m_ImgPinter.SetDrawDC(pdc);
+	//m_ImgPinter.LoadCDBP("./Title.bmp",&m_srcTitle);
+	//CRect wrect;
+	//m_staticTitle.GetWindowRect(&wrect);
+	//m_ImgPinter.DrawCDBP(m_srcTitle,pdc,0,0,wrect.Width(),wrect.Height(),true);
+	//m_staticTitle.ReleaseDC(pdc);
+	UpdateData(false);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -523,7 +524,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 
 
 	/************Board Init*************/ 
-	 fg = Fg_InitConfig("f:\\Go-5000m-PmCL_onlyJpeg_Generator.mcf",BoardIndex);//load *.mcf
+	 fg = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Generator.mcf",BoardIndex);//load *.mcf
 	 //fg = Fg_InitConfig("f:\\Go-5000m-PmCL_onlyJpeg_Exter.mcf",BoardIndex);//load *.mcf
 	 
 	//fg = Fg_InitConfig("F:\\Gbe_1Pro2DMA_jpeg.mcf",BoardIndex);//load *.mcf 
@@ -769,7 +770,11 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 
 	if(bufferJPEGfile0)delete []bufferJPEGfile0;
 	if(bufferJPEGfile1)delete []bufferJPEGfile1;
-	m_ImgPinter.ReleaseCDBP(&m_srcTitle);
+	bufferJPEGfile0 = NULL;
+	bufferJPEGfile1 = NULL;
+	lengthJPEGfile0 = 0;
+	lengthJPEGfile1 = 0;
+	//m_ImgPinter.ReleaseCDBP(&m_srcTitle);
 	m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(FALSE);
 	m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(TRUE);
 	return;
@@ -870,6 +875,9 @@ void CSISO_APC_GbEDlg::DrawImage(int itemID,unsigned char* buf,int w,int h)
 
 void CSISO_APC_GbEDlg::DecodeImg(unsigned char* bufferJPEGfile,int lengthJPEGfile,int itemID,int w,int h)
 {
+	if(bufferJPEGfile == NULL)
+		return;
+
 	njDecode(bufferJPEGfile, lengthJPEGfile);
 	int widthDecoded = njGetWidth();
 	int heightDecoded = njGetHeight();
@@ -1047,8 +1055,10 @@ void CSISO_APC_GbEDlg::OnClickedActivequality()
 void CSISO_APC_GbEDlg::OnClickedExit()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CloseWindow();
-   //exit(-1);
+	//CloseWindow();
+    if(m_pthis->m_CpState == 1)
+		OnBnClickedStop();
+	exit(0);
 }
 
 
