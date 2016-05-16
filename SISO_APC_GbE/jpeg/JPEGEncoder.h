@@ -54,7 +54,7 @@ public:
 					int Horiz_Samp_Y = 1, int Vert_Samp_Y = 1,
 					int Horiz_Samp_C = 1, int Vert_Samp_C = 1);
 	void SetVLCBitstream(unsigned char codes[], unsigned long bytes);
-	void InitOutputWriter(const char* FileName, bool fileAccessEnabled = true);
+	void InitOutputWriter(const TCHAR* FileName, bool fileAccessEnabled = true);
 	unsigned int EncodePic(unsigned char* Pic_Data);
 	int GetBuffer(unsigned char** buffer, int** length);
 

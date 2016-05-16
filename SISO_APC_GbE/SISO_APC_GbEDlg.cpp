@@ -118,7 +118,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	//Calculate fps
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	char strFile0[50];
+	TCHAR strFile0[255];
 	GetLocalTime(&st);
 	m_pthis->statusJPEG = picNr;
 	if (GetTickCount() > m_pthis->ticks + 1000)
@@ -133,7 +133,8 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable( m_pthis->fg);
 	jpe0.SetQuantTable(m_pthis->QTable);	
 
-	sprintf(strFile0,"F:\\Img0\\Cam0%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
+	wsprintf(strFile0,L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, L"\\Cam",m_pthis->m_iStartIndex, 
+		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 	//sprintf(strFile0,"F:\\Img0\\Cam0%d_%d_%d_%d_%d_%d_%d.jpg",st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,m_pthis->fileWriteCount);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -167,7 +168,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
   
 	LONG64 dmalenJPEG1 = 0;
 	SYSTEMTIME st;
-	char strFile1[100];
+	TCHAR strFile1[255];
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
@@ -176,7 +177,9 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	jpe1.SetQuantTable( m_pthis->QTable1);	
 
 	//sprintf(strFile1,"f:\\Img1\\Cam1%d_%d_%d_%d_%d_%d_%d.jpg",st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,m_pthis->fileWriteCount1);
-	sprintf(strFile1,"f:\\Img1\\Cam1%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds, m_pthis->JPEGQuality, picNr);
+	wsprintf(strFile1,L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, L"\\Cam",m_pthis->m_iStartIndex +1, 
+		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
+	//sprintf(strFile1,"f:\\Img1\\Cam1%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds, m_pthis->JPEGQuality, picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG1,data->port,data->mem,picNr); 
@@ -324,20 +327,32 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	//ShowWindow(SW_MAXIMIZE);
+	ShowWindow(SW_MAXIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
-	
-	 
+	M_SaveJpeg.SetCheck(BST_CHECKED);
+	M_SaveJpeg1.SetCheck(BST_CHECKED);
+	M_ShowImg.SetCheck(BST_CHECKED);
 
-	 M_SaveJpeg.SetCheck(BST_CHECKED);
-	 M_SaveJpeg1.SetCheck(BST_CHECKED);
-	 M_ShowImg.SetCheck(BST_CHECKED);
+	//读取配置文件，
+	CString cstrIni("c:\\TYTunnelTestVehicle.ini");
 
-	 CreateNDir(_T("f:\\Img0"));
-	 CreateNDir(_T("f:\\Img1"));
+	m_iStartIndex = GetPrivateProfileInt(L"CameraInfo", L"StartIndex", -1, cstrIni);
+	DWORD iNumber = GetPrivateProfileString(L"Save", L"DirPrefix", L"", m_cDirPrefix, 256, cstrIni);
+	if(m_iStartIndex < 0 || iNumber ==0){
+		MessageBox(CString("找不到文件")+ cstrIni);
+	}
+
+	//创建存储的目录。
+	if(m_cDirPrefix[iNumber -1] != L'\\')
+		lstrcat(m_cDirPrefix, L"\\");
+	CString cDir1, cDir2;
+	cDir1.Format(L"%s%d\\", m_cDirPrefix, m_iStartIndex);
+	cDir2.Format(L"%s%d\\", m_cDirPrefix, m_iStartIndex + 1);
+	CreateNDir(cDir1);
+	CreateNDir(cDir2);
 	// Initi Board
-	 BoardIndex = 0;
+	BoardIndex = 0;
     const char*	err_st   =NULL;
     nCamPort		=	PORT_A;		// Port (PORT_A / PORT_B)
 	/*Cam_width = 2048;
@@ -531,6 +546,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	 //fg = Fg_Init("Sg14-02K-Jpeg.hap",BoardIndex);
 	 //fg = Fg_Init("Sg14-02K-Jpeg_Windows_AMD64.hap",BoardIndex);
 	if(fg == NULL){
+		MessageBox(L"采集卡正在被其他程序使用。");
 		exit(-1);
 	}
 	//int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
@@ -782,7 +798,7 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 
 //DealJpeg 
 void CSISO_APC_GbEDlg::DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG
-	,char* filename,int w,int h,bool bIsSave
+	,TCHAR* filename,int w,int h,bool bIsSave
 	,bool bIsShow,int DrawItemID,void* pjpe) 
 
 {

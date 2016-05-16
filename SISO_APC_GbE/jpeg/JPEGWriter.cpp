@@ -17,7 +17,7 @@ const unsigned int StdBufSize(16*1024*1024);
 JPEGWriter::JPEGWriter(bool fileAccessEnabled)
 {
 	m_fileAccessEnabled = fileAccessEnabled;
-	strcpy(fname, "");
+	lstrcpy(fname, L"");
 	writefile = NULL;
 	if ((buffer.data = (unsigned char *)malloc(sizeof(char)*StdBufSize)) == NULL) 
 	{
@@ -34,13 +34,13 @@ JPEGWriter::~JPEGWriter()
 	if (writefile != NULL && m_fileAccessEnabled) CloseFile();
 }
 
-int JPEGWriter::OpenFile(const char* FileName)
+int JPEGWriter::OpenFile(const TCHAR* FileName)
 {
 	if (m_fileAccessEnabled)
 	{
 		if (writefile != NULL) CloseFile();
-		strcpy(fname, FileName);
-		if ((writefile = fopen(fname,"wb")) == NULL) 
+		lstrcpy(fname, FileName);
+		if ((writefile = _wfopen(fname,L"wb")) == NULL) 
 		{
 			fprintf(stderr,"Error in opening file: %s\n",fname);
 			exit(-1);

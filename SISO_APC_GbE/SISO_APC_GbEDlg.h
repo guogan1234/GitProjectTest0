@@ -105,7 +105,7 @@ public:
 	unsigned char calcQuantizationMatrixFromPercent(int p_percent);
 	int getQuantizationTable(Fg_Struct* fg);
 	int getQuantizationTable1(Fg_Struct* fg);
-	void DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG,char* filename,int w,int h,bool bIsSave,bool bIsShow,int DrawItemID,void* pjpe);
+	void DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG,TCHAR* filename,int w,int h,bool bIsSave,bool bIsShow,int DrawItemID,void* pjpe);
 	void	DecodeImg(unsigned char* bufferJPEGfile,int lengthJPEGfile,int itemID,int w,int h);
 	void	DrawImage(int itemID,unsigned char* buf,int w,int h);
 	bool checkROIconsistency(int maxWidth, int maxHeight, int xOffset, int xLength, int yOffset, int YLength);
@@ -117,6 +117,8 @@ public:
 	int statusJPEG;
 	int statusJPEG1;
 
+	TCHAR m_cDirPrefix[256];
+	int   m_iStartIndex;
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
 	protected:
