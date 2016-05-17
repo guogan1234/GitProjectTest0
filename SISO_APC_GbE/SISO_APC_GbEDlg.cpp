@@ -142,7 +142,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	unsigned long* iPtrJPEG = (unsigned long*)Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
 	m_pthis->actualYLength = m_pthis->height;
 	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile0,m_pthis->width,m_pthis->actualYLength,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay,&jpe0);
-
+	//m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile0,1024,768,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay,&jpe0);
 	//////////////////////////////
 	/*********用于统计进回调的次数和进出回调的时间*************/
 	if (m_pthis->writeToFile)
@@ -251,6 +251,8 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSISO_APC_GbEDlg::IDD, pParent)
 	, JpegQuality(0)
 	, M_JpegQuality(_T(""))
+	, m_eCollectMode(MODE_NONE)
+	, fg(NULL)
 
 	//, M_Fps(_T(""))
 {
@@ -263,16 +265,14 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SaveJpeg, M_SaveJpeg);
-	//DDX_Control(pDX, IDC_SaveJpeg1, M_SaveJpeg1);
 	DDX_Control(pDX, IDC_ShowImg, M_ShowImg);
-	//DDX_Text(pDX, IDC_SetQuality, JpegQuality);
 	DDV_MinMaxUInt(pDX, JpegQuality, 0, 100);
 	DDX_Text(pDX, IDC_JpegQuality, M_JpegQuality);
 	DDX_Control(pDX, IDC_Fps, m_stc_fps);
 	DDX_Control(pDX, IDC_Fps1, m_stc_fps1);
-	//DDX_Text(pDX, IDC_JpegQuality, M_Edit_JpegQuality);
-	//DDX_Text(pDX, IDC_Fps, M_Fps);
-	//DDX_Control(pDX, IDC_Title, m_staticTitle);
+	DDX_Control(pDX, IDC_COMBOCollectMode, m_comboBoxCollectMode);
+	DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
+	DDX_Control(pDX, IDC_STATICConnectStatus, m_stc_ConnectStatus);
 }
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
@@ -282,15 +282,15 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_Load, &CSISO_APC_GbEDlg::OnBnClickedBtnLoad)
 	ON_BN_CLICKED(IDC_Grab, &CSISO_APC_GbEDlg::OnBnClickedGrab)
 	ON_BN_CLICKED(IDC_Stop, &CSISO_APC_GbEDlg::OnBnClickedStop)
-	//ON_BN_CLICKED(IDC_SaveJpe, &CSISO_APC_GbEDlg::OnClickedSavejpe)
-	//ON_BN_DOUBLECLICKED(IDC_SaveJpe, &CSISO_APC_GbEDlg::OnDoubleclickedSavejpe)
 	ON_WM_LBUTTONDBLCLK()
 	ON_BN_CLICKED(IDC_SaveJpeg, &CSISO_APC_GbEDlg::OnBnClickedSavejpeg)
 	ON_BN_CLICKED(IDC_ActiveQuality, &CSISO_APC_GbEDlg::OnClickedActivequality)
 	ON_BN_CLICKED(IDC_Exit, &CSISO_APC_GbEDlg::OnClickedExit)
 	ON_BN_CLICKED(IDC_ShowImg, &CSISO_APC_GbEDlg::OnClickedShowimg)
 	ON_WM_TIMER()
-	//ON_BN_CLICKED(IDC_SaveJpeg1, &CSISO_APC_GbEDlg::OnBnClickedSavejpeg1)
+	ON_WM_CLOSE()
+	ON_CBN_SELCHANGE(IDC_COMBOCollectMode, &CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode)
+	ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
 END_MESSAGE_MAP()
 
 
@@ -335,12 +335,12 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	M_ShowImg.SetCheck(BST_CHECKED);
 
 	//读取配置文件，
-	CString cstrIni("c:\\TYTunnelTestVehicle.ini");
+	m_cstrIni = L"c:\\TYTunnelTestVehicle.ini";
 
-	m_iStartIndex = GetPrivateProfileInt(L"CameraInfo", L"StartIndex", -1, cstrIni);
-	DWORD iNumber = GetPrivateProfileString(L"Save", L"DirPrefix", L"", m_cDirPrefix, 256, cstrIni);
+	m_iStartIndex = GetPrivateProfileInt(L"CameraInfo", L"StartIndex", -1, m_cstrIni);
+	DWORD iNumber = GetPrivateProfileString(L"Save", L"DirPrefix", L"", m_cDirPrefix, 256, m_cstrIni);
 	if(m_iStartIndex < 0 || iNumber ==0){
-		MessageBox(CString("找不到文件")+ cstrIni);
+		MessageBox(CString("找不到文件")+ m_cstrIni);
 	}
 
 	//创建存储的目录。
@@ -469,6 +469,28 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	//m_staticTitle.GetWindowRect(&wrect);
 	//m_ImgPinter.DrawCDBP(m_srcTitle,pdc,0,0,wrect.Width(),wrect.Height(),true);
 	//m_staticTitle.ReleaseDC(pdc);
+	
+	//初始化采集模式
+	int iIndex;
+	iIndex = m_comboBoxCollectMode.InsertString(0, L"trigger");
+	iIndex = m_comboBoxCollectMode.InsertString(1, L"timer");
+	iIndex = m_comboBoxCollectMode.SetCurSel(0);
+	
+	switch(m_comboBoxCollectMode.GetCurSel())
+	{
+	case 0: m_eCollectMode = MODE_TRIGGER;break;
+	case 1: m_eCollectMode = MODE_TIMER;break;
+	default: m_eCollectMode = MODE_NONE;break;
+	};
+
+	//初始化连接状态
+	m_comboBoxConnectStatus.InsertString(0, L"Camera 0");
+	m_comboBoxConnectStatus.InsertString(1, L"Camera 1");
+	m_comboBoxConnectStatus.InsertString(2, L"Camera 2");
+	m_comboBoxConnectStatus.InsertString(3, L"Camera 3");
+	m_comboBoxConnectStatus.InsertString(4, L"Camera 4");
+	m_comboBoxConnectStatus.InsertString(5, L"Camera 5");
+
 	UpdateData(false);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -539,8 +561,21 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 
 
 	/************Board Init*************/ 
-	 fg = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Generator.mcf",BoardIndex);//load *.mcf
-	 //fg = Fg_InitConfig("f:\\Go-5000m-PmCL_onlyJpeg_Exter.mcf",BoardIndex);//load *.mcf
+	switch(m_eCollectMode)
+	{
+	case MODE_TRIGGER: 
+		fg = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Exter.mcf",BoardIndex);
+		break;
+	case MODE_TIMER: 
+		fg = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Generator.mcf",BoardIndex);
+		break;
+	case MODE_NONE:
+	default:
+		MessageBox(L"采集模式没有被设置。");
+		exit(-1);
+	};
+//load *.mcf
+	 //fg = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Exter.mcf",BoardIndex);//load *.mcf
 	 
 	//fg = Fg_InitConfig("F:\\Gbe_1Pro2DMA_jpeg.mcf",BoardIndex);//load *.mcf 
 	 //fg = Fg_Init("Sg14-02K-Jpeg.hap",BoardIndex);
@@ -549,6 +584,10 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		MessageBox(L"采集卡正在被其他程序使用。");
 		exit(-1);
 	}
+	int iStatus0, iStatus1, iReturn;
+	iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus1, PORT_B);
+	iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus0, PORT_A);
+	                             
 	//int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
 	//unsigned int Device1_Process0_Trigger_TriggerMode_Select;
 	//Device1_Process0_Trigger_TriggerMode_Select = 1;
@@ -569,17 +608,36 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	//uint64_t Device1_Process1_Trigger_Generator_Period_Period;
 	//Device1_Process1_Trigger_Generator_Period_Period = 0x2faf080;
 	//Fg_setParameterWithType(fg, Device1_Process1_Trigger_Generator_Period_Period_Id, Device1_Process1_Trigger_Generator_Period_Period, 0);
+
 	/********Getting  general parameter from DMA*********/
-	 unsigned int nr_of_buffer = 16;
-	 size_t bytesPerPixel = 1; 
+	unsigned int nr_of_buffer = 16;
+	size_t bytesPerPixel = 1; 
 
 	///*******getting  general parameter from DMA0 and DMA1********/
-	 Fg_getParameter(fg,FG_WIDTH,&width,DmaIndex[0]);
-	 Fg_getParameter(fg,FG_HEIGHT,&height,DmaIndex[0]);
+	//int iWidth = 1024, iHeight = 768;
+	//int Device1_Process0_Buffer_YLength_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Buffer_YLength");
+	//FieldParameterAccess Device1_Process0_Buffer_YLength;
+	//unsigned int Device1_Process0_Buffer_YLength_defaults[] = { 768 };
+	//Device1_Process0_Buffer_YLength.vtype = FG_PARAM_TYPE_UINT32_T;
+	//Device1_Process0_Buffer_YLength.index = 0;
+	//Device1_Process0_Buffer_YLength.count = 1;
+	//Device1_Process0_Buffer_YLength.p_uint32_t = Device1_Process0_Buffer_YLength_defaults;
+	//Fg_setParameterWithType(fg, Device1_Process0_Buffer_YLength_Id, &Device1_Process0_Buffer_YLength, 0, FG_PARAM_TYPE_STRUCT_FIELDPARAMACCESS);
+	//
+	//int Device1_Process0_Buffer_XLength_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Buffer_XLength");
+	//FieldParameterAccess Device1_Process0_Buffer_XLength;
+	//unsigned int Device1_Process0_Buffer_XLength_defaults[] = { 1024 };
+	//Device1_Process0_Buffer_XLength.vtype = FG_PARAM_TYPE_UINT32_T;
+	//Device1_Process0_Buffer_XLength.index = 0;
+	//Device1_Process0_Buffer_XLength.count = 1;
+	//Device1_Process0_Buffer_XLength.p_uint32_t = Device1_Process0_Buffer_XLength_defaults;
+	//Fg_setParameterWithType(fg, Device1_Process0_Buffer_XLength_Id, &Device1_Process0_Buffer_XLength, 0, FG_PARAM_TYPE_STRUCT_FIELDPARAMACCESS);
 	
-	 Fg_getParameter(fg,FG_WIDTH,&width1,DmaIndex[1]);
-	 Fg_getParameter(fg,FG_HEIGHT,&height1,DmaIndex[1]);
-
+	Fg_getParameter(fg,FG_WIDTH,&width,DmaIndex[0]);
+	Fg_getParameter(fg,FG_HEIGHT,&height,DmaIndex[0]);
+	
+	Fg_getParameter(fg,FG_WIDTH,&width1,DmaIndex[1]);
+	Fg_getParameter(fg,FG_HEIGHT,&height1,DmaIndex[1]);
 
 	//	图像宽度，一般为输出窗口宽度
 	m_pBmpInfo->bmiHeader.biWidth			= width;
@@ -792,7 +850,14 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 	bufferJPEGfile1 = NULL;
 	lengthJPEGfile0 = 0;
 	lengthJPEGfile1 = 0;
-	//m_ImgPinter.ReleaseCDBP(&m_srcTitle);
+	
+	fps = 0; fps1 = 0;
+	CString strtmp,strtmp1;
+	strtmp.Format(_T("fps:%.3f"), fps);
+	strtmp1.Format(_T("fps:%.3f"), fps1);
+	m_pthis->m_stc_fps.SetWindowTextW(strtmp);
+	m_pthis->m_stc_fps1.SetWindowTextW(strtmp1);
+	
 	m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(FALSE);
 	m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(TRUE);
 	return;
@@ -1047,12 +1112,6 @@ void CSISO_APC_GbEDlg::OnBnClickedSavejpeg()
 	{
 		writeToFile =true;
 	}
-
-
-	
-
-
-
 }
 
 
@@ -1073,10 +1132,9 @@ void CSISO_APC_GbEDlg::OnClickedActivequality()
 void CSISO_APC_GbEDlg::OnClickedExit()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	//CloseWindow();
     if(m_pthis->m_CpState == 1)
 		OnBnClickedStop();
-	exit(0);
+	CDialogEx::OnOK();
 }
 
 
@@ -1099,18 +1157,6 @@ void CSISO_APC_GbEDlg::OnClickedShowimg()
 void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	//if (GetTickCount() > m_pthis->ticks + 1000)
-	//{
-	//	m_pthis->fps = 1000.0 * (m_pthis->statusJPEG - m_pthis->oldStatusJPEG) / (GetTickCount() - m_pthis->ticks);
-	//	m_pthis->oldStatusJPEG = m_pthis->statusJPEG;
-	//	m_pthis->ticks = GetTickCount();
-	//}
-	//if (GetTickCount() > m_pthis->ticks2 + 1000)
-	//{
-	//	m_pthis->fps1 = 1000.0 * (m_pthis->statusJPEG1 - m_pthis->oldStatusJPEG1) / (GetTickCount() - m_pthis->ticks2);
-	//	m_pthis->oldStatusJPEG1 = m_pthis->statusJPEG1;
-	//	m_pthis->ticks2 = GetTickCount();
-	//}
 	CString strtmp,strtmp1;
 	strtmp.Format(_T("fps:%.3f"), m_pthis->fps);
 	strtmp1.Format(_T("fps:%.3f"), m_pthis->fps1);
@@ -1119,18 +1165,82 @@ void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
+void CSISO_APC_GbEDlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if(m_CpState == 1)
+		OnBnClickedStop();
+	CDialogEx::OnClose();
+}
 
-//void CSISO_APC_GbEDlg::OnBnClickedSavejpeg1()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	ichk1= M_SaveJpeg1.GetCheck();
-//	if (!ichk1)
-//	{
-//		writeToFile1 =false;
-//	} 
-//	else
-//	{
-//		writeToFile1 =true;
-//	}
-//
-//}
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	COLLECT_MODE eCollectMode;
+	switch(m_comboBoxCollectMode.GetCurSel())
+	{
+	case 0: eCollectMode = MODE_TRIGGER;break;
+	case 1: eCollectMode = MODE_TIMER;break;
+	default: eCollectMode = MODE_NONE;break;
+	};
+
+	if(	m_eCollectMode != eCollectMode)
+	{
+		m_eCollectMode = eCollectMode;
+		if(fg != NULL)
+		{
+			unsigned int Trigger_TriggerMode_Select;
+			switch(m_eCollectMode)
+			{
+			case MODE_TRIGGER: 
+				Trigger_TriggerMode_Select = 0;
+				break;
+			case MODE_TIMER: 
+				Trigger_TriggerMode_Select = 1;
+				break;
+			default:;
+			};
+
+			int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
+			Fg_setParameterWithType(fg, Device1_Process0_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
+
+			int Device1_Process1_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Trigger_TriggerMode_Select");
+			Fg_setParameterWithType(fg, Device1_Process1_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
+		}
+	}
+}
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if(fg != NULL)
+	{
+		int iStatus, iReturn;
+		switch(m_comboBoxConnectStatus.GetCurSel())
+		{
+		case 0:
+			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_A);
+			break;
+		case 1:
+			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_B);
+			break;
+		case 2: case 3: case 4: case 5:
+		default:;
+		};
+
+		switch (iStatus)
+		{
+		case 0:
+			m_stc_ConnectStatus.SetWindowTextW(L"Unconnected");
+			break;
+		case 1:
+			m_stc_ConnectStatus.SetWindowTextW(L"Connected");
+			break;
+		}
+	}
+	else
+	{
+		m_stc_ConnectStatus.SetWindowTextW(L"Uninitialized");
+	}
+}

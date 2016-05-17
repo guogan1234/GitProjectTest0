@@ -117,8 +117,9 @@ public:
 	int statusJPEG;
 	int statusJPEG1;
 
-	TCHAR m_cDirPrefix[256];
-	int   m_iStartIndex;
+	CString m_cstrIni;
+	TCHAR m_cDirPrefix[256]; //存储路径的前缀。
+	int   m_iStartIndex;     //摄像头的起始序列号。
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
 	protected:
@@ -151,6 +152,14 @@ public:
 	CStatic m_stc_fps;
 	CStatic m_stc_fps1;
 
+	//采集模式的变量
+	enum COLLECT_MODE {MODE_TRIGGER, MODE_TIMER, MODE_NONE};
+	COLLECT_MODE m_eCollectMode;
+	CComboBox m_comboBoxCollectMode;
+
+	//连接状态的变量
+	CComboBox m_comboBoxConnectStatus;
+	CStatic m_stc_ConnectStatus;
 	//CString M_Fps;
 	//CStatic m_staticTitle;
 	
@@ -161,5 +170,7 @@ public:
 	afx_msg void OnClickedExit();
 	afx_msg void OnClickedShowimg();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	//afx_msg void OnBnClickedSavejpeg1();
+	afx_msg void OnClose();
+	afx_msg void OnCbnSelchangeCombocollectmode();
+	afx_msg void OnCbnSelchangeComboconnectstatus();
 };
