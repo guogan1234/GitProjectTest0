@@ -129,7 +129,8 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	}
 
 	//For Jpeg 
-	m_pthis->retCode += setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->retCode += setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
 	m_pthis->getQuantizationTable( m_pthis->fg);
 	jpe0.SetQuantTable(m_pthis->QTable);	
 
@@ -140,8 +141,8 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	unsigned long* iPtrJPEG = (unsigned long*)Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->actualYLength = m_pthis->height;
-	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile0,m_pthis->width,m_pthis->actualYLength,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay,&jpe0);
+	//m_pthis->actualYLength = m_pthis->height;
+	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile0,m_pthis->width,m_pthis->height,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay,&jpe0);
 	//m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile0,1024,768,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay,&jpe0);
 	//////////////////////////////
 	/*********用于统计进回调的次数和进出回调的时间*************/
@@ -172,7 +173,8 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
-	m_pthis->retCode += setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->retCode += setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
 	m_pthis->getQuantizationTable1( m_pthis->fg);
 	jpe1.SetQuantTable( m_pthis->QTable1);	
 
@@ -184,8 +186,8 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG1,data->port,data->mem,picNr); 
 	void* iPtrJPEG1 = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->actualYLength1 = m_pthis->height1;
-	m_pthis->DealJPEG(dmalenJPEG1,iPtrJPEG1,strFile1,m_pthis->width1,m_pthis->actualYLength1,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay1,&jpe1);
+	//m_pthis->actualYLength1 = m_pthis->height1;
+	m_pthis->DealJPEG(dmalenJPEG1,iPtrJPEG1,strFile1,m_pthis->width1,m_pthis->height1,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay1,&jpe1);
 
 	//Calculate fps
 	m_pthis->statusJPEG1 = picNr;
@@ -249,12 +251,11 @@ DWORD WINAPI thfuncshow(LPVOID param)
 
 CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSISO_APC_GbEDlg::IDD, pParent)
-	, JpegQuality(0)
 	, M_JpegQuality(_T(""))
 	, m_eCollectMode(MODE_NONE)
 	, fg(NULL)
-
-	//, M_Fps(_T(""))
+	, bufferJPEGfile0(NULL)
+	, bufferJPEGfile1(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pthis = this;
@@ -266,7 +267,7 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SaveJpeg, M_SaveJpeg);
 	DDX_Control(pDX, IDC_ShowImg, M_ShowImg);
-	DDV_MinMaxUInt(pDX, JpegQuality, 0, 100);
+	//DDV_MinMaxUInt(pDX, JpegQuality, 0, 100);
 	DDX_Text(pDX, IDC_JpegQuality, M_JpegQuality);
 	DDX_Control(pDX, IDC_Fps, m_stc_fps);
 	DDX_Control(pDX, IDC_Fps1, m_stc_fps1);
@@ -330,7 +331,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	ShowWindow(SW_MAXIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
-	M_SaveJpeg.SetCheck(BST_CHECKED);
+	//M_SaveJpeg.SetCheck(BST_CHECKED);
 	//M_SaveJpeg1.SetCheck(BST_CHECKED);
 	M_ShowImg.SetCheck(BST_CHECKED);
 
@@ -352,21 +353,21 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	CreateNDir(cDir1);
 	CreateNDir(cDir2);
 	// Initi Board
-	BoardIndex = 0;
-    const char*	err_st   =NULL;
-    nCamPort		=	PORT_A;		// Port (PORT_A / PORT_B)
+	//BoardIndex = 0;
+    //const char*	err_st   =NULL;
+    //nCamPort		=	PORT_A;		// Port (PORT_A / PORT_B)
 	/*Cam_width = 2048;
 	Cam_height = 504;*/
-	ch= NULL;
-	format =  1;
-	status =  0;
+	//ch= NULL;
+	//format =  1;
+	//status =  0;
 	width = 0;
 	height = 0;
 	width1 = 0;
 	height1 = 0;
     //dmalenJPEG =0;
-	actualYLength =2048;
-	actualYLength1 =2048;
+	//actualYLength =2048;
+	//actualYLength1 =2048;
 	xOffset = 0;
 	yOffset = 0;
 	ticks = GetTickCount();
@@ -376,21 +377,22 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	//writeToFile1 =false;
 	ShowImage = false;
 	fileWriteCount = 0;
+	fileWriteCount1 = 0;
 	 JPEGQuality = 70;
 	 M_JpegQuality.Format(L"%d", JPEGQuality);
-	 ichk = 0;
-	 ichk1=0;
-	 Is_show = 0;
+	 //ichk = 0;
+	 //ichk1=0;
+	 //Is_show = 0;
 	 ticks = 0;
 	 ticks2= 0;
 	 ticks_a=0;
 	 ticks_b=0;
 	 ticks_c=0;
 	 ticks_d=0;
-	 ticks_a1=0;
-	 ticks_b1=0;
-	 ticks_c1=0;
-	 ticks_d1=0;
+	 //ticks_a1=0;
+	 //ticks_b1=0;
+	 //ticks_c1=0;
+	 //ticks_d1=0;
 	 fps =0;
 	 fps1=0;
 	 oldStatusJPEG =0;
@@ -404,7 +406,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	  DmaIndex[5] = 5;
 	  DmaIndex[6] = 6;
       DmaIndex[7] = 7;
-	  retCode = 0;
+	//  retCode = 0;
 	   /*********Initialize for JPEG*************/ 
 	  create_dc_table(dc_data,dc_len);
 	  jpe0.SetDCHuffTable(dc_data,dc_len);
@@ -419,7 +421,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	  njInit(); //nanoJPEG decoder Initialization
 
 	 /*********Initialize m_pBmpInfo*************/ 
-	  int i;
+	  //int i;
 	//	m_pBmpInfo即指向m_chBmpBuf缓冲区，用户可以自己分配BTIMAPINFO缓冲区	
 	m_pBmpInfo								= (BITMAPINFO *)m_chBmpBuf;
 	//	初始化BITMAPINFO 结构，此结构在保存bmp文件、显示采集图像时使用
@@ -443,7 +445,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_pBmpInfo->bmiHeader.biClrImportant	= 0;
 		
 	//位图调色板
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		m_pBmpInfo->bmiColors[i].rgbBlue		= (BYTE)i;
 		m_pBmpInfo->bmiColors[i].rgbGreen		= (BYTE)i;
@@ -451,8 +453,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 		m_pBmpInfo->bmiColors[i].rgbReserved    = 0;	
 	}
 
-	bufferJPEGfile0=NULL;
-	bufferJPEGfile1=NULL;
+
 
 	m_PutEvent0=CreateEvent(NULL,TRUE,FALSE,NULL);//初始信号状态为无效
 	m_DrawEvent0=CreateEvent(NULL,TRUE,TRUE,NULL);//初始信号状态为有效
@@ -548,19 +549,8 @@ HCURSOR CSISO_APC_GbEDlg::OnQueryDragIcon()
 
 void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 {
-	// TODO: 在此添加控件通知处理程序代码
-
-	//再画一遍图
-	//CDC* pdc=m_staticTitle.GetDC();
-	////	m_ImgPinter.SetDrawDC(pdc);
-	////	m_ImgPinter.LoadCDBP("./titleimg.bmp",&m_srcTitle);
-	//CRect wrect;
-	//m_staticTitle.GetWindowRect(&wrect);
-	//m_ImgPinter.DrawCDBP(m_srcTitle,pdc,0,0,wrect.Width(),wrect.Height(),true);
-	//m_staticTitle.ReleaseDC(pdc);
-
-
 	/************Board Init*************/ 
+	int BoardIndex = 0;
 	switch(m_eCollectMode)
 	{
 	case MODE_TRIGGER: 
@@ -572,17 +562,12 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	case MODE_NONE:
 	default:
 		MessageBox(L"采集模式没有被设置。");
-		exit(-1);
+		return;
 	};
-//load *.mcf
-	 //fg = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Exter.mcf",BoardIndex);//load *.mcf
-	 
-	//fg = Fg_InitConfig("F:\\Gbe_1Pro2DMA_jpeg.mcf",BoardIndex);//load *.mcf 
-	 //fg = Fg_Init("Sg14-02K-Jpeg.hap",BoardIndex);
-	 //fg = Fg_Init("Sg14-02K-Jpeg_Windows_AMD64.hap",BoardIndex);
+
 	if(fg == NULL){
 		MessageBox(L"采集卡正在被其他程序使用。");
-		exit(-1);
+		return;
 	}
 	int iStatus0, iStatus1, iReturn;
 	iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus1, PORT_B);
@@ -608,10 +593,6 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	//uint64_t Device1_Process1_Trigger_Generator_Period_Period;
 	//Device1_Process1_Trigger_Generator_Period_Period = 0x2faf080;
 	//Fg_setParameterWithType(fg, Device1_Process1_Trigger_Generator_Period_Period_Id, Device1_Process1_Trigger_Generator_Period_Period, 0);
-
-	/********Getting  general parameter from DMA*********/
-	unsigned int nr_of_buffer = 16;
-	size_t bytesPerPixel = 1; 
 
 	///*******getting  general parameter from DMA0 and DMA1********/
 	//int iWidth = 1024, iHeight = 768;
@@ -644,6 +625,9 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	//	图像宽度，一般为输出窗口高度
 	m_pBmpInfo->bmiHeader.biHeight			= height;
 	
+	/********Getting  general parameter from DMA*********/
+	unsigned int nr_of_buffer = 16;
+	size_t bytesPerPixel = 1; 
 
 	 /**************Memory allocation For DMA 0***********/ 
 	size_t totalBufSize = width*height*bytesPerPixel;
@@ -665,7 +649,8 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 
 
 	/******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
-	m_pthis->retCode += setJPEGQuality(fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->retCode += setJPEGQuality(fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	setJPEGQuality(fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
 	/*********Get Matrix table from the board*********/
 	
 	m_pthis->getQuantizationTable( m_pthis->fg);
@@ -678,7 +663,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	apcdata.fg = m_pthis->fg;
 	apcdata.port = m_pthis->DmaIndex[0];
 	apcdata.mem = m_pthis->pMem0;
-	apcdata.displayid =m_pthis->nId;
+//	apcdata.displayid =m_pthis->nId;
 
 	ctrl.version = 0;
 	ctrl.data = &apcdata;
@@ -690,7 +675,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	apcdata1.fg = m_pthis->fg;
 	apcdata1.port = m_pthis->DmaIndex[1];
 	apcdata1.mem = m_pthis->pMem1;
-	apcdata1.displayid =m_pthis->nId1;
+//	apcdata1.displayid =m_pthis->nId1;
 
 	ctrl1.version = 0;
 	ctrl1.data = &apcdata1;
@@ -698,16 +683,14 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	ctrl1.flags = FG_APC_DEFAULTS;
 	ctrl1.timeout = 10000;
 
-
-
-	status = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[0], &ctrl, FG_APC_CONTROL_BASIC);
+	int status = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[0], &ctrl, FG_APC_CONTROL_BASIC);
 	if (status != FG_OK) {
 		Fg_FreeMemEx(m_pthis->fg, pMem0);
 		Fg_FreeGrabber(m_pthis->fg);
 		return ;
 	}
 	
-	status1 = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[1], &ctrl1, FG_APC_CONTROL_BASIC);
+	status = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[1], &ctrl1, FG_APC_CONTROL_BASIC);
 	if (status != FG_OK) {
 		//fprintf(stderr, "registering APC handler failed: %s\n", Fg_getErrorDescription(fg, status));
 		Fg_FreeMemEx(m_pthis->fg, pMem1);
@@ -727,35 +710,16 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 void CSISO_APC_GbEDlg::OnBnClickedGrab()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	// ====================================================
-	ichk =M_SaveJpeg.GetCheck();
-	//ichk1 =M_SaveJpeg1.GetCheck();
-
-	if (!ichk)
+	if (!M_SaveJpeg.GetCheck())
 	{
 		writeToFile =false;
-		//writeToFile1 =false;
 	} 
 	else
 	{
 		writeToFile =true;
-		//writeToFile1 =true;
 	}
 
-
-	//if (!ichk1)
-	//{
-	//	writeToFile1 =false;
-	//} 
-	//else
-	//{
-	//	writeToFile1 =true;
-	//}
-
-
-
-	Is_show = M_ShowImg.GetCheck();
-	if (Is_show)
+	if (M_ShowImg.GetCheck())
 	{
 		ShowImage =true;
 	} 
@@ -763,8 +727,6 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 	{
 		ShowImage =false;
 	}
-
-
 
 	if ((Fg_AcquireEx(m_pthis->fg, m_pthis->DmaIndex[0], GRAB_INFINITE, ACQ_STANDARD,m_pthis-> pMem0)) < 0) 
 	{
@@ -802,8 +764,8 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 	ticks = GetTickCount();
 	ticks2= GetTickCount();
 	ticks_c=GetTickCount();
-	ticks_a1=GetTickCount();
-	ticks_c1=GetTickCount();
+	//ticks_a1=GetTickCount();
+	//ticks_c1=GetTickCount();
 
 	hThShow=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)thfuncshow,this,0,&id);
 	//SetTimer(0,1000,NULL);
@@ -843,6 +805,7 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 	Fg_FreeMemEx(m_pthis->fg, pMem1);
 
 	Fg_FreeGrabber(fg);
+	fg = NULL;
 
 	if(bufferJPEGfile0)delete []bufferJPEGfile0;
 	if(bufferJPEGfile1)delete []bufferJPEGfile1;
@@ -1102,9 +1065,9 @@ bool CSISO_APC_GbEDlg::checkROIconsistency(int maxWidth, int maxHeight, int xOff
 void CSISO_APC_GbEDlg::OnBnClickedSavejpeg()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	ichk= M_SaveJpeg.GetCheck();
+	//ichk= M_SaveJpeg.GetCheck();
 	
-	if (!ichk)
+	if (!M_SaveJpeg.GetCheck())
 	{
 		writeToFile =false;
 	} 
@@ -1121,10 +1084,10 @@ void CSISO_APC_GbEDlg::OnClickedActivequality()
 {
 	
 	// TODO: 在此添加控件通知处理程序代码
-	   UpdateData(TRUE);
-	   s = M_JpegQuality.GetString();
-	   n=_tstoi(s);
-       JPEGQuality = n;
+	UpdateData(TRUE);
+	//s = M_JpegQuality.GetString();
+	// n= _tstoi(s);
+	JPEGQuality = _tstoi(M_JpegQuality.GetString());
 }
 
 
@@ -1141,8 +1104,8 @@ void CSISO_APC_GbEDlg::OnClickedExit()
 void CSISO_APC_GbEDlg::OnClickedShowimg()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	Is_show = M_ShowImg.GetCheck();
-	if (Is_show)
+	//Is_show = M_ShowImg.GetCheck();
+	if (M_ShowImg.GetCheck())
 	{
 		ShowImage =true;
 	} 
