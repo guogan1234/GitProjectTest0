@@ -38,33 +38,27 @@ public:
 	CSISO_APC_GbEDlg(CWnd* pParent = NULL);	// 标准构造函数
 	// APC  Data Struct
 
-	Fg_Struct *fg;
-	dma_mem *pMem0;
-	dma_mem *pMem1;
-
-	unsigned int DmaIndex[8];
-	struct fg_apc_data apcdata;
-	struct fg_apc_data apcdata1;
-	struct FgApcControl ctrl;
-	struct FgApcControl ctrl1;
-
+	Fg_Struct *fg, *fg1, *fg2;
+	dma_mem *pMem0, *pMem1, *pMem2, *pMem3, *pMem4, *pMem5;
+	
+	unsigned int DmaIndex[2];
+	struct fg_apc_data apcdata, apcdata1, apcdata2, apcdata3, apcdata4, apcdata5;
+	struct FgApcControl ctrl, ctrl1, ctrl2, ctrl3, ctrl4, ctrl5;
+	
 	int xOffset;
 	int yOffset;
-	LONG64 width;
-	LONG64 width1;
-	LONG64 height;
-	LONG64 height1;
-	unsigned int ticks,ticks2;
+	LONG64 width, width1, width2, width3, width4, width5;
+	LONG64 height, height1, height2, height3, height4, height5;
+	
+	unsigned int ticks, ticks1, ticks2, ticks3, ticks4, ticks5;
 	unsigned int ticks_a, ticks_b,ticks_c,ticks_d;
 
 	HANDLE	hThShow;
-	HANDLE m_PutEvent0,m_DrawEvent0;
-	HANDLE m_PutEvent1,m_DrawEvent1;
-	unsigned char* bufferJPEGfile0;// = NULL;
-	int lengthJPEGfile0;// = NULL;
-	unsigned char* bufferJPEGfile1;// = NULL;
-	int lengthJPEGfile1;// = NULL;
-
+	HANDLE m_PutEvent0, m_PutEvent1, m_PutEvent2, m_PutEvent3, m_PutEvent4, m_PutEvent5;
+	HANDLE m_DrawEvent0, m_DrawEvent1, m_DrawEvent2, m_DrawEvent3, m_DrawEvent4, m_DrawEvent5;
+	unsigned char *bufferJPEGfile0, *bufferJPEGfile1, *bufferJPEGfile2, *bufferJPEGfile3, *bufferJPEGfile4, *bufferJPEGfile5;
+	int lengthJPEGfile0, lengthJPEGfile1, lengthJPEGfile2, lengthJPEGfile3, lengthJPEGfile4, lengthJPEGfile5;
+	
 	BITMAPINFO *m_pBmpInfo;	      ///< BITMAPINFO 结构指针，显示图像时使用
 	char       m_chBmpBuf[4096];  ///< BIMTAPINFO 存储缓冲区，m_pBmpInfo即指向此缓冲区
 	int JPEGQuality;
@@ -73,24 +67,25 @@ public:
 	unsigned int fileWriteCount;
 	unsigned int fileWriteCount1;
 	int		m_CpState;
+
 	/***********QTable***********/
-	unsigned char QTable[64];
-	unsigned char QTable1[64];
+	unsigned char QTable[64], QTable1[64], QTable2[64], QTable3[64], QTable4[64], QTable5[64];
 	unsigned char calcQuantizationMatrixFromPercent(int p_percent);
 	int getQuantizationTable(Fg_Struct* fg);
 	int getQuantizationTable1(Fg_Struct* fg);
+	int getQuantizationTable2(Fg_Struct* fg);
+	int getQuantizationTable3(Fg_Struct* fg);
+	int getQuantizationTable4(Fg_Struct* fg);
+	int getQuantizationTable5(Fg_Struct* fg);
 	void DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG,TCHAR* filename,int w,int h,bool bIsSave,bool bIsShow,int DrawItemID,void* pjpe);
-	void	DecodeImg(unsigned char* bufferJPEGfile,int lengthJPEGfile,int itemID,int w,int h);
-	void	DrawImage(int itemID,unsigned char* buf,int w,int h);
+	void DecodeImg(unsigned char* bufferJPEGfile,int lengthJPEGfile,int itemID,int w,int h);
+	void DrawImage(int itemID,unsigned char* buf,int w,int h);
 	bool checkROIconsistency(int maxWidth, int maxHeight, int xOffset, int xLength, int yOffset, int YLength);
 	/*********Cacluate Fps************/
-	double fps;
-	double fps1;
-	int oldStatusJPEG;
-	int oldStatusJPEG1;
-	int statusJPEG;
-	int statusJPEG1;
-
+	double fps, fps1, fps2, fps3, fps4, fps5;
+	int oldStatusJPEG, oldStatusJPEG1, oldStatusJPEG2, oldStatusJPEG3, oldStatusJPEG4, oldStatusJPEG5;
+	int statusJPEG, statusJPEG1, statusJPEG2, statusJPEG3, statusJPEG4, statusJPEG5;
+	
 	CString m_cstrIni;
 	TCHAR m_cDirPrefix[256]; //存储路径的前缀。
 	int   m_iStartIndex;     //摄像头的起始序列号。
@@ -98,9 +93,8 @@ public:
 	CButton M_SaveJpeg;
 	CButton M_ShowImg;
 	CString M_JpegQuality;
-	CStatic m_stc_fps;
-	CStatic m_stc_fps1;
-
+	CStatic m_stc_fps, m_stc_fps1, m_stc_fps2, m_stc_fps3, m_stc_fps4, m_stc_fps5;
+	
 	//采集模式的变量
 	enum COLLECT_MODE {MODE_TRIGGER, MODE_TIMER, MODE_NONE};
 	COLLECT_MODE m_eCollectMode;
