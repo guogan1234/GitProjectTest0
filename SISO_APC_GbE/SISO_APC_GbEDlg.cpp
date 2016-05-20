@@ -532,52 +532,10 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	cDir2.Format(L"%s%d\\", m_cDirPrefix, m_iStartIndex + 1);
 	CreateNDir(cDir1);
 	CreateNDir(cDir2);
-	// Initi Board
-	//BoardIndex = 0;
-    //const char*	err_st   =NULL;
-    //nCamPort		=	PORT_A;		// Port (PORT_A / PORT_B)
-	/*Cam_width = 2048;
-	Cam_height = 504;*/
-	//ch= NULL;
-	//format =  1;
-	//status =  0;
-	//width = 0;
-	//height = 0;
-	//width1 = 0;
-	//height1 = 0;
-    //dmalenJPEG =0;
-	//actualYLength =2048;
-	//actualYLength1 =2048;
-	//xOffset = 0;
-	//yOffset = 0;
-	//ticks = GetTickCount();
 
-	////ticks_a=GetTickCount();
-	//writeToFile = false;
-	////writeToFile1 =false;
-	//ShowImage = false;
-	//fileWriteCount = 0;
-	//fileWriteCount1 = 0;
-	// JPEGQuality = 70;
 	 M_JpegQuality.Format(L"%d", JPEGQuality);
-	 //ichk = 0;
-	 //ichk1=0;
-	 //Is_show = 0;
-	 //ticks = 0;
-	 //ticks2= 0;
-	 //ticks_a=0;
-	 //ticks_b=0;
-	 //ticks_c=0;
-	 //ticks_d=0;
-	 //ticks_a1=0;
-	 //ticks_b1=0;
-	 //ticks_c1=0;
-	 //ticks_d1=0;
-	 //fps =0;
-	 //fps1=0;
-	 //oldStatusJPEG =0;
-	 //statusJPEG =0;
-	// DMA list for All Cards 
+
+	 // DMA list for All Cards 
 	  DmaIndex[0] = 0;
 	  DmaIndex[1] = 1;
 	  //DmaIndex[2] = 0;
@@ -586,7 +544,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	  //DmaIndex[5] = 1;
 	  //DmaIndex[6] = 6;
    //   DmaIndex[7] = 7;
-	//  retCode = 0;
+
 	   /*********Initialize for JPEG*************/ 
 	  create_dc_table(dc_data,dc_len);
 	  jpe0.SetDCHuffTable(dc_data,dc_len);
