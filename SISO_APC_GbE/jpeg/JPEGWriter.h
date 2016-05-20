@@ -10,7 +10,7 @@ class JPEGWriter
 public:
 	JPEGWriter(bool fileAccessEnabled = true);
 	~JPEGWriter();
-	int OpenFile(const TCHAR* FileName);
+	int OpenFile(const char* FileName);
 	void CloseFile();
 	int Buf2File();
 	void ClearBuf();
@@ -24,7 +24,7 @@ public:
 
 private:
 	FILE* writefile;
-	TCHAR fname[255];
+	char fname[255];
 	buffer_t buffer;
 	bool m_fileAccessEnabled;
 };

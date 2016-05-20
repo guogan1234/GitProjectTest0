@@ -17,9 +17,13 @@
 #include <fgrab_define.h>
 #include <SisoDisplay.h>
 #include <gbe.h>
+#include <afxwin.h>
+#include <clser.h>
+
 #include "jpeg/JPEGEncoder.h"
-#include "afxwin.h"
 #include "SDrawInterface.h"
+
+
 
 using namespace std; 
 
@@ -77,7 +81,7 @@ public:
 	int getQuantizationTable3(Fg_Struct* fg);
 	int getQuantizationTable4(Fg_Struct* fg);
 	int getQuantizationTable5(Fg_Struct* fg);
-	void DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG,TCHAR* filename,int w,int h,bool bIsSave,bool bIsShow,int DrawItemID,void* pjpe);
+	void DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG,char* filename,int w,int h,bool bIsSave,bool bIsShow,int DrawItemID,void* pjpe);
 	void DecodeImg(unsigned char* bufferJPEGfile,int lengthJPEGfile,int itemID,int w,int h);
 	void DrawImage(int itemID,unsigned char* buf,int w,int h);
 	bool checkROIconsistency(int maxWidth, int maxHeight, int xOffset, int xLength, int yOffset, int YLength);
@@ -87,7 +91,7 @@ public:
 	int statusJPEG, statusJPEG1, statusJPEG2, statusJPEG3, statusJPEG4, statusJPEG5;
 	
 	CString m_cstrIni;
-	TCHAR m_cDirPrefix[256]; //存储路径的前缀。
+	char m_cDirPrefix[256]; //存储路径的前缀。
 	int   m_iStartIndex;     //摄像头的起始序列号。
 
 	CButton M_SaveJpeg;
@@ -100,9 +104,20 @@ public:
 	COLLECT_MODE m_eCollectMode;
 	CComboBox m_comboBoxCollectMode;
 
+	//采集频率
+	unsigned int m_iCollectFrequency;
+	
 	//连接状态的变量
 	CComboBox m_comboBoxConnectStatus;
 	CStatic m_stc_ConnectStatus;
+
+	//相机曝光时间
+	CComboBox m_comboBox_ExposureTime;
+	//CEdit m_stc_ExposureTime;
+
+	//相机增益
+	CComboBox m_comboBox_Gain;
+	//CEdit m_stc_Gain;
 
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
@@ -121,15 +136,17 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedBtnLoad();
-	afx_msg void OnBnClickedGrab();
+	void OnBnClickedGrab();
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnBnClickedSavejpeg();
 	afx_msg void OnClickedActivequality();
-	afx_msg void OnClickedExit();
+	//afx_msg void OnClickedExit();
 	afx_msg void OnClickedShowimg();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnClose();
 	afx_msg void OnCbnSelchangeCombocollectmode();
 	afx_msg void OnCbnSelchangeComboconnectstatus();
 
+	afx_msg void OnBnClickedButtoncollectfrequency();
+	afx_msg void OnBnClickedButtonExposuretime();
 };

@@ -131,7 +131,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	//Calculate fps
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	TCHAR strFile[255];
+	char strFile[255];
 	GetLocalTime(&st);
 	m_pthis->statusJPEG = picNr;
 	if (GetTickCount() > m_pthis->ticks + 1000)
@@ -146,7 +146,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable( m_pthis->fg);
 	jpe0.SetQuantTable(m_pthis->QTable);	
 
-	wsprintf(strFile,L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, L"\\Cam",m_pthis->m_iStartIndex, 
+	sprintf(strFile,"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -178,7 +178,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	TCHAR strFile[255];
+	char strFile[255];
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
@@ -186,7 +186,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable1( data->fg);
 	jpe1.SetQuantTable( m_pthis->QTable1);	
 
-	wsprintf(strFile, L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, L"\\Cam",m_pthis->m_iStartIndex +1, 
+	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -227,7 +227,7 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	TCHAR strFile[255];
+	char strFile[255];
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
@@ -235,7 +235,7 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable2( data->fg);
 	jpe2.SetQuantTable( m_pthis->QTable2);	
 
-	wsprintf(strFile, L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, L"\\Cam",m_pthis->m_iStartIndex +2, 
+	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -261,7 +261,7 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	TCHAR strFile[255];
+	char strFile[255];
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
@@ -269,7 +269,7 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable3( data->fg);
 	jpe3.SetQuantTable( m_pthis->QTable3);	
 
-	wsprintf(strFile, L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, L"\\Cam",m_pthis->m_iStartIndex + 3, 
+	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -295,7 +295,7 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	TCHAR strFile[255];
+	char strFile[255];
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
@@ -303,7 +303,7 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable4( data->fg);
 	jpe4.SetQuantTable( m_pthis->QTable4);	
 
-	wsprintf(strFile, L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, L"\\Cam",m_pthis->m_iStartIndex + 4, 
+	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -329,7 +329,7 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 
 	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	TCHAR strFile[255];
+	char strFile[255];
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
@@ -337,7 +337,7 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable5( data->fg);
 	jpe5.SetQuantTable( m_pthis->QTable5);	
 
-	wsprintf(strFile, L"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, L"\\Cam",m_pthis->m_iStartIndex + 5, 
+	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -437,6 +437,7 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, statusJPEG(0), statusJPEG1(0), statusJPEG2(0), statusJPEG3(0), statusJPEG4(0), statusJPEG5(0)
 	, m_iStartIndex(-1)
 	, m_eCollectMode(MODE_NONE)
+	, m_iCollectFrequency(40)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pthis = this;
@@ -457,6 +458,10 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBOCollectMode, m_comboBoxCollectMode);
 	DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
 	DDX_Control(pDX, IDC_STATICConnectStatus, m_stc_ConnectStatus);
+	DDX_Control(pDX, IDC_COMBO_ExposureTime, m_comboBox_ExposureTime);
+	//DDX_Control(pDX, IDC_EDIT_ExposureTime, m_stc_ExposureTime);
+	DDX_Control(pDX, IDC_COMBO_Gain, m_comboBox_Gain);
+	//DDX_Control(pDX, IDC_EDIT_Gain, m_stc_Gain);
 }
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
@@ -464,17 +469,19 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BTN_Load, &CSISO_APC_GbEDlg::OnBnClickedBtnLoad)
-	ON_BN_CLICKED(IDC_Grab, &CSISO_APC_GbEDlg::OnBnClickedGrab)
+	//ON_BN_CLICKED(IDC_Grab, &CSISO_APC_GbEDlg::OnBnClickedGrab)
 	ON_BN_CLICKED(IDC_Stop, &CSISO_APC_GbEDlg::OnBnClickedStop)
 	ON_WM_LBUTTONDBLCLK()
 	ON_BN_CLICKED(IDC_SaveJpeg, &CSISO_APC_GbEDlg::OnBnClickedSavejpeg)
 	ON_BN_CLICKED(IDC_ActiveQuality, &CSISO_APC_GbEDlg::OnClickedActivequality)
-	ON_BN_CLICKED(IDC_Exit, &CSISO_APC_GbEDlg::OnClickedExit)
+	//ON_BN_CLICKED(IDC_Exit, &CSISO_APC_GbEDlg::OnClickedExit)
 	ON_BN_CLICKED(IDC_ShowImg, &CSISO_APC_GbEDlg::OnClickedShowimg)
 	ON_WM_TIMER()
 	ON_WM_CLOSE()
 	ON_CBN_SELCHANGE(IDC_COMBOCollectMode, &CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode)
 	ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
+	ON_BN_CLICKED(IDC_BUTTONCollectFrequency, &CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime)
 END_MESSAGE_MAP()
 
 
@@ -519,17 +526,17 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_cstrIni = L"c:\\TYTunnelTestVehicle.ini";
 
 	m_iStartIndex = GetPrivateProfileInt(L"CameraInfo", L"StartIndex", -1, m_cstrIni);
-	DWORD iNumber = GetPrivateProfileString(L"Save", L"DirPrefix", L"", m_cDirPrefix, 256, m_cstrIni);
+	DWORD iNumber = GetPrivateProfileStringA("Save", "DirPrefix", "", m_cDirPrefix, 256, "c:\\TYTunnelTestVehicle.ini");
 	if(m_iStartIndex < 0 || iNumber ==0){
 		MessageBox(CString("找不到文件")+ m_cstrIni);
 	}
 
 	//创建存储的目录。
-	if(m_cDirPrefix[iNumber -1] != L'\\')
-		lstrcat(m_cDirPrefix, L"\\");
-	CString cDir1, cDir2;
-	cDir1.Format(L"%s%d\\", m_cDirPrefix, m_iStartIndex);
-	cDir2.Format(L"%s%d\\", m_cDirPrefix, m_iStartIndex + 1);
+	if(m_cDirPrefix[iNumber -1] != '\\')
+		strcat(m_cDirPrefix, "\\");
+	CString cDir(m_cDirPrefix), cDir1, cDir2;
+	cDir1.Format(L"%s%d\\", cDir, m_iStartIndex);
+	cDir2.Format(L"%s%d\\", cDir, m_iStartIndex + 1);
 	CreateNDir(cDir1);
 	CreateNDir(cDir2);
 
@@ -631,8 +638,8 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	//初始化采集模式
 	int iIndex;
-	m_comboBoxCollectMode.InsertString(0, L"trigger");
-	m_comboBoxCollectMode.InsertString(1, L"timer");
+	m_comboBoxCollectMode.InsertString(0, L"触发模式");
+	m_comboBoxCollectMode.InsertString(1, L"连续模式");
 	m_comboBoxCollectMode.SetCurSel(0);
 	
 	switch(m_comboBoxCollectMode.GetCurSel())
@@ -643,13 +650,29 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	};
 
 	//初始化连接状态
-	m_comboBoxConnectStatus.InsertString(0, L"Camera 0");
-	m_comboBoxConnectStatus.InsertString(1, L"Camera 1");
-	m_comboBoxConnectStatus.InsertString(2, L"Camera 2");
-	m_comboBoxConnectStatus.InsertString(3, L"Camera 3");
-	m_comboBoxConnectStatus.InsertString(4, L"Camera 4");
-	m_comboBoxConnectStatus.InsertString(5, L"Camera 5");
+	m_comboBoxConnectStatus.InsertString(0, L"相机 0");
+	m_comboBoxConnectStatus.InsertString(1, L"相机 1");
+	m_comboBoxConnectStatus.InsertString(2, L"相机 2");
+	m_comboBoxConnectStatus.InsertString(3, L"相机 3");
+	m_comboBoxConnectStatus.InsertString(4, L"相机 4");
+	m_comboBoxConnectStatus.InsertString(5, L"相机 5");
 	m_comboBoxConnectStatus.SetCurSel(0);
+
+	m_comboBox_ExposureTime.InsertString(0, L"相机 0");
+	m_comboBox_ExposureTime.InsertString(1, L"相机 1");
+	m_comboBox_ExposureTime.InsertString(2, L"相机 2");
+	m_comboBox_ExposureTime.InsertString(3, L"相机 3");
+	m_comboBox_ExposureTime.InsertString(4, L"相机 4");
+	m_comboBox_ExposureTime.InsertString(5, L"相机 5");
+	m_comboBox_ExposureTime.SetCurSel(0);
+
+	m_comboBox_Gain.InsertString(0, L"相机 0");
+	m_comboBox_Gain.InsertString(1, L"相机 1");
+	m_comboBox_Gain.InsertString(2, L"相机 2");
+	m_comboBox_Gain.InsertString(3, L"相机 3");
+	m_comboBox_Gain.InsertString(4, L"相机 4");
+	m_comboBox_Gain.InsertString(5, L"相机 5");
+	m_comboBox_Gain.SetCurSel(0);
 
 	UpdateData(false);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -730,31 +753,6 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		MessageBox(L"采集卡正在被其他程序使用。");
 		return;
 	}
-	//int iStatus0, iStatus1, iReturn;
-	//iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus0, PORT_A);
-	//iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus1, PORT_B);
-	                             
-	//int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
-	//unsigned int Device1_Process0_Trigger_TriggerMode_Select;
-	//Device1_Process0_Trigger_TriggerMode_Select = 1;
-	//Fg_setParameterWithType(fg, Device1_Process0_Trigger_TriggerMode_Select_Id, Device1_Process0_Trigger_TriggerMode_Select, 0);
-
-
-	//int Device1_Process1_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Trigger_TriggerMode_Select");
-	//unsigned int Device1_Process1_Trigger_TriggerMode_Select;
-	//Device1_Process1_Trigger_TriggerMode_Select = 1;
-	//Fg_setParameterWithType(fg, Device1_Process1_Trigger_TriggerMode_Select_Id, Device1_Process1_Trigger_TriggerMode_Select, 0);
-
-	//int Device1_Process0_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_Generator_Period_Period");
-	//uint64_t Device1_Process0_Trigger_Generator_Period_Period;
-	//Device1_Process0_Trigger_Generator_Period_Period = 0x2faf080;
-	//Fg_setParameterWithType(fg, Device1_Process0_Trigger_Generator_Period_Period_Id, Device1_Process0_Trigger_Generator_Period_Period, 0);
-	//
-	//int Device1_Process1_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Trigger_Generator_Period_Period");
-	//uint64_t Device1_Process1_Trigger_Generator_Period_Period;
-	//Device1_Process1_Trigger_Generator_Period_Period = 0x2faf080;
-	//Fg_setParameterWithType(fg, Device1_Process1_Trigger_Generator_Period_Period_Id, Device1_Process1_Trigger_Generator_Period_Period, 0);
-
 	///*******getting  general parameter from DMA0 and DMA1********/
 	//int iWidth = 1024, iHeight = 768;
 	//int Device1_Process0_Buffer_YLength_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Buffer_YLength");
@@ -1005,8 +1003,9 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 			return ;
 		}
 	}
-	m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(TRUE);
+	//m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(TRUE);
 	m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(FALSE);
+	OnBnClickedGrab();
 }
 
 
@@ -1093,7 +1092,7 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 	hThShow=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)thfuncshow,this,0,&id);
 
 	m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(TRUE);
-	m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(FALSE);
+	//m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(FALSE);
 }
 
 void CSISO_APC_GbEDlg::OnBnClickedStop()
@@ -1201,7 +1200,7 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 
 //DealJpeg 
 void CSISO_APC_GbEDlg::DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG
-	,TCHAR* filename,int w,int h,bool bIsSave
+	,char* filename,int w,int h,bool bIsSave
 	,bool bIsShow,int DrawItemID,void* pjpe) 
 
 {
@@ -1550,13 +1549,13 @@ void CSISO_APC_GbEDlg::OnClickedActivequality()
 	JPEGQuality = _tstoi(M_JpegQuality.GetString());
 }
 
-void CSISO_APC_GbEDlg::OnClickedExit()
-{
-	// TODO: 在此添加控件通知处理程序代码
-    if(m_pthis->m_CpState == 1)
-		OnBnClickedStop();
-	CDialogEx::OnOK();
-}
+//void CSISO_APC_GbEDlg::OnClickedExit()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//    if(m_pthis->m_CpState == 1)
+//		OnBnClickedStop();
+//	CDialogEx::OnOK();
+//}
 
 void CSISO_APC_GbEDlg::OnClickedShowimg()
 {
@@ -1595,6 +1594,7 @@ void CSISO_APC_GbEDlg::OnClose()
 void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 {
 	// TODO: 在此添加控件通知处理程序代码
+
 	COLLECT_MODE eCollectMode;
 	switch(m_comboBoxCollectMode.GetCurSel())
 	{
@@ -1649,6 +1649,9 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (!fg && !fg1 && !fg2)
+		return;
+
 	int iStatus = -1, iReturn;
 	switch(m_comboBoxConnectStatus.GetCurSel())
 	{
@@ -1693,4 +1696,82 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
 		break;
 	}
 	
+}
+
+
+void CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int iCollectFrequency = GetDlgItemInt(IDC_EDITCollectFrequency);
+	if (!fg && !fg1 && !fg2)
+		return;
+
+	if (iCollectFrequency == m_iCollectFrequency || iCollectFrequency < 1 || iCollectFrequency > 47)
+		return;
+
+	m_iCollectFrequency = iCollectFrequency;
+	uint64_t Trigger_Generator_Period_Period = 1000000000/(8*m_iCollectFrequency);
+	if(fg != NULL)
+	{
+		int Device1_Process0_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_Generator_Period_Period");
+		Fg_setParameterWithType(fg, Device1_Process0_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
+
+		int Device1_Process1_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Trigger_Generator_Period_Period");
+		Fg_setParameterWithType(fg, Device1_Process1_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
+	}
+	if(fg1 != NULL)
+	{
+		int Device1_Process0_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg1, "Device1_Process0_Trigger_Generator_Period_Period");
+		Fg_setParameterWithType(fg1, Device1_Process0_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
+
+		int Device1_Process1_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg1, "Device1_Process1_Trigger_Generator_Period_Period");
+		Fg_setParameterWithType(fg1, Device1_Process1_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
+	}
+	if(fg2 != NULL)
+	{
+		int Device1_Process0_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg2, "Device1_Process0_Trigger_Generator_Period_Period");
+		Fg_setParameterWithType(fg2, Device1_Process0_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
+
+		int Device1_Process1_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg2, "Device1_Process1_Trigger_Generator_Period_Period");
+		Fg_setParameterWithType(fg2, Device1_Process1_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
+	}
+}
+
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime()
+{
+	unsigned int iExposureTime = GetDlgItemInt(IDC_EDIT_ExposureTime);
+	if(iExposureTime < 10 || iExposureTime > 8000000) {
+		MessageBox(L"相机曝光必须介于10~8000000之间");
+		return;
+	}
+
+	void *hSer = NULL;  // reference to serial port
+	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
+		CString cstrMsg;
+		cstrMsg.Format(L"不能打开相机%d", iPortNr);
+		MessageBox(cstrMsg);
+		return;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		MessageBox(L"无法设置波特率");
+		return;
+	}
+
+	char line[256]= {0};
+	sprintf(line, "PE=%d", iExposureTime);
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	int error = clSerialWrite(hSer, line, &len, 500);
+	if (error < 0) {
+		MessageBox(L"设置相机曝光没有成功");
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
 }
