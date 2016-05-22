@@ -482,6 +482,9 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
 	ON_BN_CLICKED(IDC_BUTTONCollectFrequency, &CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency)
 	ON_BN_CLICKED(IDC_BUTTON_ExposureTime, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime)
+	ON_BN_CLICKED(IDC_BUTTON_Gain, &CSISO_APC_GbEDlg::OnBnClickedButtonGain)
+	ON_CBN_SELCHANGE(IDC_COMBO_ExposureTime, &CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime)
+	ON_CBN_SELCHANGE(IDC_COMBO_Gain, &CSISO_APC_GbEDlg::OnCbnSelchangeComboGain)
 END_MESSAGE_MAP()
 
 
@@ -534,11 +537,19 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	//创建存储的目录。
 	if(m_cDirPrefix[iNumber -1] != '\\')
 		strcat(m_cDirPrefix, "\\");
-	CString cDir(m_cDirPrefix), cDir1, cDir2;
+	CString cDir(m_cDirPrefix), cDir1, cDir2, cDir3, cDir4, cDir5, cDir6;
 	cDir1.Format(L"%s%d\\", cDir, m_iStartIndex);
 	cDir2.Format(L"%s%d\\", cDir, m_iStartIndex + 1);
+	cDir3.Format(L"%s%d\\", cDir, m_iStartIndex + 2);
+	cDir4.Format(L"%s%d\\", cDir, m_iStartIndex + 3);
+	cDir5.Format(L"%s%d\\", cDir, m_iStartIndex + 4);
+	cDir6.Format(L"%s%d\\", cDir, m_iStartIndex + 5);
 	CreateNDir(cDir1);
 	CreateNDir(cDir2);
+	CreateNDir(cDir3);
+	CreateNDir(cDir4);
+	CreateNDir(cDir5);
+	CreateNDir(cDir6);
 
 	 M_JpegQuality.Format(L"%d", JPEGQuality);
 
@@ -1575,11 +1586,20 @@ void CSISO_APC_GbEDlg::OnClickedShowimg()
 void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	CString strtmp,strtmp1;
+	CString strtmp, strtmp1, strtmp2, strtmp3, strtmp4, strtmp5;
 	strtmp.Format(_T("fps:%.3f"), m_pthis->fps);
 	strtmp1.Format(_T("fps:%.3f"), m_pthis->fps1);
+	strtmp2.Format(_T("fps:%.3f"), m_pthis->fps2);
+	strtmp3.Format(_T("fps:%.3f"), m_pthis->fps3);
+	strtmp4.Format(_T("fps:%.3f"), m_pthis->fps4);
+	strtmp5.Format(_T("fps:%.3f"), m_pthis->fps5);
+	
 	m_pthis->m_stc_fps.SetWindowTextW(strtmp);
 	m_pthis->m_stc_fps1.SetWindowTextW(strtmp1);
+	m_pthis->m_stc_fps2.SetWindowTextW(strtmp2);
+	m_pthis->m_stc_fps3.SetWindowTextW(strtmp3);
+	m_pthis->m_stc_fps4.SetWindowTextW(strtmp4);
+	m_pthis->m_stc_fps5.SetWindowTextW(strtmp5);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -1771,6 +1791,133 @@ void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime()
 	int error = clSerialWrite(hSer, line, &len, 500);
 	if (error < 0) {
 		MessageBox(L"设置相机曝光没有成功");
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
+}
+
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain()
+{
+	unsigned int iGain = GetDlgItemInt(IDC_EDIT_Gain);
+	if(iGain < 100 || iGain > 1600) {
+		MessageBox(L"相机增益必须介于100~1600之间");
+		return;
+	}
+
+	void *hSer = NULL;  // reference to serial port
+	int iPortNr = m_comboBox_Gain.GetCurSel();
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
+		CString cstrMsg;
+		cstrMsg.Format(L"不能打开相机%d", iPortNr);
+		MessageBox(cstrMsg);
+		return;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		MessageBox(L"无法设置波特率");
+		return;
+	}
+
+	char line[256]= {0};
+	sprintf(line, "FGA=%d", iGain);
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	int error = clSerialWrite(hSer, line, &len, 500);
+	if (error < 0) {
+		MessageBox(L"设置相机增益没有成功");
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime()
+{
+	void *hSer = NULL;  // reference to serial port
+	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
+		CString cstrMsg;
+		cstrMsg.Format(L"不能打开相机%d", iPortNr);
+		MessageBox(cstrMsg);
+		return;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		MessageBox(L"无法设置波特率");
+		return;
+	}
+
+	char line[256]= "PE?";
+	//sprintf(line, "PE=%d", iExposureTime);
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	int error = clSerialWrite(hSer, line, &len, 500);
+	if (error < 0) {
+		MessageBox(L"获取相机曝光时间没有成功");
+	}
+	len = 256;
+	error = clSerialRead(hSer, line, &len, 256);
+	if(error == CL_ERR_NO_ERR)
+	{
+		CString cst(line);
+		//unsigned int iExposureTime = _tstoi(cst.Right(len-3).GetString());
+		((CEdit *)GetDlgItem(IDC_EDIT_ExposureTime))->SetWindowTextW(cst.Mid(3, len-5));
+	}
+	else{
+		MessageBox(L"获取相机曝光时间没有成功");
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboGain()
+{
+	void *hSer = NULL;  // reference to serial port
+	int iPortNr = m_comboBox_Gain.GetCurSel();
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
+		CString cstrMsg;
+		cstrMsg.Format(L"不能打开相机%d", iPortNr);
+		MessageBox(cstrMsg);
+		return;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		MessageBox(L"无法设置波特率");
+		return;
+	}
+
+	char line[256]= "FGA?";
+	//sprintf(line, "PE=%d", iExposureTime);
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	int error = clSerialWrite(hSer, line, &len, 500);
+	if (error < 0) {
+		MessageBox(L"获取相机增益没有成功");
+	}
+	len = 256;
+	error = clSerialRead(hSer, line, &len, 256);
+	if(error == CL_ERR_NO_ERR)
+	{
+		CString cst(line);
+		//unsigned int iExposureTime = _tstoi(cst.Right(len-3).GetString());
+		((CEdit *)GetDlgItem(IDC_EDIT_Gain))->SetWindowTextW(cst.Mid(4, len-6));
+	}
+	else{
+		MessageBox(L"获取相机增益没有成功");
 	}
 	// clean up the serial port reference
 	clSerialClose(hSer);

@@ -149,4 +149,7 @@ public:
 
 	afx_msg void OnBnClickedButtoncollectfrequency();
 	afx_msg void OnBnClickedButtonExposuretime();
+	afx_msg void OnBnClickedButtonGain();
+	afx_msg void OnCbnSelchangeComboExposuretime();
+	afx_msg void OnCbnSelchangeComboGain();
 };
