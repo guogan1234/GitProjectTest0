@@ -134,12 +134,6 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	char strFile[255];
 	GetLocalTime(&st);
 	m_pthis->statusJPEG = picNr;
-	if (GetTickCount() > m_pthis->ticks + 1000)
-	{
-		m_pthis->fps = 1000.0 * (m_pthis->statusJPEG - m_pthis->oldStatusJPEG) / (GetTickCount() - m_pthis->ticks);
-		m_pthis->oldStatusJPEG = m_pthis->statusJPEG;
-		m_pthis->ticks = GetTickCount();
-	}
 
 	//For Jpeg 
 	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
@@ -196,12 +190,12 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG1 = picNr;
-	if (GetTickCount() > m_pthis->ticks1 + 1000)
-	{
-		m_pthis->fps1 = 1000.0 * (m_pthis->statusJPEG1 - m_pthis->oldStatusJPEG1) / (GetTickCount() - m_pthis->ticks1);
-		m_pthis->oldStatusJPEG1 = m_pthis->statusJPEG1;
-		m_pthis->ticks1 = GetTickCount();
-	}
+	//if (GetTickCount() > m_pthis->ticks1 + 1000)
+	//{
+	//	m_pthis->fps1 = 1000.0 * (m_pthis->statusJPEG1 - m_pthis->oldStatusJPEG1) / (GetTickCount() - m_pthis->ticks1);
+	//	m_pthis->oldStatusJPEG1 = m_pthis->statusJPEG1;
+	//	m_pthis->ticks1 = GetTickCount();
+	//}
 
 	//////////////////////////////
 	/*********用于统计进回调的次数和进出回调的时间*************/
@@ -245,12 +239,12 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG2 = picNr;
-	if (GetTickCount() > m_pthis->ticks2 + 1000)
-	{
-		m_pthis->fps2 = 1000.0 * (m_pthis->statusJPEG2 - m_pthis->oldStatusJPEG2) / (GetTickCount() - m_pthis->ticks2);
-		m_pthis->oldStatusJPEG2 = m_pthis->statusJPEG2;
-		m_pthis->ticks2 = GetTickCount();
-	}
+	//if (GetTickCount() > m_pthis->ticks2 + 1000)
+	//{
+	//	m_pthis->fps2 = 1000.0 * (m_pthis->statusJPEG2 - m_pthis->oldStatusJPEG2) / (GetTickCount() - m_pthis->ticks2);
+	//	m_pthis->oldStatusJPEG2 = m_pthis->statusJPEG2;
+	//	m_pthis->ticks2 = GetTickCount();
+	//}
 	return 0;
 }
 
@@ -279,12 +273,12 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG3 = picNr;
-	if (GetTickCount() > m_pthis->ticks3 + 1000)
-	{
-		m_pthis->fps3 = 1000.0 * (m_pthis->statusJPEG3 - m_pthis->oldStatusJPEG3) / (GetTickCount() - m_pthis->ticks3);
-		m_pthis->oldStatusJPEG3 = m_pthis->statusJPEG3;
-		m_pthis->ticks3 = GetTickCount();
-	}
+	//if (GetTickCount() > m_pthis->ticks3 + 1000)
+	//{
+	//	m_pthis->fps3 = 1000.0 * (m_pthis->statusJPEG3 - m_pthis->oldStatusJPEG3) / (GetTickCount() - m_pthis->ticks3);
+	//	m_pthis->oldStatusJPEG3 = m_pthis->statusJPEG3;
+	//	m_pthis->ticks3 = GetTickCount();
+	//}
 	return 0;
 }
 
@@ -313,12 +307,12 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG4 = picNr;
-	if (GetTickCount() > m_pthis->ticks4 + 1000)
-	{
-		m_pthis->fps4 = 1000.0 * (m_pthis->statusJPEG4 - m_pthis->oldStatusJPEG4) / (GetTickCount() - m_pthis->ticks4);
-		m_pthis->oldStatusJPEG4 = m_pthis->statusJPEG4;
-		m_pthis->ticks4 = GetTickCount();
-	}
+	//if (GetTickCount() > m_pthis->ticks4 + 1000)
+	//{
+	//	m_pthis->fps4 = 1000.0 * (m_pthis->statusJPEG4 - m_pthis->oldStatusJPEG4) / (GetTickCount() - m_pthis->ticks4);
+	//	m_pthis->oldStatusJPEG4 = m_pthis->statusJPEG4;
+	//	m_pthis->ticks4 = GetTickCount();
+	//}
 	return 0;
 }
 
@@ -347,12 +341,12 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG5 = picNr;
-	if (GetTickCount() > m_pthis->ticks5 + 1000)
-	{
-		m_pthis->fps5 = 1000.0 * (m_pthis->statusJPEG5 - m_pthis->oldStatusJPEG5) / (GetTickCount() - m_pthis->ticks5);
-		m_pthis->oldStatusJPEG5 = m_pthis->statusJPEG5;
-		m_pthis->ticks5 = GetTickCount();
-	}
+	//if (GetTickCount() > m_pthis->ticks5 + 1000)
+	//{
+	//	m_pthis->fps5 = 1000.0 * (m_pthis->statusJPEG5 - m_pthis->oldStatusJPEG5) / (GetTickCount() - m_pthis->ticks5);
+	//	m_pthis->oldStatusJPEG5 = m_pthis->statusJPEG5;
+	//	m_pthis->ticks5 = GetTickCount();
+	//}
 	return 0;
 }
 
@@ -456,8 +450,8 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_Fps4, m_stc_fps4);
 	DDX_Control(pDX, IDC_Fps5, m_stc_fps5);
 	DDX_Control(pDX, IDC_COMBOCollectMode, m_comboBoxCollectMode);
-	DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
-	DDX_Control(pDX, IDC_STATICConnectStatus, m_stc_ConnectStatus);
+	//DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
+	//DDX_Control(pDX, IDC_STATICConnectStatus, m_stc_ConnectStatus);
 	DDX_Control(pDX, IDC_COMBO_ExposureTime, m_comboBox_ExposureTime);
 	//DDX_Control(pDX, IDC_EDIT_ExposureTime, m_stc_ExposureTime);
 	DDX_Control(pDX, IDC_COMBO_Gain, m_comboBox_Gain);
@@ -468,9 +462,9 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BTN_Load, &CSISO_APC_GbEDlg::OnBnClickedBtnLoad)
+	//ON_BN_CLICKED(IDC_BTN_Load, &CSISO_APC_GbEDlg::OnBnClickedBtnLoad)
 	//ON_BN_CLICKED(IDC_Grab, &CSISO_APC_GbEDlg::OnBnClickedGrab)
-	ON_BN_CLICKED(IDC_Stop, &CSISO_APC_GbEDlg::OnBnClickedStop)
+	//ON_BN_CLICKED(IDC_Stop, &CSISO_APC_GbEDlg::OnBnClickedStop)
 	ON_WM_LBUTTONDBLCLK()
 	ON_BN_CLICKED(IDC_SaveJpeg, &CSISO_APC_GbEDlg::OnBnClickedSavejpeg)
 	ON_BN_CLICKED(IDC_ActiveQuality, &CSISO_APC_GbEDlg::OnClickedActivequality)
@@ -479,7 +473,7 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_CLOSE()
 	ON_CBN_SELCHANGE(IDC_COMBOCollectMode, &CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode)
-	ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
+	//ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
 	ON_BN_CLICKED(IDC_BUTTONCollectFrequency, &CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency)
 	ON_BN_CLICKED(IDC_BUTTON_ExposureTime, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime)
 	ON_BN_CLICKED(IDC_BUTTON_Gain, &CSISO_APC_GbEDlg::OnBnClickedButtonGain)
@@ -527,77 +521,57 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	//读取配置文件，
 	m_cstrIni = L"c:\\TYTunnelTestVehicle.ini";
+	char cDirPrefix[256] = {0};
 
 	m_iStartIndex = GetPrivateProfileInt(L"CameraInfo", L"StartIndex", -1, m_cstrIni);
-	DWORD iNumber = GetPrivateProfileStringA("Save", "DirPrefix", "", m_cDirPrefix, 256, "c:\\TYTunnelTestVehicle.ini");
+	DWORD iNumber = GetPrivateProfileStringA("Save", "DirPrefix", "", cDirPrefix, 256, "c:\\TYTunnelTestVehicle.ini");
 	if(m_iStartIndex < 0 || iNumber ==0){
 		MessageBox(CString("找不到文件")+ m_cstrIni);
 	}
 
-	//创建存储的目录。
-	if(m_cDirPrefix[iNumber -1] != '\\')
-		strcat(m_cDirPrefix, "\\");
-	CString cDir(m_cDirPrefix), cDir1, cDir2, cDir3, cDir4, cDir5, cDir6;
-	cDir1.Format(L"%s%d\\", cDir, m_iStartIndex);
-	cDir2.Format(L"%s%d\\", cDir, m_iStartIndex + 1);
-	cDir3.Format(L"%s%d\\", cDir, m_iStartIndex + 2);
-	cDir4.Format(L"%s%d\\", cDir, m_iStartIndex + 3);
-	cDir5.Format(L"%s%d\\", cDir, m_iStartIndex + 4);
-	cDir6.Format(L"%s%d\\", cDir, m_iStartIndex + 5);
-	CreateNDir(cDir1);
-	CreateNDir(cDir2);
-	CreateNDir(cDir3);
-	CreateNDir(cDir4);
-	CreateNDir(cDir5);
-	CreateNDir(cDir6);
+	SetSaveDir(cDirPrefix);
 
-	 M_JpegQuality.Format(L"%d", JPEGQuality);
+	M_JpegQuality.Format(L"%d", JPEGQuality);
 
-	 // DMA list for All Cards 
-	  DmaIndex[0] = 0;
-	  DmaIndex[1] = 1;
-	  //DmaIndex[2] = 0;
-	  //DmaIndex[3] = 1;
-	  //DmaIndex[4] = 0;
-	  //DmaIndex[5] = 1;
-	  //DmaIndex[6] = 6;
-   //   DmaIndex[7] = 7;
+	// DMA list for All Cards 
+	DmaIndex[0] = 0;
+	DmaIndex[1] = 1;
 
-	   /*********Initialize for JPEG*************/ 
-	  create_dc_table(dc_data,dc_len);
-	  jpe0.SetDCHuffTable(dc_data,dc_len);
-	  create_ac_table(ac_data,ac_len);
-	  jpe0.SetACHuffTable(ac_data,ac_len);
+	/*********Initialize for JPEG*************/ 
+	create_dc_table(dc_data,dc_len);
+	jpe0.SetDCHuffTable(dc_data,dc_len);
+	create_ac_table(ac_data,ac_len);
+	jpe0.SetACHuffTable(ac_data,ac_len);
 
-	  create_dc_table(dc_data1,dc_len1);
-	  jpe1.SetDCHuffTable(dc_data1,dc_len1);
-	  create_ac_table(ac_data1,ac_len1);
-	  jpe1.SetACHuffTable(ac_data1,ac_len1);
+	create_dc_table(dc_data1,dc_len1);
+	jpe1.SetDCHuffTable(dc_data1,dc_len1);
+	create_ac_table(ac_data1,ac_len1);
+	jpe1.SetACHuffTable(ac_data1,ac_len1);
 
-	  create_dc_table(dc_data2,dc_len2);
-	  jpe2.SetDCHuffTable(dc_data2,dc_len2);
-	  create_ac_table(ac_data2,ac_len2);
-	  jpe2.SetACHuffTable(ac_data2,ac_len2);
+	create_dc_table(dc_data2,dc_len2);
+	jpe2.SetDCHuffTable(dc_data2,dc_len2);
+	create_ac_table(ac_data2,ac_len2);
+	jpe2.SetACHuffTable(ac_data2,ac_len2);
 
-	  create_dc_table(dc_data3,dc_len3);
-	  jpe3.SetDCHuffTable(dc_data3,dc_len3);
-	  create_ac_table(ac_data3,ac_len3);
-	  jpe3.SetACHuffTable(ac_data3,ac_len3);
+	create_dc_table(dc_data3,dc_len3);
+	jpe3.SetDCHuffTable(dc_data3,dc_len3);
+	create_ac_table(ac_data3,ac_len3);
+	jpe3.SetACHuffTable(ac_data3,ac_len3);
 
-	  create_dc_table(dc_data4,dc_len4);
-	  jpe4.SetDCHuffTable(dc_data4,dc_len4);
-	  create_ac_table(ac_data4,ac_len4);
-	  jpe4.SetACHuffTable(ac_data4,ac_len4);
+	create_dc_table(dc_data4,dc_len4);
+	jpe4.SetDCHuffTable(dc_data4,dc_len4);
+	create_ac_table(ac_data4,ac_len4);
+	jpe4.SetACHuffTable(ac_data4,ac_len4);
 
-	  create_dc_table(dc_data5,dc_len5);
-	  jpe5.SetDCHuffTable(dc_data5,dc_len5);
-	  create_ac_table(ac_data5,ac_len5);
-	  jpe5.SetACHuffTable(ac_data5,ac_len5);
+	create_dc_table(dc_data5,dc_len5);
+	jpe5.SetDCHuffTable(dc_data5,dc_len5);
+	create_ac_table(ac_data5,ac_len5);
+	jpe5.SetACHuffTable(ac_data5,ac_len5);
 
-	  njInit(); //nanoJPEG decoder Initialization
+	njInit(); //nanoJPEG decoder Initialization
 
-	 /*********Initialize m_pBmpInfo*************/ 
-	  //int i;
+	/*********Initialize m_pBmpInfo*************/ 
+	//int i;
 	//	m_pBmpInfo即指向m_chBmpBuf缓冲区，用户可以自己分配BTIMAPINFO缓冲区	
 	m_pBmpInfo								= (BITMAPINFO *)m_chBmpBuf;
 	//	初始化BITMAPINFO 结构，此结构在保存bmp文件、显示采集图像时使用
@@ -660,14 +634,18 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	default: m_eCollectMode = MODE_NONE;break;
 	};
 
+	CString cstrCollectFrequency;
+	cstrCollectFrequency.Format(L"%d", m_iCollectFrequency);
+	((CEdit *)GetDlgItem(IDC_EDITCollectFrequency))->SetWindowTextW(cstrCollectFrequency);
+
 	//初始化连接状态
-	m_comboBoxConnectStatus.InsertString(0, L"相机 0");
-	m_comboBoxConnectStatus.InsertString(1, L"相机 1");
-	m_comboBoxConnectStatus.InsertString(2, L"相机 2");
-	m_comboBoxConnectStatus.InsertString(3, L"相机 3");
-	m_comboBoxConnectStatus.InsertString(4, L"相机 4");
-	m_comboBoxConnectStatus.InsertString(5, L"相机 5");
-	m_comboBoxConnectStatus.SetCurSel(0);
+	//m_comboBoxConnectStatus.InsertString(0, L"相机 0");
+	//m_comboBoxConnectStatus.InsertString(1, L"相机 1");
+	//m_comboBoxConnectStatus.InsertString(2, L"相机 2");
+	//m_comboBoxConnectStatus.InsertString(3, L"相机 3");
+	//m_comboBoxConnectStatus.InsertString(4, L"相机 4");
+	//m_comboBoxConnectStatus.InsertString(5, L"相机 5");
+	//m_comboBoxConnectStatus.SetCurSel(0);
 
 	m_comboBox_ExposureTime.InsertString(0, L"相机 0");
 	m_comboBox_ExposureTime.InsertString(1, L"相机 1");
@@ -686,6 +664,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_comboBox_Gain.SetCurSel(0);
 
 	UpdateData(false);
+	OnBnClickedBtnLoad();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -761,7 +740,8 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	};
 
 	if(fg == NULL && fg1 == NULL && fg2 == NULL){
-		MessageBox(L"采集卡正在被其他程序使用。");
+		CString cstrMsg(Fg_getLastErrorDescription(NULL));
+		MessageBox(cstrMsg);
 		return;
 	}
 	///*******getting  general parameter from DMA0 and DMA1********/
@@ -1015,7 +995,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		}
 	}
 	//m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(TRUE);
-	m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(FALSE);
+	//m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(FALSE);
 	OnBnClickedGrab();
 }
 
@@ -1102,7 +1082,7 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 
 	hThShow=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)thfuncshow,this,0,&id);
 
-	m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(TRUE);
+	//m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(TRUE);
 	//m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(FALSE);
 }
 
@@ -1204,8 +1184,8 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 	m_stc_fps4.SetWindowTextW(strtmp4);
 	m_stc_fps5.SetWindowTextW(strtmp5);
 	
-	m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(FALSE);
-	m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(TRUE);
+	//m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(FALSE);
+	//m_pthis -> GetDlgItem(IDC_BTN_Load)->EnableWindow(TRUE);
 	return;
 }
 
@@ -1585,21 +1565,44 @@ void CSISO_APC_GbEDlg::OnClickedShowimg()
 
 void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	fps = 1000.0 * (statusJPEG - oldStatusJPEG) / (GetTickCount() - ticks);
+	oldStatusJPEG = statusJPEG;
+	ticks = GetTickCount();
+
+	fps1 = 1000.0 * (statusJPEG1 - oldStatusJPEG1) / (GetTickCount() - ticks1);
+	oldStatusJPEG1 = statusJPEG1;
+	ticks1 = GetTickCount();
+
+	fps2 = 1000.0 * (statusJPEG2 - oldStatusJPEG2) / (GetTickCount() - ticks2);
+	oldStatusJPEG2 = statusJPEG2;
+	ticks2 = GetTickCount();
+
+	fps3 = 1000.0 * (statusJPEG3 - oldStatusJPEG3) / (GetTickCount() - ticks3);
+	oldStatusJPEG3 = m_pthis->statusJPEG3;
+	ticks3 = GetTickCount();
+
+	fps4 = 1000.0 * (statusJPEG4 - oldStatusJPEG4) / (GetTickCount() - ticks4);
+	oldStatusJPEG4 = statusJPEG4;
+	ticks4 = GetTickCount();
+
+	fps5 = 1000.0 * (statusJPEG5 - oldStatusJPEG5) / (GetTickCount() - ticks5);
+	oldStatusJPEG5 = statusJPEG5;
+	ticks5 = GetTickCount();
+
 	CString strtmp, strtmp1, strtmp2, strtmp3, strtmp4, strtmp5;
-	strtmp.Format(_T("fps:%.3f"), m_pthis->fps);
-	strtmp1.Format(_T("fps:%.3f"), m_pthis->fps1);
-	strtmp2.Format(_T("fps:%.3f"), m_pthis->fps2);
-	strtmp3.Format(_T("fps:%.3f"), m_pthis->fps3);
-	strtmp4.Format(_T("fps:%.3f"), m_pthis->fps4);
-	strtmp5.Format(_T("fps:%.3f"), m_pthis->fps5);
+	strtmp.Format(_T("fps:%.3f"), fps);
+	strtmp1.Format(_T("fps:%.3f"), fps1);
+	strtmp2.Format(_T("fps:%.3f"), fps2);
+	strtmp3.Format(_T("fps:%.3f"), fps3);
+	strtmp4.Format(_T("fps:%.3f"), fps4);
+	strtmp5.Format(_T("fps:%.3f"), fps5);
 	
-	m_pthis->m_stc_fps.SetWindowTextW(strtmp);
-	m_pthis->m_stc_fps1.SetWindowTextW(strtmp1);
-	m_pthis->m_stc_fps2.SetWindowTextW(strtmp2);
-	m_pthis->m_stc_fps3.SetWindowTextW(strtmp3);
-	m_pthis->m_stc_fps4.SetWindowTextW(strtmp4);
-	m_pthis->m_stc_fps5.SetWindowTextW(strtmp5);
+	m_stc_fps.SetWindowTextW(strtmp);
+	m_stc_fps1.SetWindowTextW(strtmp1);
+	m_stc_fps2.SetWindowTextW(strtmp2);
+	m_stc_fps3.SetWindowTextW(strtmp3);
+	m_stc_fps4.SetWindowTextW(strtmp4);
+	m_stc_fps5.SetWindowTextW(strtmp5);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -1623,6 +1626,148 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 	default: eCollectMode = MODE_NONE;break;
 	};
 
+	SetCollectMode(eCollectMode);
+}
+
+//void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	if (!fg && !fg1 && !fg2)
+//		return;
+//
+//	int iStatus = -1, iReturn;
+//	switch(m_comboBoxConnectStatus.GetCurSel())
+//	{
+//	case 0:
+//		if(fg)
+//			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_A);
+//		break;
+//	case 1:
+//		if(fg)
+//			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_B);
+//		break;
+//	case 2: 
+//		if(fg1)
+//			iReturn = Fg_getParameter(fg1,FG_CAMSTATUS,&iStatus, PORT_A);
+//		break;
+//	case 3: 
+//		if(fg1)
+//			iReturn = Fg_getParameter(fg1,FG_CAMSTATUS,&iStatus, PORT_B);
+//		break;
+//	case 4: 
+//		if(fg2)
+//			iReturn = Fg_getParameter(fg2,FG_CAMSTATUS,&iStatus, PORT_A);
+//		break;
+//	case 5:
+//		if(fg2)
+//			iReturn = Fg_getParameter(fg2,FG_CAMSTATUS,&iStatus, PORT_B);
+//		break;
+//	default:;
+//	};
+//
+//	switch (iStatus)
+//	{
+//	case 0:
+//		m_stc_ConnectStatus.SetWindowTextW(L"Unconnected");
+//		break;
+//	case 1:
+//		m_stc_ConnectStatus.SetWindowTextW(L"Connected");
+//		break;
+//	case -1:
+//	default:
+//		m_stc_ConnectStatus.SetWindowTextW(L"Uninitialized");
+//		break;
+//	}
+//	
+//}
+
+
+void CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int iCollectFrequency = GetDlgItemInt(IDC_EDITCollectFrequency);
+	TY_STATUS eStatus = SetCollectFrequency(iCollectFrequency);
+	if (TY_OK == eStatus){
+		MessageBox(L"设置采集频率成功");
+	}
+	else{
+		MessageBox(L"设置采集频率失败");
+	}
+}
+
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime()
+{
+	unsigned int iExposureTime = GetDlgItemInt(IDC_EDIT_ExposureTime);
+	if(iExposureTime < 10 || iExposureTime > 8000000) {
+		MessageBox(L"相机曝光时间必须介于10~8000000之间");
+		return;
+	}
+	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	
+	TY_STATUS eStatus = SetExposureTime(iPortNr, iExposureTime);
+	if (TY_OK == eStatus){
+		MessageBox(L"设置相机曝光时间成功");
+	}
+	else{
+		MessageBox(L"设置相机曝光时间失败");
+	}
+}
+
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain()
+{
+	unsigned int iGain = GetDlgItemInt(IDC_EDIT_Gain);
+	if(iGain < 100 || iGain > 1600) {
+		MessageBox(L"相机增益必须介于100~1600之间");
+		return;
+	}
+
+	int iPortNr = m_comboBox_Gain.GetCurSel();
+	
+	TY_STATUS eStatus = SetGain(iPortNr, iGain);
+	if (TY_OK == eStatus){
+		MessageBox(L"设置相机增益成功");
+	}
+	else{
+		MessageBox(L"设置相机增益失败");
+	}
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime()
+{
+	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	unsigned int iExposureTime = 0;
+	TY_STATUS eStatus = GetExposureTime(iPortNr, iExposureTime);
+	if (TY_OK == eStatus){
+		CString cstrExposureTime;
+		cstrExposureTime.Format(L"%d", iExposureTime);
+		((CEdit *)GetDlgItem(IDC_EDIT_ExposureTime))->SetWindowTextW(cstrExposureTime);
+	}
+	else{
+		MessageBox(L"获取相机曝光时间失败");
+	}
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboGain()
+{
+	int iPortNr = m_comboBox_Gain.GetCurSel();
+	unsigned int iGain = 0;
+	TY_STATUS eStatus = GetGain(iPortNr, iGain);
+	if (TY_OK == eStatus){
+		CString cstrGain;
+		cstrGain.Format(L"%d", iGain);
+		((CEdit *)GetDlgItem(IDC_EDIT_Gain))->SetWindowTextW(cstrGain);
+	}
+	else{
+		MessageBox(L"获取相机增益失败");
+	}
+}
+
+TY_STATUS CSISO_APC_GbEDlg::SetCollectMode(COLLECT_MODE eCollectMode)
+{
 	if(	m_eCollectMode != eCollectMode)
 	{
 		m_eCollectMode = eCollectMode;
@@ -1664,70 +1809,230 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 			Fg_setParameterWithType(fg2, Device1_Process1_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
 		}
 	}
+	return TY_OK;
 }
 
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
+TY_STATUS CSISO_APC_GbEDlg::SetJpegQuality(unsigned int iQuality)
 {
-	// TODO: 在此添加控件通知处理程序代码
-	if (!fg && !fg1 && !fg2)
-		return;
+	if(iQuality < 1 || iQuality > 100)
+		return TY_ERROR;
+	
+	JPEGQuality = iQuality;
+	return TY_OK;
+}
 
-	int iStatus = -1, iReturn;
-	switch(m_comboBoxConnectStatus.GetCurSel())
-	{
-	case 0:
-		if(fg)
-			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_A);
-		break;
-	case 1:
-		if(fg)
-			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_B);
-		break;
-	case 2: 
-		if(fg1)
-			iReturn = Fg_getParameter(fg1,FG_CAMSTATUS,&iStatus, PORT_A);
-		break;
-	case 3: 
-		if(fg1)
-			iReturn = Fg_getParameter(fg1,FG_CAMSTATUS,&iStatus, PORT_B);
-		break;
-	case 4: 
-		if(fg2)
-			iReturn = Fg_getParameter(fg2,FG_CAMSTATUS,&iStatus, PORT_A);
-		break;
-	case 5:
-		if(fg2)
-			iReturn = Fg_getParameter(fg2,FG_CAMSTATUS,&iStatus, PORT_B);
-		break;
-	default:;
-	};
+TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(char* cSaveDir)
+{
+	if(!cSaveDir)
+		return TY_ERROR;
 
-	switch (iStatus)
+	memset(m_cDirPrefix, 0, sizeof(m_cDirPrefix));
+	strcpy_s(m_cDirPrefix, cSaveDir);
+	//创建存储的目录。
+	if(m_cDirPrefix[strlen(m_cDirPrefix) -1] != '\\')
+		strcat(m_cDirPrefix, "\\");
+	CString cDir(m_cDirPrefix), cDir1, cDir2, cDir3, cDir4, cDir5, cDir6;
+	cDir1.Format(L"%s%d\\", cDir, m_iStartIndex);
+	cDir2.Format(L"%s%d\\", cDir, m_iStartIndex + 1);
+	cDir3.Format(L"%s%d\\", cDir, m_iStartIndex + 2);
+	cDir4.Format(L"%s%d\\", cDir, m_iStartIndex + 3);
+	cDir5.Format(L"%s%d\\", cDir, m_iStartIndex + 4);
+	cDir6.Format(L"%s%d\\", cDir, m_iStartIndex + 5);
+	CreateNDir(cDir1);
+	CreateNDir(cDir2);
+	CreateNDir(cDir3);
+	CreateNDir(cDir4);
+	CreateNDir(cDir5);
+	CreateNDir(cDir6);
+	return TY_OK;
+}
+	
+TY_STATUS CSISO_APC_GbEDlg::SetPreviewMode(PREVIEW_MODE eMode)
+{
+	if (PREVIEW_OPEN == eMode){
+		ShowImage =true;
+	} 
+	else{
+		ShowImage =false;
+	}
+	return TY_OK;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::BeginCollect()
+{
+	writeToFile = true;
+	return TY_OK;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::StopCollect()
+{
+	writeToFile = false;
+	return TY_OK;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::GetGain(unsigned int iIndexCamera, unsigned int &iGain)
+{
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
+	void *hSer = NULL;  // reference to serial port
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
+		//CString cstrMsg;
+		//cstrMsg.Format(L"不能打开相机%d", iPortNr);
+		//MessageBox(cstrMsg);
+		return TY_ERROR;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		//MessageBox(L"无法设置波特率");
+		return TY_ERROR;
+	}
+
+	char line[256]= "FGA?";
+	TY_STATUS eStatus = TY_ERROR;
+	
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	int error = clSerialWrite(hSer, line, &len, 500);
+
+	len = 256;
+	error = clSerialRead(hSer, line, &len, 256);
+	if(error == CL_ERR_NO_ERR)
 	{
-	case 0:
-		m_stc_ConnectStatus.SetWindowTextW(L"Unconnected");
-		break;
-	case 1:
-		m_stc_ConnectStatus.SetWindowTextW(L"Connected");
-		break;
-	case -1:
-	default:
-		m_stc_ConnectStatus.SetWindowTextW(L"Uninitialized");
-		break;
+		CString cst(line);
+		iGain = _tstoi(cst.Mid(4, len-6).GetString());
+		eStatus = TY_OK;
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
+	return eStatus;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::SetGain(unsigned int iIndexCamera, unsigned int iGain)
+{
+	if(iGain < 100 || iGain > 1600) {
+		return TY_ERROR;
+	}
+
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
+
+	void *hSer = NULL;  // reference to serial port
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
+		return TY_ERROR;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		//MessageBox(L"无法设置波特率");
+		return TY_ERROR;
+	}
+
+	char line[256]= {0};
+	sprintf(line, "FGA=%d", iGain);
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	
+	int error = clSerialWrite(hSer, line, &len, 500);
+	TY_STATUS eStatus = TY_ERROR;
+	if (CL_ERR_NO_ERR == error ) {
+		eStatus = TY_OK;
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
+	return eStatus;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::GetExposureTime(unsigned int iIndexCamera, unsigned int &iExposureTime)
+{
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
+	
+	void *hSer = NULL;  // reference to serial port
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
+		return TY_ERROR;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		return TY_ERROR;
+	}
+
+	char line[256]= "PE?";
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+	
+	int error = clSerialWrite(hSer, line, &len, 500);
+
+	len = 256;
+	error = clSerialRead(hSer, line, &len, 256);
+	
+	TY_STATUS eStatus = TY_ERROR;
+	if(error == CL_ERR_NO_ERR)
+	{
+		CString cst(line);
+		iExposureTime = _tstoi(cst.Mid(3, len-5).GetString());
+		eStatus = TY_OK;
 	}
 	
+	// clean up the serial port reference
+	clSerialClose(hSer);
+	return eStatus;
 }
 
-
-void CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency()
+TY_STATUS CSISO_APC_GbEDlg::SetExposureTime(unsigned int iIndexCamera, unsigned int iExposureTime)
 {
-	// TODO: 在此添加控件通知处理程序代码
-	int iCollectFrequency = GetDlgItemInt(IDC_EDITCollectFrequency);
-	if (!fg && !fg1 && !fg2)
-		return;
+	if(iExposureTime < 10 || iExposureTime > 8000000) {
+		return TY_ERROR;
+	}
 
-	if (iCollectFrequency == m_iCollectFrequency || iCollectFrequency < 1 || iCollectFrequency > 47)
-		return;
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
+	
+	void *hSer = NULL;  // reference to serial port
+	int iRet = CL_ERR_NO_ERR;
+	// initialize serial port
+	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
+		return TY_ERROR;
+	}
+
+	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
+    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
+		return TY_ERROR;
+	}
+
+	char line[256]= {0};
+	sprintf(line, "PE=%d", iExposureTime);
+	unsigned int len = strlen(line);
+	line[len] = 10;
+	len = strlen(line);
+
+	TY_STATUS eStatus = TY_ERROR;
+	int error = clSerialWrite(hSer, line, &len, 500);
+	if (CL_ERR_NO_ERR == error) {
+		eStatus = TY_OK;
+	}
+	// clean up the serial port reference
+	clSerialClose(hSer);
+	return eStatus;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::SetCollectFrequency(unsigned int iCollectFrequency)
+{
+	if (!fg && !fg1 && !fg2)
+		return TY_ERROR;
+
+	if (iCollectFrequency < 1 || iCollectFrequency > 47)
+		return TY_ERROR;
 
 	m_iCollectFrequency = iCollectFrequency;
 	uint64_t Trigger_Generator_Period_Period = 1000000000/(8*m_iCollectFrequency);
@@ -1755,170 +2060,5 @@ void CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency()
 		int Device1_Process1_Trigger_Generator_Period_Period_Id = Fg_getParameterIdByName(fg2, "Device1_Process1_Trigger_Generator_Period_Period");
 		Fg_setParameterWithType(fg2, Device1_Process1_Trigger_Generator_Period_Period_Id, Trigger_Generator_Period_Period, 0);
 	}
-}
-
-
-void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime()
-{
-	unsigned int iExposureTime = GetDlgItemInt(IDC_EDIT_ExposureTime);
-	if(iExposureTime < 10 || iExposureTime > 8000000) {
-		MessageBox(L"相机曝光必须介于10~8000000之间");
-		return;
-	}
-
-	void *hSer = NULL;  // reference to serial port
-	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
-		CString cstrMsg;
-		cstrMsg.Format(L"不能打开相机%d", iPortNr);
-		MessageBox(cstrMsg);
-		return;
-	}
-
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		MessageBox(L"无法设置波特率");
-		return;
-	}
-
-	char line[256]= {0};
-	sprintf(line, "PE=%d", iExposureTime);
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-	int error = clSerialWrite(hSer, line, &len, 500);
-	if (error < 0) {
-		MessageBox(L"设置相机曝光没有成功");
-	}
-	// clean up the serial port reference
-	clSerialClose(hSer);
-}
-
-
-void CSISO_APC_GbEDlg::OnBnClickedButtonGain()
-{
-	unsigned int iGain = GetDlgItemInt(IDC_EDIT_Gain);
-	if(iGain < 100 || iGain > 1600) {
-		MessageBox(L"相机增益必须介于100~1600之间");
-		return;
-	}
-
-	void *hSer = NULL;  // reference to serial port
-	int iPortNr = m_comboBox_Gain.GetCurSel();
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
-		CString cstrMsg;
-		cstrMsg.Format(L"不能打开相机%d", iPortNr);
-		MessageBox(cstrMsg);
-		return;
-	}
-
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		MessageBox(L"无法设置波特率");
-		return;
-	}
-
-	char line[256]= {0};
-	sprintf(line, "FGA=%d", iGain);
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-	int error = clSerialWrite(hSer, line, &len, 500);
-	if (error < 0) {
-		MessageBox(L"设置相机增益没有成功");
-	}
-	// clean up the serial port reference
-	clSerialClose(hSer);
-}
-
-
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime()
-{
-	void *hSer = NULL;  // reference to serial port
-	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
-		CString cstrMsg;
-		cstrMsg.Format(L"不能打开相机%d", iPortNr);
-		MessageBox(cstrMsg);
-		return;
-	}
-
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		MessageBox(L"无法设置波特率");
-		return;
-	}
-
-	char line[256]= "PE?";
-	//sprintf(line, "PE=%d", iExposureTime);
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-	int error = clSerialWrite(hSer, line, &len, 500);
-	if (error < 0) {
-		MessageBox(L"获取相机曝光时间没有成功");
-	}
-	len = 256;
-	error = clSerialRead(hSer, line, &len, 256);
-	if(error == CL_ERR_NO_ERR)
-	{
-		CString cst(line);
-		//unsigned int iExposureTime = _tstoi(cst.Right(len-3).GetString());
-		((CEdit *)GetDlgItem(IDC_EDIT_ExposureTime))->SetWindowTextW(cst.Mid(3, len-5));
-	}
-	else{
-		MessageBox(L"获取相机曝光时间没有成功");
-	}
-	// clean up the serial port reference
-	clSerialClose(hSer);
-}
-
-
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboGain()
-{
-	void *hSer = NULL;  // reference to serial port
-	int iPortNr = m_comboBox_Gain.GetCurSel();
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iPortNr, &hSer)) != CL_ERR_NO_ERR){
-		CString cstrMsg;
-		cstrMsg.Format(L"不能打开相机%d", iPortNr);
-		MessageBox(cstrMsg);
-		return;
-	}
-
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		MessageBox(L"无法设置波特率");
-		return;
-	}
-
-	char line[256]= "FGA?";
-	//sprintf(line, "PE=%d", iExposureTime);
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-	int error = clSerialWrite(hSer, line, &len, 500);
-	if (error < 0) {
-		MessageBox(L"获取相机增益没有成功");
-	}
-	len = 256;
-	error = clSerialRead(hSer, line, &len, 256);
-	if(error == CL_ERR_NO_ERR)
-	{
-		CString cst(line);
-		//unsigned int iExposureTime = _tstoi(cst.Right(len-3).GetString());
-		((CEdit *)GetDlgItem(IDC_EDIT_Gain))->SetWindowTextW(cst.Mid(4, len-6));
-	}
-	else{
-		MessageBox(L"获取相机增益没有成功");
-	}
-	// clean up the serial port reference
-	clSerialClose(hSer);
+	return TY_OK;
 }

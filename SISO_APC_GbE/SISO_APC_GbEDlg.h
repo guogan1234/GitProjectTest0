@@ -33,6 +33,8 @@ struct fg_apc_data {
 	dma_mem *mem;
 //	int displayid;
 };
+enum TY_STATUS {TY_ERROR =-1, TY_OK = 0};
+
 
 // CSISO_APC_GbEDlg 对话框
 class CSISO_APC_GbEDlg : public CDialogEx
@@ -101,6 +103,8 @@ public:
 	
 	//采集模式的变量
 	enum COLLECT_MODE {MODE_TRIGGER, MODE_TIMER, MODE_NONE};
+
+	enum PREVIEW_MODE {PREVIEW_OPEN, PREVIEW_CLOSE};
 	COLLECT_MODE m_eCollectMode;
 	CComboBox m_comboBoxCollectMode;
 
@@ -108,19 +112,41 @@ public:
 	unsigned int m_iCollectFrequency;
 	
 	//连接状态的变量
-	CComboBox m_comboBoxConnectStatus;
-	CStatic m_stc_ConnectStatus;
+	//CComboBox m_comboBoxConnectStatus;
+	//CStatic m_stc_ConnectStatus;
 
 	//相机曝光时间
 	CComboBox m_comboBox_ExposureTime;
-	//CEdit m_stc_ExposureTime;
 
 	//相机增益
 	CComboBox m_comboBox_Gain;
-	//CEdit m_stc_Gain;
+
+	//以下接口需要被实现
+	TY_STATUS SetCollectMode(COLLECT_MODE eMode);
+	COLLECT_MODE GetCollectMode(){return m_eCollectMode;}
+
+	TY_STATUS SetJpegQuality(unsigned int iQuality);
+	unsigned int GetJpegQuality(){return JPEGQuality;}
+
+	TY_STATUS SetSaveDir(char* cSaveDir);
+	
+	TY_STATUS SetPreviewMode(PREVIEW_MODE);
+
+	TY_STATUS BeginCollect();
+	TY_STATUS StopCollect();
+
+	TY_STATUS GetGain(unsigned int iIndexCamera, unsigned int &iGain);
+	TY_STATUS SetGain(unsigned int iIndexCamera, unsigned int iGain);
+
+	TY_STATUS GetExposureTime(unsigned int iIndexCamera, unsigned int &iExposureTime);
+	TY_STATUS SetExposureTime(unsigned int iIndexCamera, unsigned int iExposureTime);
+
+	unsigned int GetCollectFrequency(){return m_iCollectFrequency;}
+	TY_STATUS SetCollectFrequency(unsigned int iCollectFrequency);
 
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
@@ -135,9 +161,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedBtnLoad();
+	void OnBnClickedBtnLoad();
 	void OnBnClickedGrab();
-	afx_msg void OnBnClickedStop();
+	void OnBnClickedStop();
 	afx_msg void OnBnClickedSavejpeg();
 	afx_msg void OnClickedActivequality();
 	//afx_msg void OnClickedExit();
