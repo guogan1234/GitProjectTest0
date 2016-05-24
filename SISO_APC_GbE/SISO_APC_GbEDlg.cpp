@@ -146,7 +146,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	unsigned long* iPtrJPEG = (unsigned long*)Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile,m_pthis->width,m_pthis->height,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay,&jpe0);
+	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile,m_pthis->width,m_pthis->height,m_pthis->writeToFile,m_pthis->m_bPreview[0],IDC_ImgDisplay,&jpe0);
 	//////////////////////////////
 	/*********用于统计进回调的次数和进出回调的时间*************/
 	if (m_pthis->writeToFile)
@@ -186,7 +186,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width1,m_pthis->height1,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay1,&jpe1);
+	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width1,m_pthis->height1,m_pthis->writeToFile,m_pthis->m_bPreview[1],IDC_ImgDisplay1,&jpe1);
 
 	//Calculate fps
 	m_pthis->statusJPEG1 = picNr;
@@ -235,7 +235,7 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width2,m_pthis->height2,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay2,&jpe2);
+	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width2,m_pthis->height2,m_pthis->writeToFile,m_pthis->m_bPreview[2],IDC_ImgDisplay2,&jpe2);
 
 	//Calculate fps
 	m_pthis->statusJPEG2 = picNr;
@@ -269,7 +269,7 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width3,m_pthis->height3,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay3,&jpe3);
+	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width3,m_pthis->height3,m_pthis->writeToFile,m_pthis->m_bPreview[3],IDC_ImgDisplay3,&jpe3);
 
 	//Calculate fps
 	m_pthis->statusJPEG3 = picNr;
@@ -303,7 +303,7 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width4,m_pthis->height4,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay4,&jpe4);
+	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width4,m_pthis->height4,m_pthis->writeToFile,m_pthis->m_bPreview[4],IDC_ImgDisplay4,&jpe4);
 
 	//Calculate fps
 	m_pthis->statusJPEG4 = picNr;
@@ -337,7 +337,7 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 	//*****************Get TansferLen of the current DMA channel***************//
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width5,m_pthis->height5,m_pthis->writeToFile,m_pthis->ShowImage,IDC_ImgDisplay5,&jpe5);
+	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width5,m_pthis->height5,m_pthis->writeToFile,m_pthis->m_bPreview[5],IDC_ImgDisplay5,&jpe5);
 
 	//Calculate fps
 	m_pthis->statusJPEG5 = picNr;
@@ -423,7 +423,6 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, m_pBmpInfo(NULL)
 	, JPEGQuality(70)
 	, writeToFile(false)
-	, ShowImage(false)
 	, fileWriteCount(0), fileWriteCount1(0)
 	, m_CpState(0)
 	, fps(0), fps1(0), fps2(0), fps3(0), fps4(0), fps5(0)
@@ -441,7 +440,7 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SaveJpeg, M_SaveJpeg);
-	DDX_Control(pDX, IDC_ShowImg, M_ShowImg);
+	DDX_Control(pDX, IDC_ShowImg, m_buttonPreview);
 	DDX_Text(pDX, IDC_JpegQuality, M_JpegQuality);
 	DDX_Control(pDX, IDC_Fps, m_stc_fps);
 	DDX_Control(pDX, IDC_Fps1, m_stc_fps1);
@@ -455,7 +454,7 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_ExposureTime, m_comboBox_ExposureTime);
 	//DDX_Control(pDX, IDC_EDIT_ExposureTime, m_stc_ExposureTime);
 	DDX_Control(pDX, IDC_COMBO_Gain, m_comboBox_Gain);
-	//DDX_Control(pDX, IDC_EDIT_Gain, m_stc_Gain);
+	DDX_Control(pDX, IDC_COMBO_Preview, m_comboBoxPreview);
 }
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
@@ -479,6 +478,7 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_Gain, &CSISO_APC_GbEDlg::OnBnClickedButtonGain)
 	ON_CBN_SELCHANGE(IDC_COMBO_ExposureTime, &CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime)
 	ON_CBN_SELCHANGE(IDC_COMBO_Gain, &CSISO_APC_GbEDlg::OnCbnSelchangeComboGain)
+	ON_CBN_SELCHANGE(IDC_COMBO_Preview, &CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview)
 END_MESSAGE_MAP()
 
 
@@ -517,8 +517,6 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	//M_SaveJpeg.SetCheck(BST_CHECKED);
 
-	M_ShowImg.SetCheck(BST_CHECKED);
-
 	//读取配置文件，
 	m_cstrIni = L"c:\\TYTunnelTestVehicle.ini";
 	char cDirPrefix[256] = {0};
@@ -536,6 +534,9 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	// DMA list for All Cards 
 	DmaIndex[0] = 0;
 	DmaIndex[1] = 1;
+
+	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = true;
+	m_buttonPreview.SetCheck(BST_CHECKED);
 
 	/*********Initialize for JPEG*************/ 
 	create_dc_table(dc_data,dc_len);
@@ -662,6 +663,14 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_comboBox_Gain.InsertString(4, L"相机 4");
 	m_comboBox_Gain.InsertString(5, L"相机 5");
 	m_comboBox_Gain.SetCurSel(0);
+
+	m_comboBoxPreview.InsertString(0, L"相机 0");
+	m_comboBoxPreview.InsertString(1, L"相机 1");
+	m_comboBoxPreview.InsertString(2, L"相机 2");
+	m_comboBoxPreview.InsertString(3, L"相机 3");
+	m_comboBoxPreview.InsertString(4, L"相机 4");
+	m_comboBoxPreview.InsertString(5, L"相机 5");
+	m_comboBoxPreview.SetCurSel(0);
 
 	UpdateData(false);
 	OnBnClickedBtnLoad();
@@ -1012,14 +1021,14 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 		writeToFile =true;
 	}
 
-	if (M_ShowImg.GetCheck())
-	{
-		ShowImage =true;
-	} 
-	else
-	{
-		ShowImage =false;
-	}
+	//if (M_ShowImg.GetCheck())
+	//{
+	//	ShowImage =true;
+	//} 
+	//else
+	//{
+	//	ShowImage =false;
+	//}
 	if(fg){
 		if ((Fg_AcquireEx(m_pthis->fg, m_pthis->DmaIndex[0], GRAB_INFINITE, ACQ_STANDARD,m_pthis-> pMem0)) < 0) 
 		{
@@ -1550,15 +1559,13 @@ void CSISO_APC_GbEDlg::OnClickedActivequality()
 
 void CSISO_APC_GbEDlg::OnClickedShowimg()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	//Is_show = M_ShowImg.GetCheck();
-	if (M_ShowImg.GetCheck())
-	{
-		ShowImage =true;
+	int iCameraIndex = m_comboBoxPreview.GetCurSel();
+
+	if (m_buttonPreview.GetCheck())	{
+		m_bPreview[iCameraIndex] = true;
 	} 
-	else
-	{
-		ShowImage =false;
+	else {
+		m_bPreview[iCameraIndex] = false;
 	}
 
 }
@@ -1612,6 +1619,16 @@ void CSISO_APC_GbEDlg::OnClose()
 	if(m_CpState == 1)
 		OnBnClickedStop();
 	CDialogEx::OnClose();
+}
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview()
+{
+	int iCameraIndex = m_comboBoxPreview.GetCurSel();
+
+	if(m_bPreview[iCameraIndex])
+		m_buttonPreview.SetCheck(BST_CHECKED);
+	else
+		m_buttonPreview.SetCheck(BST_UNCHECKED);
 }
 
 void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
@@ -1787,10 +1804,24 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectMode(COLLECT_MODE eCollectMode)
 		if(fg != NULL)
 		{
 			int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
-			Fg_setParameterWithType(fg, Device1_Process0_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
+			if (Device1_Process0_Trigger_TriggerMode_Select_Id < 0){
+				fprintf(stderr, "Error in Fg_getParameterIdByName(Device1_Process0_Trigger_TriggerMode_Select): %s (%d)\n", Fg_getLastErrorDescription(fg), Device1_Process0_Trigger_TriggerMode_Select_Id);
+			}
+
+			int rc = Fg_setParameterWithType(fg, Device1_Process0_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
+			if(rc < 0) {
+				fprintf(stderr, "Error in Fg_setParameterWithType(Device1_Process0_Trigger_TriggerMode_Select_Id): %s (%d)\n", Fg_getLastErrorDescription(fg), rc);
+			}
 
 			int Device1_Process1_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Trigger_TriggerMode_Select");
-			Fg_setParameterWithType(fg, Device1_Process1_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
+			if (Device1_Process1_Trigger_TriggerMode_Select_Id < 0){
+				fprintf(stderr, "Error in Fg_getParameterIdByName(Device1_Process1_Trigger_TriggerMode_Select): %s (%d)\n", Fg_getLastErrorDescription(fg), Device1_Process1_Trigger_TriggerMode_Select_Id);
+			}
+			
+			rc = Fg_setParameterWithType(fg, Device1_Process1_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
+			if(rc < 0) {
+				fprintf(stderr, "Error in Fg_setParameterWithType(Device1_Process1_Trigger_TriggerMode_Select_Id): %s (%d)\n", Fg_getLastErrorDescription(fg), rc);
+			}
 		}
 		if(fg1 != NULL)
 		{
@@ -1847,13 +1878,30 @@ TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(char* cSaveDir)
 	return TY_OK;
 }
 	
-TY_STATUS CSISO_APC_GbEDlg::SetPreviewMode(PREVIEW_MODE eMode)
+TY_STATUS CSISO_APC_GbEDlg::SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE eMode)
 {
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
+	
 	if (PREVIEW_OPEN == eMode){
-		ShowImage =true;
+		m_bPreview[iIndexCamera] = true;
 	} 
 	else{
-		ShowImage =false;
+		m_bPreview[iIndexCamera] = false;
+	}
+	return TY_OK;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE &eMode)
+{
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
+
+	if (true == m_bPreview[iIndexCamera]){
+		eMode = PREVIEW_OPEN;
+	} 
+	else{
+		eMode = PREVIEW_CLOSE;
 	}
 	return TY_OK;
 }
@@ -1944,6 +1992,9 @@ TY_STATUS CSISO_APC_GbEDlg::SetGain(unsigned int iIndexCamera, unsigned int iGai
 	if (CL_ERR_NO_ERR == error ) {
 		eStatus = TY_OK;
 	}
+	
+	len = 256;
+	error = clSerialRead(hSer, line, &len, 256);
 	// clean up the serial port reference
 	clSerialClose(hSer);
 	return eStatus;
@@ -2062,3 +2113,5 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectFrequency(unsigned int iCollectFrequency)
 	}
 	return TY_OK;
 }
+
+

@@ -69,7 +69,7 @@ public:
 	char       m_chBmpBuf[4096];  ///< BIMTAPINFO 存储缓冲区，m_pBmpInfo即指向此缓冲区
 	int JPEGQuality;
 	bool writeToFile;
-	bool ShowImage;
+	
 	unsigned int fileWriteCount;
 	unsigned int fileWriteCount1;
 	int		m_CpState;
@@ -97,7 +97,7 @@ public:
 	int   m_iStartIndex;     //摄像头的起始序列号。
 
 	CButton M_SaveJpeg;
-	CButton M_ShowImg;
+	
 	CString M_JpegQuality;
 	CStatic m_stc_fps, m_stc_fps1, m_stc_fps2, m_stc_fps3, m_stc_fps4, m_stc_fps5;
 	
@@ -121,6 +121,11 @@ public:
 	//相机增益
 	CComboBox m_comboBox_Gain;
 
+	//预览
+	bool m_bPreview[6];
+	CButton m_buttonPreview;
+	CComboBox m_comboBoxPreview;
+
 	//以下接口需要被实现
 	TY_STATUS SetCollectMode(COLLECT_MODE eMode);
 	COLLECT_MODE GetCollectMode(){return m_eCollectMode;}
@@ -130,7 +135,8 @@ public:
 
 	TY_STATUS SetSaveDir(char* cSaveDir);
 	
-	TY_STATUS SetPreviewMode(PREVIEW_MODE);
+	TY_STATUS SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE eMode);
+	TY_STATUS GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE &eMode);
 
 	TY_STATUS BeginCollect();
 	TY_STATUS StopCollect();
@@ -178,4 +184,5 @@ public:
 	afx_msg void OnBnClickedButtonGain();
 	afx_msg void OnCbnSelchangeComboExposuretime();
 	afx_msg void OnCbnSelchangeComboGain();
+	afx_msg void OnCbnSelchangeComboPreview();
 };
