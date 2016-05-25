@@ -65,34 +65,9 @@ const unsigned char QTableStd[64] =
 	72,  92,  95,  98, 112, 100, 103,  99
 }; 
 /********JPEG Header files*********/
-//JPEGEncoder jpe; //appends the jpeg header and writes JPEG files to HDD
 JPEGEncoder jpe0, jpe1, jpe2, jpe3, jpe4, jpe5;
-//for jpe0
-unsigned long dc_data[256],dc_len[256];
-unsigned long ac_data[256],ac_len[256];
-
-//for jpe1
-unsigned long dc_data1[256],dc_len1[256];
-unsigned long ac_data1[256],ac_len1[256];
-
-//for jpe2
-unsigned long dc_data2[256],dc_len2[256];
-unsigned long ac_data2[256],ac_len2[256];
-
-//for jpe3
-unsigned long dc_data3[256],dc_len3[256];
-unsigned long ac_data3[256],ac_len3[256];
-
-//for jpe4
-unsigned long dc_data4[256],dc_len4[256];
-unsigned long ac_data4[256],ac_len4[256];
-
-//for jpe5
-unsigned long dc_data5[256],dc_len5[256];
-unsigned long ac_data5[256],ac_len5[256];
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -140,7 +115,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable( m_pthis->fg);
 	jpe0.SetQuantTable(m_pthis->QTable);	
 
-	sprintf(strFile,"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
+	sprintf_s(strFile,"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -180,7 +155,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable1( data->fg);
 	jpe1.SetQuantTable( m_pthis->QTable1);	
 
-	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -190,12 +165,6 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG1 = picNr;
-	//if (GetTickCount() > m_pthis->ticks1 + 1000)
-	//{
-	//	m_pthis->fps1 = 1000.0 * (m_pthis->statusJPEG1 - m_pthis->oldStatusJPEG1) / (GetTickCount() - m_pthis->ticks1);
-	//	m_pthis->oldStatusJPEG1 = m_pthis->statusJPEG1;
-	//	m_pthis->ticks1 = GetTickCount();
-	//}
 
 	//////////////////////////////
 	/*********用于统计进回调的次数和进出回调的时间*************/
@@ -229,7 +198,7 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable2( data->fg);
 	jpe2.SetQuantTable( m_pthis->QTable2);	
 
-	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -239,12 +208,7 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG2 = picNr;
-	//if (GetTickCount() > m_pthis->ticks2 + 1000)
-	//{
-	//	m_pthis->fps2 = 1000.0 * (m_pthis->statusJPEG2 - m_pthis->oldStatusJPEG2) / (GetTickCount() - m_pthis->ticks2);
-	//	m_pthis->oldStatusJPEG2 = m_pthis->statusJPEG2;
-	//	m_pthis->ticks2 = GetTickCount();
-	//}
+
 	return 0;
 }
 
@@ -263,7 +227,7 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable3( data->fg);
 	jpe3.SetQuantTable( m_pthis->QTable3);	
 
-	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -273,12 +237,7 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG3 = picNr;
-	//if (GetTickCount() > m_pthis->ticks3 + 1000)
-	//{
-	//	m_pthis->fps3 = 1000.0 * (m_pthis->statusJPEG3 - m_pthis->oldStatusJPEG3) / (GetTickCount() - m_pthis->ticks3);
-	//	m_pthis->oldStatusJPEG3 = m_pthis->statusJPEG3;
-	//	m_pthis->ticks3 = GetTickCount();
-	//}
+
 	return 0;
 }
 
@@ -297,7 +256,7 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable4( data->fg);
 	jpe4.SetQuantTable( m_pthis->QTable4);	
 
-	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -307,12 +266,7 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG4 = picNr;
-	//if (GetTickCount() > m_pthis->ticks4 + 1000)
-	//{
-	//	m_pthis->fps4 = 1000.0 * (m_pthis->statusJPEG4 - m_pthis->oldStatusJPEG4) / (GetTickCount() - m_pthis->ticks4);
-	//	m_pthis->oldStatusJPEG4 = m_pthis->statusJPEG4;
-	//	m_pthis->ticks4 = GetTickCount();
-	//}
+
 	return 0;
 }
 
@@ -331,7 +285,7 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable5( data->fg);
 	jpe5.SetQuantTable( m_pthis->QTable5);	
 
-	sprintf(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -341,12 +295,7 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG5 = picNr;
-	//if (GetTickCount() > m_pthis->ticks5 + 1000)
-	//{
-	//	m_pthis->fps5 = 1000.0 * (m_pthis->statusJPEG5 - m_pthis->oldStatusJPEG5) / (GetTickCount() - m_pthis->ticks5);
-	//	m_pthis->oldStatusJPEG5 = m_pthis->statusJPEG5;
-	//	m_pthis->ticks5 = GetTickCount();
-	//}
+
 	return 0;
 }
 
@@ -623,7 +572,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_DrawEvent5=CreateEvent(NULL,TRUE,TRUE,NULL);
 
 	//初始化采集模式
-	int iIndex;
+	//int iIndex;
 	m_comboBoxCollectMode.InsertString(0, L"触发模式");
 	m_comboBoxCollectMode.InsertString(1, L"连续模式");
 	m_comboBoxCollectMode.SetCurSel(0);
@@ -1212,7 +1161,7 @@ void CSISO_APC_GbEDlg::DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG
 	dmalenJPEG -= 4; //minus info word from data stream
 	if (lastWordNoOfBytesUsed != 0)
 		dmalenJPEG -= 4 - lastWordNoOfBytesUsed;
-	ptjpe->SetVLCBitstream((unsigned char*)iPtrJPEG,dmalenJPEG);
+	ptjpe->SetVLCBitstream((unsigned char*)iPtrJPEG,(unsigned long)dmalenJPEG);
 	ptjpe->EncodePic((unsigned char*)iPtrJPEG);
 
 	// ---------------------------------------------------------------------------
@@ -1861,7 +1810,7 @@ TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(char* cSaveDir)
 	strcpy_s(m_cDirPrefix, cSaveDir);
 	//创建存储的目录。
 	if(m_cDirPrefix[strlen(m_cDirPrefix) -1] != '\\')
-		strcat(m_cDirPrefix, "\\");
+		strcat_s(m_cDirPrefix, "\\");
 	CString cDir(m_cDirPrefix), cDir1, cDir2, cDir3, cDir4, cDir5, cDir6;
 	cDir1.Format(L"%s%d\\", cDir, m_iStartIndex);
 	cDir2.Format(L"%s%d\\", cDir, m_iStartIndex + 1);
@@ -1918,7 +1867,7 @@ TY_STATUS CSISO_APC_GbEDlg::StopCollect()
 	return TY_OK;
 }
 
-TY_STATUS CSISO_APC_GbEDlg::GetGain(unsigned int iIndexCamera, unsigned int &iGain)
+TY_STATUS CSISO_APC_GbEDlg::clSerialOperator(unsigned int iIndexCamera, char *line, char *cReturn)
 {
 	if(0 > iIndexCamera || iIndexCamera > 5)
 		return TY_ERROR;
@@ -1926,36 +1875,42 @@ TY_STATUS CSISO_APC_GbEDlg::GetGain(unsigned int iIndexCamera, unsigned int &iGa
 	int iRet = CL_ERR_NO_ERR;
 	// initialize serial port
 	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
-		//CString cstrMsg;
-		//cstrMsg.Format(L"不能打开相机%d", iPortNr);
-		//MessageBox(cstrMsg);
 		return TY_ERROR;
 	}
 
 	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
     if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		//MessageBox(L"无法设置波特率");
 		return TY_ERROR;
 	}
-
-	char line[256]= "FGA?";
+		
 	TY_STATUS eStatus = TY_ERROR;
 	
-	unsigned int len = strlen(line);
+	size_t len = strlen(line);
 	line[len] = 10;
 	len = strlen(line);
-	int error = clSerialWrite(hSer, line, &len, 500);
+	int error = clSerialWrite(hSer, line, (unsigned int*)&len, 500);
 
 	len = 256;
-	error = clSerialRead(hSer, line, &len, 256);
+	error = clSerialRead(hSer, cReturn, (unsigned int*)&len, 256);
 	if(error == CL_ERR_NO_ERR)
 	{
-		CString cst(line);
-		iGain = _tstoi(cst.Mid(4, len-6).GetString());
 		eStatus = TY_OK;
 	}
 	// clean up the serial port reference
 	clSerialClose(hSer);
+	return eStatus;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::GetGain(unsigned int iIndexCamera, unsigned int &iGain)
+{
+	char line[256]= "FGA?";
+	char cReturn[256] = {0};
+
+	TY_STATUS eStatus = clSerialOperator(iIndexCamera, line, cReturn);
+	if(TY_OK == eStatus) {
+		CString cst(cReturn);
+		iGain = _tstoi(cst.Mid(4, (int)strlen(cReturn)-6).GetString());
+	}
 	return eStatus;
 }
 
@@ -1965,78 +1920,29 @@ TY_STATUS CSISO_APC_GbEDlg::SetGain(unsigned int iIndexCamera, unsigned int iGai
 		return TY_ERROR;
 	}
 
-	if(0 > iIndexCamera || iIndexCamera > 5)
-		return TY_ERROR;
+	char line[256] = {0};
+	sprintf_s(line, "FGA=%d", iGain);
+	char cReturn[256] = {0};
 
-	void *hSer = NULL;  // reference to serial port
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
-		return TY_ERROR;
+	TY_STATUS eStatus = clSerialOperator(iIndexCamera, line, cReturn);
+	if(TY_OK == eStatus) {
+		CString cst(cReturn);
+		if(cst.Trim() != CString("COMPLETE"))
+			eStatus = TY_ERROR;
 	}
-
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		//MessageBox(L"无法设置波特率");
-		return TY_ERROR;
-	}
-
-	char line[256]= {0};
-	sprintf(line, "FGA=%d", iGain);
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-	
-	int error = clSerialWrite(hSer, line, &len, 500);
-	TY_STATUS eStatus = TY_ERROR;
-	if (CL_ERR_NO_ERR == error ) {
-		eStatus = TY_OK;
-	}
-	
-	len = 256;
-	error = clSerialRead(hSer, line, &len, 256);
-	// clean up the serial port reference
-	clSerialClose(hSer);
 	return eStatus;
 }
 
 TY_STATUS CSISO_APC_GbEDlg::GetExposureTime(unsigned int iIndexCamera, unsigned int &iExposureTime)
 {
-	if(0 > iIndexCamera || iIndexCamera > 5)
-		return TY_ERROR;
-	
-	void *hSer = NULL;  // reference to serial port
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
-		return TY_ERROR;
-	}
-
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		return TY_ERROR;
-	}
-
 	char line[256]= "PE?";
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-	
-	int error = clSerialWrite(hSer, line, &len, 500);
+	char cReturn[256] = {0};
 
-	len = 256;
-	error = clSerialRead(hSer, line, &len, 256);
-	
-	TY_STATUS eStatus = TY_ERROR;
-	if(error == CL_ERR_NO_ERR)
-	{
-		CString cst(line);
-		iExposureTime = _tstoi(cst.Mid(3, len-5).GetString());
-		eStatus = TY_OK;
+	TY_STATUS eStatus = clSerialOperator(iIndexCamera, line, cReturn);
+	if(TY_OK == eStatus) {
+		CString cst(cReturn);
+		iExposureTime = _tstoi(cst.Mid(3, (int)strlen(cReturn)-5).GetString());
 	}
-	
-	// clean up the serial port reference
-	clSerialClose(hSer);
 	return eStatus;
 }
 
@@ -2046,34 +1952,16 @@ TY_STATUS CSISO_APC_GbEDlg::SetExposureTime(unsigned int iIndexCamera, unsigned 
 		return TY_ERROR;
 	}
 
-	if(0 > iIndexCamera || iIndexCamera > 5)
-		return TY_ERROR;
-	
-	void *hSer = NULL;  // reference to serial port
-	int iRet = CL_ERR_NO_ERR;
-	// initialize serial port
-	if((iRet = clSerialInit(iIndexCamera, &hSer)) != CL_ERR_NO_ERR){
-		return TY_ERROR;
-	}
+	char line[256] = {0};
+	sprintf_s(line, "PE=%d", iExposureTime);
+	char cReturn[256] = {0};
 
-	unsigned int clSerBaudRate = CL_BAUDRATE_9600;	// baud rate of serial port, normally 9600
-    if((iRet = clSetBaudRate(hSer, clSerBaudRate)) != CL_ERR_NO_ERR) {
-		return TY_ERROR;
+	TY_STATUS eStatus = clSerialOperator(iIndexCamera, line, cReturn);
+	if(TY_OK == eStatus) {
+		CString cst(cReturn);
+		if(cst.Trim() != CString("COMPLETE"))
+			eStatus = TY_ERROR;
 	}
-
-	char line[256]= {0};
-	sprintf(line, "PE=%d", iExposureTime);
-	unsigned int len = strlen(line);
-	line[len] = 10;
-	len = strlen(line);
-
-	TY_STATUS eStatus = TY_ERROR;
-	int error = clSerialWrite(hSer, line, &len, 500);
-	if (CL_ERR_NO_ERR == error) {
-		eStatus = TY_OK;
-	}
-	// clean up the serial port reference
-	clSerialClose(hSer);
 	return eStatus;
 }
 

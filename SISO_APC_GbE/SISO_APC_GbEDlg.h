@@ -42,8 +42,30 @@ class CSISO_APC_GbEDlg : public CDialogEx
 // 构造
 public:
 	CSISO_APC_GbEDlg(CWnd* pParent = NULL);	// 标准构造函数
-	// APC  Data Struct
+	//for jpe0
+	unsigned long dc_data[256],dc_len[256];
+	unsigned long ac_data[256],ac_len[256];
 
+	//for jpe1
+	unsigned long dc_data1[256],dc_len1[256];
+	unsigned long ac_data1[256],ac_len1[256];
+
+	//for jpe2
+	unsigned long dc_data2[256],dc_len2[256];
+	unsigned long ac_data2[256],ac_len2[256];
+
+	//for jpe3
+	unsigned long dc_data3[256],dc_len3[256];
+	unsigned long ac_data3[256],ac_len3[256];
+
+	//for jpe4
+	unsigned long dc_data4[256],dc_len4[256];
+	unsigned long ac_data4[256],ac_len4[256];
+
+	//for jpe5
+	unsigned long dc_data5[256],dc_len5[256];
+	unsigned long ac_data5[256],ac_len5[256];
+	// APC  Data Struct
 	Fg_Struct *fg, *fg1, *fg2;
 	dma_mem *pMem0, *pMem1, *pMem2, *pMem3, *pMem4, *pMem5;
 	
@@ -53,8 +75,8 @@ public:
 	
 	int xOffset;
 	int yOffset;
-	LONG64 width, width1, width2, width3, width4, width5;
-	LONG64 height, height1, height2, height3, height4, height5;
+	unsigned int width, width1, width2, width3, width4, width5;
+	unsigned int height, height1, height2, height3, height4, height5;
 	
 	unsigned int ticks, ticks1, ticks2, ticks3, ticks4, ticks5;
 	unsigned int ticks_a, ticks_b,ticks_c,ticks_d;
@@ -89,8 +111,8 @@ public:
 	bool checkROIconsistency(int maxWidth, int maxHeight, int xOffset, int xLength, int yOffset, int YLength);
 	/*********Cacluate Fps************/
 	double fps, fps1, fps2, fps3, fps4, fps5;
-	int oldStatusJPEG, oldStatusJPEG1, oldStatusJPEG2, oldStatusJPEG3, oldStatusJPEG4, oldStatusJPEG5;
-	int statusJPEG, statusJPEG1, statusJPEG2, statusJPEG3, statusJPEG4, statusJPEG5;
+	uint64_t oldStatusJPEG, oldStatusJPEG1, oldStatusJPEG2, oldStatusJPEG3, oldStatusJPEG4, oldStatusJPEG5;
+	uint64_t statusJPEG, statusJPEG1, statusJPEG2, statusJPEG3, statusJPEG4, statusJPEG5;
 	
 	CString m_cstrIni;
 	char m_cDirPrefix[256]; //存储路径的前缀。
@@ -155,7 +177,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-
+	TY_STATUS clSerialOperator(unsigned int iIndexCamera, char *line, char *cReturn);
 // 实现
 protected:
 	HICON m_hIcon;

@@ -10,7 +10,6 @@
 #define new DEBUG_NEW
 #endif
 
-
 // CSISO_APC_GbEApp
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEApp, CWinApp)
@@ -39,6 +38,12 @@ CSISO_APC_GbEApp theApp;
 
 BOOL CSISO_APC_GbEApp::InitInstance()
 {
+	HANDLE hObject = CreateMutex(NULL,FALSE,L"TY_GLSDJCC"); 
+	if(GetLastError() == ERROR_ALREADY_EXISTS) { 
+		CloseHandle(hObject); 
+		AfxMessageBox(L"程序已经运行!"); 
+		return FALSE; 
+	}
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
 	//则需要 InitCommonControlsEx()。否则，将无法创建窗口。
