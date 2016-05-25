@@ -115,7 +115,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable( m_pthis->fg);
 	jpe0.SetQuantTable(m_pthis->QTable);	
 
-	sprintf_s(strFile,"%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
+	sprintf_s(strFile,"%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -155,7 +155,7 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable1( data->fg);
 	jpe1.SetQuantTable( m_pthis->QTable1);	
 
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -198,7 +198,7 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable2( data->fg);
 	jpe2.SetQuantTable( m_pthis->QTable2);	
 
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -227,7 +227,7 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable3( data->fg);
 	jpe3.SetQuantTable( m_pthis->QTable3);	
 
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -256,7 +256,7 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable4( data->fg);
 	jpe4.SetQuantTable( m_pthis->QTable4);	
 
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -285,7 +285,7 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->getQuantizationTable5( data->fg);
 	jpe5.SetQuantTable( m_pthis->QTable5);	
 
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%d_%d_%d_%d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -378,7 +378,7 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, oldStatusJPEG(0), oldStatusJPEG1(0), oldStatusJPEG2(0), oldStatusJPEG3(0), oldStatusJPEG4(0), oldStatusJPEG5(0)
 	, statusJPEG(0), statusJPEG1(0), statusJPEG2(0), statusJPEG3(0), statusJPEG4(0), statusJPEG5(0)
 	, m_iStartIndex(-1)
-	, m_eCollectMode(MODE_NONE)
+	, m_eCollectMode(MODE_TRIGGER)
 	, m_iCollectFrequency(40)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -577,12 +577,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_comboBoxCollectMode.InsertString(1, L"连续模式");
 	m_comboBoxCollectMode.SetCurSel(0);
 	
-	switch(m_comboBoxCollectMode.GetCurSel())
-	{
-	case 0: m_eCollectMode = MODE_TRIGGER;break;
-	case 1: m_eCollectMode = MODE_TIMER;break;
-	default: m_eCollectMode = MODE_NONE;break;
-	};
+	m_eCollectMode = (0 == m_comboBoxCollectMode.GetCurSel()) ? MODE_TRIGGER : MODE_TIMER;
 
 	CString cstrCollectFrequency;
 	cstrCollectFrequency.Format(L"%d", m_iCollectFrequency);
@@ -691,7 +686,6 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		fg1 = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Generator.mcf", 1);
 		fg2 = Fg_InitConfig("Go-5000m-PmCL_onlyJpeg_Generator.mcf", 2);
 		break;
-	case MODE_NONE:
 	default:
 		MessageBox(L"采集模式没有被设置。");
 		return;
@@ -1476,16 +1470,7 @@ bool CSISO_APC_GbEDlg::checkROIconsistency(int maxWidth, int maxHeight, int xOff
 void CSISO_APC_GbEDlg::OnBnClickedSavejpeg()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	//ichk= M_SaveJpeg.GetCheck();
-	
-	if (!M_SaveJpeg.GetCheck())
-	{
-		writeToFile =false;
-	} 
-	else
-	{
-		writeToFile =true;
-	}
+	writeToFile = M_SaveJpeg.GetCheck() ? true : false;
 }
 
 void CSISO_APC_GbEDlg::OnClickedActivequality()
@@ -1510,13 +1495,7 @@ void CSISO_APC_GbEDlg::OnClickedShowimg()
 {
 	int iCameraIndex = m_comboBoxPreview.GetCurSel();
 
-	if (m_buttonPreview.GetCheck())	{
-		m_bPreview[iCameraIndex] = true;
-	} 
-	else {
-		m_bPreview[iCameraIndex] = false;
-	}
-
+	m_bPreview[iCameraIndex] = m_buttonPreview.GetCheck() ? true : false;
 }
 
 void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
@@ -1585,12 +1564,7 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 	// TODO: 在此添加控件通知处理程序代码
 
 	COLLECT_MODE eCollectMode;
-	switch(m_comboBoxCollectMode.GetCurSel())
-	{
-	case 0: eCollectMode = MODE_TRIGGER;break;
-	case 1: eCollectMode = MODE_TIMER;break;
-	default: eCollectMode = MODE_NONE;break;
-	};
+	eCollectMode = (0 == m_comboBoxCollectMode.GetCurSel()) ? MODE_TRIGGER : MODE_TIMER;
 
 	SetCollectMode(eCollectMode);
 }
@@ -1739,16 +1713,7 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectMode(COLLECT_MODE eCollectMode)
 		m_eCollectMode = eCollectMode;
 
 		unsigned int Trigger_TriggerMode_Select;
-		switch(m_eCollectMode)
-		{
-		case MODE_TRIGGER: 
-			Trigger_TriggerMode_Select = 0;
-			break;
-		case MODE_TIMER: 
-			Trigger_TriggerMode_Select = 1;
-			break;
-		default:;
-		};
+		Trigger_TriggerMode_Select = (MODE_TRIGGER == m_eCollectMode) ? 0 : 1; 
 
 		if(fg != NULL)
 		{
@@ -1832,12 +1797,7 @@ TY_STATUS CSISO_APC_GbEDlg::SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MO
 	if(0 > iIndexCamera || iIndexCamera > 5)
 		return TY_ERROR;
 	
-	if (PREVIEW_OPEN == eMode){
-		m_bPreview[iIndexCamera] = true;
-	} 
-	else{
-		m_bPreview[iIndexCamera] = false;
-	}
+	m_bPreview[iIndexCamera] = (PREVIEW_OPEN == eMode) ? true : false;
 	return TY_OK;
 }
 
@@ -1846,12 +1806,7 @@ TY_STATUS CSISO_APC_GbEDlg::GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MO
 	if(0 > iIndexCamera || iIndexCamera > 5)
 		return TY_ERROR;
 
-	if (true == m_bPreview[iIndexCamera]){
-		eMode = PREVIEW_OPEN;
-	} 
-	else{
-		eMode = PREVIEW_CLOSE;
-	}
+	eMode = m_bPreview[iIndexCamera] ? PREVIEW_OPEN : PREVIEW_CLOSE;
 	return TY_OK;
 }
 

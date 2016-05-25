@@ -124,7 +124,7 @@ public:
 	CStatic m_stc_fps, m_stc_fps1, m_stc_fps2, m_stc_fps3, m_stc_fps4, m_stc_fps5;
 	
 	//采集模式的变量
-	enum COLLECT_MODE {MODE_TRIGGER, MODE_TIMER, MODE_NONE};
+	enum COLLECT_MODE {MODE_TRIGGER, MODE_TIMER};
 
 	enum PREVIEW_MODE {PREVIEW_OPEN, PREVIEW_CLOSE};
 	COLLECT_MODE m_eCollectMode;

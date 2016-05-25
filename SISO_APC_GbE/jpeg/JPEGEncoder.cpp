@@ -114,7 +114,10 @@ JPEGEncoder::~JPEGEncoder()
 
 void JPEGEncoder::InitOutputWriter(const char* FileName, bool fileAccessEnabled)
 {
-	if (Writer != NULL) delete(Writer);
+	if (Writer != NULL) {
+		delete(Writer);
+		Writer = NULL;
+	}
 	Writer = new JPEGWriter(fileAccessEnabled);
 	if (Writer == NULL)
 	{
