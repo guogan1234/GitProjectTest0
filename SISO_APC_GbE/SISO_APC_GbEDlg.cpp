@@ -111,9 +111,10 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->statusJPEG = picNr;
 
 	//For Jpeg 
-	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	m_pthis->getQuantizationTable( m_pthis->fg);
-	jpe0.SetQuantTable(m_pthis->QTable);	
+	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->getQuantizationTable( m_pthis->fg);
+	//jpe0.SetQuantTable(m_pthis->QTable);	
+
 
 	sprintf_s(strFile,"%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
@@ -124,18 +125,20 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile,m_pthis->width,m_pthis->height,m_pthis->writeToFile,m_pthis->m_bPreview[0],IDC_ImgDisplay,&jpe0);
 	//////////////////////////////
 	/*********用于统计进回调的次数和进出回调的时间*************/
-	if (m_pthis->writeToFile)
-	{
-		m_pthis->fileWriteCount++;
-	}
+	//if (m_pthis->writeToFile)
+	//{
+	//	m_pthis->m_iFileWriteCount[0]++;
+	//}
 	
-	if (m_pthis->fileWriteCount>100)
-	{
-		m_pthis->ticks_b= GetTickCount();
-		TRACE("ticks_b-ticks_a=%d\n",(m_pthis->ticks_b-m_pthis->ticks_a));
-		m_pthis->ticks_a = m_pthis->ticks_b;
-		m_pthis->fileWriteCount =0;
-	}
+	//if (m_pthis->m_iFileWriteCount[0]>100)
+	//{
+	m_pthis->m_iTickEnd[0] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[0] - m_pthis->m_iTickStart[0];
+	if ( itick >100 )
+		std::cout << "Camera 0: " << itick << " " << picNr << endl;
+	m_pthis->m_iTickStart[0] = m_pthis->m_iTickEnd[0];
+	//	m_pthis->m_iFileWriteCount[0] =0;
+	//}
 
 	return 0;
 }
@@ -151,9 +154,9 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
-	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	m_pthis->getQuantizationTable1( data->fg);
-	jpe1.SetQuantTable( m_pthis->QTable1);	
+	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->getQuantizationTable1( data->fg);
+	//jpe1.SetQuantTable( m_pthis->QTable1);	
 
 	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
@@ -166,20 +169,13 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 	//Calculate fps
 	m_pthis->statusJPEG1 = picNr;
 
-	//////////////////////////////
-	/*********用于统计进回调的次数和进出回调的时间*************/
-	if (m_pthis->writeToFile)
-	{
-		m_pthis->fileWriteCount1++;
-	}
-	
-	if (m_pthis->fileWriteCount1>100)
-	{
-		m_pthis->ticks_d= GetTickCount();
-		TRACE("ticks_d-ticks_c=%d\n",(m_pthis->ticks_d-m_pthis->ticks_c));
-		m_pthis->ticks_c = m_pthis->ticks_d;
-		m_pthis->fileWriteCount1 =0;
-	}
+#ifdef TY_LOG
+	m_pthis->m_iTickEnd[1] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[1] - m_pthis->m_iTickStart[1];
+	if ( itick >100 )
+		std::cout << "Camera 1: " << itick << " " << picNr << endl;
+	m_pthis->m_iTickStart[1] = m_pthis->m_iTickEnd[1];
+#endif	
 	return 0;
 }
 
@@ -194,9 +190,9 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
-	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	m_pthis->getQuantizationTable2( data->fg);
-	jpe2.SetQuantTable( m_pthis->QTable2);	
+	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->getQuantizationTable2( data->fg);
+	//jpe2.SetQuantTable( m_pthis->QTable2);	
 
 	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
@@ -208,7 +204,13 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG2 = picNr;
-
+#ifdef TY_LOG
+	m_pthis->m_iTickEnd[2] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[2] - m_pthis->m_iTickStart[2];
+	if ( itick >100 )
+		std::cout << "Camera 2: " << itick << " " << picNr << endl;
+	m_pthis->m_iTickStart[2] = m_pthis->m_iTickEnd[2];
+#endif
 	return 0;
 }
 
@@ -223,9 +225,9 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
-	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	m_pthis->getQuantizationTable3( data->fg);
-	jpe3.SetQuantTable( m_pthis->QTable3);	
+	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->getQuantizationTable3( data->fg);
+	//jpe3.SetQuantTable( m_pthis->QTable3);	
 
 	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
@@ -237,7 +239,13 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG3 = picNr;
-
+#ifdef TY_LOG
+	m_pthis->m_iTickEnd[3] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[3] - m_pthis->m_iTickStart[3];
+	if ( itick >100 )
+		std::cout << "Camera 3: " << itick << " " << picNr << endl;
+	m_pthis->m_iTickStart[3] = m_pthis->m_iTickEnd[3];
+#endif
 	return 0;
 }
 
@@ -252,9 +260,9 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
-	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	m_pthis->getQuantizationTable4( data->fg);
-	jpe4.SetQuantTable( m_pthis->QTable4);	
+	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->getQuantizationTable4( data->fg);
+	//jpe4.SetQuantTable( m_pthis->QTable4);	
 
 	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
@@ -266,7 +274,13 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG4 = picNr;
-
+#ifdef TY_LOG
+	m_pthis->m_iTickEnd[4] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[4] - m_pthis->m_iTickStart[4];
+	if ( itick >100 )
+		std::cout << "Camera 4: " << itick << " " << picNr << endl;
+	m_pthis->m_iTickStart[4] = m_pthis->m_iTickEnd[4];
+#endif
 	return 0;
 }
 
@@ -281,9 +295,9 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	/////For Jpeg 1
-	setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	m_pthis->getQuantizationTable5( data->fg);
-	jpe5.SetQuantTable( m_pthis->QTable5);	
+	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+	//m_pthis->getQuantizationTable5( data->fg);
+	//jpe5.SetQuantTable( m_pthis->QTable5);	
 
 	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
@@ -295,7 +309,13 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 
 	//Calculate fps
 	m_pthis->statusJPEG5 = picNr;
-
+#ifdef TY_LOG
+	m_pthis->m_iTickEnd[5] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[5] - m_pthis->m_iTickStart[5];
+	if ( itick >100 )
+		std::cout << "Camera 5: " << itick << " " << picNr << endl;
+	m_pthis->m_iTickStart[5] = m_pthis->m_iTickEnd[5];
+#endif
 	return 0;
 }
 
@@ -363,7 +383,6 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, width(0), width1(0), width2(0), width3(0), width4(0), width5(0)
 	, height(0), height1(0), height2(0), height3(0), height4(0), height5(0)
 	, ticks(0), ticks1(0), ticks2(0), ticks3(0), ticks4(0), ticks5(0)
-	, ticks_a(0), ticks_b(0), ticks_c(0), ticks_d(0)
 	, hThShow(NULL)
 	, m_PutEvent0(NULL), m_PutEvent1(NULL), m_PutEvent2(NULL), m_PutEvent3(NULL), m_PutEvent4(NULL), m_PutEvent5(NULL)
 	, m_DrawEvent0(NULL), m_DrawEvent1(NULL), m_DrawEvent2(NULL), m_DrawEvent3(NULL), m_DrawEvent4(NULL), m_DrawEvent5(NULL)
@@ -372,7 +391,7 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, m_pBmpInfo(NULL)
 	, JPEGQuality(70)
 	, writeToFile(false)
-	, fileWriteCount(0), fileWriteCount1(0)
+	//, fileWriteCount(0), fileWriteCount1(0)
 	, m_CpState(0)
 	, fps(0), fps1(0), fps2(0), fps3(0), fps4(0), fps5(0)
 	, oldStatusJPEG(0), oldStatusJPEG1(0), oldStatusJPEG2(0), oldStatusJPEG3(0), oldStatusJPEG4(0), oldStatusJPEG5(0)
@@ -484,8 +503,8 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	DmaIndex[0] = 0;
 	DmaIndex[1] = 1;
 
-	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = true;
-	m_buttonPreview.SetCheck(BST_CHECKED);
+	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = false;
+	m_buttonPreview.SetCheck(BST_UNCHECKED);
 
 	/*********Initialize for JPEG*************/ 
 	create_dc_table(dc_data,dc_len);
@@ -955,14 +974,14 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 void CSISO_APC_GbEDlg::OnBnClickedGrab()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (!M_SaveJpeg.GetCheck())
-	{
-		writeToFile =false;
-	} 
-	else
-	{
-		writeToFile =true;
-	}
+	//if (!M_SaveJpeg.GetCheck())
+	//{
+	//	writeToFile =false;
+	//} 
+	//else
+	//{
+	//	writeToFile =true;
+	//}
 
 	//if (M_ShowImg.GetCheck())
 	//{
@@ -1022,15 +1041,34 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 			return ;
 		}
 	}
-	
+	setJPEGQuality(fg,JPEGQuality);// transfer JPEG Quality to operator
+	getQuantizationTable( fg);
+	jpe0.SetQuantTable(QTable);
+
+	getQuantizationTable1( fg);
+	jpe1.SetQuantTable(QTable1);
+
+	setJPEGQuality(fg1,JPEGQuality);// transfer JPEG Quality to operator
+	getQuantizationTable2( fg1);
+	jpe2.SetQuantTable(QTable2);
+
+	getQuantizationTable3( fg1);
+	jpe3.SetQuantTable(QTable3);
+
+	setJPEGQuality(fg2,JPEGQuality);// transfer JPEG Quality to operator
+	getQuantizationTable4( fg2);
+	jpe4.SetQuantTable(QTable4);
+
+	getQuantizationTable5( fg2);
+	jpe5.SetQuantTable(QTable5);
 	////Create Thread
 	DWORD id;
 	m_CpState=1;
 	SetTimer(0,1000,NULL);//ID为0，定时间隔1000ms,相应函数Ontimer()
-	ticks_a=GetTickCount();
-	ticks = GetTickCount();
-	ticks2= GetTickCount();
-	ticks_c=GetTickCount();
+//	ticks_a=GetTickCount();
+//	ticks = GetTickCount();
+//	ticks2= GetTickCount();
+//	ticks_c=GetTickCount();
 
 	hThShow=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)thfuncshow,this,0,&id);
 
@@ -1340,16 +1378,16 @@ int CSISO_APC_GbEDlg::getQuantizationTable(Fg_Struct* fg)
 {
 	int Device1_Process0_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
-	printf("New QTable:");
+	//printf("New QTable:");
 	for (int i = 0; i < 64; i++)
 	{
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process0_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
 		QTable[i] = readQuantizationValue.value;
-		if (i % 8 == 0)
-			printf("\n");
-		printf("%d ", readQuantizationValue.value);
+		//if (i % 8 == 0)
+			//printf("\n");
+		//printf("%d ", readQuantizationValue.value);
 
 	}
 	return 0;
@@ -1359,16 +1397,16 @@ int CSISO_APC_GbEDlg::getQuantizationTable1(Fg_Struct* fg)
 {
 	int Device1_Process1_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
-	printf("New QTable:");
+	//printf("New QTable:");
 	for (int i = 0; i < 64; i++)
 	{
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process1_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
 		QTable1[i] = readQuantizationValue.value;
-		if (i % 8 == 0)
-			printf("\n");
-		printf("%d ", readQuantizationValue.value);
+		//if (i % 8 == 0)
+			//printf("\n");
+		//printf("%d ", readQuantizationValue.value);
 	}
 	return 0;
 }
@@ -1377,16 +1415,16 @@ int CSISO_APC_GbEDlg::getQuantizationTable2(Fg_Struct* fg)
 {
 	int Device1_Process0_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
-	printf("New QTable:");
+	//printf("New QTable:");
 	for (int i = 0; i < 64; i++)
 	{
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process0_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
 		QTable2[i] = readQuantizationValue.value;
-		if (i % 8 == 0)
-			printf("\n");
-		printf("%d ", readQuantizationValue.value);
+		//if (i % 8 == 0)
+		//	printf("\n");
+		//printf("%d ", readQuantizationValue.value);
 
 	}
 	return 0;
@@ -1396,16 +1434,16 @@ int CSISO_APC_GbEDlg::getQuantizationTable3(Fg_Struct* fg)
 {
 	int Device1_Process1_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
-	printf("New QTable:");
+	//printf("New QTable:");
 	for (int i = 0; i < 64; i++)
 	{
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process1_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
 		QTable3[i] = readQuantizationValue.value;
-		if (i % 8 == 0)
-			printf("\n");
-		printf("%d ", readQuantizationValue.value);
+		//if (i % 8 == 0)
+		//	printf("\n");
+		//printf("%d ", readQuantizationValue.value);
 	}
 	return 0;
 }
@@ -1414,16 +1452,16 @@ int CSISO_APC_GbEDlg::getQuantizationTable4(Fg_Struct* fg)
 {
 	int Device1_Process0_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
-	printf("New QTable:");
+	//printf("New QTable:");
 	for (int i = 0; i < 64; i++)
 	{
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process0_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
 		QTable4[i] = readQuantizationValue.value;
-		if (i % 8 == 0)
-			printf("\n");
-		printf("%d ", readQuantizationValue.value);
+		//if (i % 8 == 0)
+		//	printf("\n");
+		//printf("%d ", readQuantizationValue.value);
 
 	}
 	return 0;
@@ -1433,16 +1471,16 @@ int CSISO_APC_GbEDlg::getQuantizationTable5(Fg_Struct* fg)
 {
 	int Device1_Process1_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
-	printf("New QTable:");
+	//printf("New QTable:");
 	for (int i = 0; i < 64; i++)
 	{
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process1_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
 		QTable5[i] = readQuantizationValue.value;
-		if (i % 8 == 0)
-			printf("\n");
-		printf("%d ", readQuantizationValue.value);
+		//if (i % 8 == 0)
+		//	printf("\n");
+		//printf("%d ", readQuantizationValue.value);
 	}
 	return 0;
 }
@@ -1719,22 +1757,22 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectMode(COLLECT_MODE eCollectMode)
 		{
 			int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
 			if (Device1_Process0_Trigger_TriggerMode_Select_Id < 0){
-				fprintf(stderr, "Error in Fg_getParameterIdByName(Device1_Process0_Trigger_TriggerMode_Select): %s (%d)\n", Fg_getLastErrorDescription(fg), Device1_Process0_Trigger_TriggerMode_Select_Id);
+				cout << "Error in Fg_getParameterIdByName(Device1_Process0_Trigger_TriggerMode_Select) " << Fg_getLastErrorDescription(fg) << Device1_Process0_Trigger_TriggerMode_Select_Id << endl;
 			}
 
 			int rc = Fg_setParameterWithType(fg, Device1_Process0_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
 			if(rc < 0) {
-				fprintf(stderr, "Error in Fg_setParameterWithType(Device1_Process0_Trigger_TriggerMode_Select_Id): %s (%d)\n", Fg_getLastErrorDescription(fg), rc);
+				cout << "Error in Fg_setParameterWithType(Device1_Process0_Trigger_TriggerMode_Select_Id) " << Fg_getLastErrorDescription(fg) << rc << endl;
 			}
 
 			int Device1_Process1_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Trigger_TriggerMode_Select");
 			if (Device1_Process1_Trigger_TriggerMode_Select_Id < 0){
-				fprintf(stderr, "Error in Fg_getParameterIdByName(Device1_Process1_Trigger_TriggerMode_Select): %s (%d)\n", Fg_getLastErrorDescription(fg), Device1_Process1_Trigger_TriggerMode_Select_Id);
+				cout << "Error in Fg_getParameterIdByName(Device1_Process1_Trigger_TriggerMode_Select) " << Fg_getLastErrorDescription(fg) << Device1_Process1_Trigger_TriggerMode_Select_Id << endl;
 			}
 			
 			rc = Fg_setParameterWithType(fg, Device1_Process1_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
 			if(rc < 0) {
-				fprintf(stderr, "Error in Fg_setParameterWithType(Device1_Process1_Trigger_TriggerMode_Select_Id): %s (%d)\n", Fg_getLastErrorDescription(fg), rc);
+				cout << "Error in Fg_setParameterWithType(Device1_Process1_Trigger_TriggerMode_Select_Id) " << Fg_getLastErrorDescription(fg) << rc << endl;
 			}
 		}
 		if(fg1 != NULL)

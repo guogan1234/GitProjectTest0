@@ -79,7 +79,7 @@ public:
 	unsigned int height, height1, height2, height3, height4, height5;
 	
 	unsigned int ticks, ticks1, ticks2, ticks3, ticks4, ticks5;
-	unsigned int ticks_a, ticks_b,ticks_c,ticks_d;
+	unsigned m_iTickStart[6], m_iTickEnd[6];         //为了计算每100帧的耗费时间。
 
 	HANDLE	hThShow;
 	HANDLE m_PutEvent0, m_PutEvent1, m_PutEvent2, m_PutEvent3, m_PutEvent4, m_PutEvent5;
@@ -92,8 +92,8 @@ public:
 	int JPEGQuality;
 	bool writeToFile;
 	
-	unsigned int fileWriteCount;
-	unsigned int fileWriteCount1;
+	//unsigned m_iFileWriteCount[6];
+	//unsigned int fileWriteCount1;
 	int		m_CpState;
 
 	/***********QTable***********/
