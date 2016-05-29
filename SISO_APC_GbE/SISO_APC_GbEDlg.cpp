@@ -25,6 +25,10 @@
 #endif
 CSISO_APC_GbEDlg* m_pthis;
 
+#ifdef TY_LOG
+ofstream g_isLog("TriggerLog.txt");
+const unsigned BIG_TRIGGER = 100;
+#endif
 /**********创建一个指定的文件目录 fromPengxiao**************/
 BOOL CreateNDir(CString strDesPath) 
 { 
@@ -123,22 +127,16 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	unsigned long* iPtrJPEG = (unsigned long*)Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
 	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile,m_pthis->width,m_pthis->height,m_pthis->writeToFile,m_pthis->m_bPreview[0],IDC_ImgDisplay,&jpe0);
-	//////////////////////////////
-	/*********用于统计进回调的次数和进出回调的时间*************/
-	//if (m_pthis->writeToFile)
-	//{
-	//	m_pthis->m_iFileWriteCount[0]++;
-	//}
-	
-	//if (m_pthis->m_iFileWriteCount[0]>100)
-	//{
+
+#ifdef TY_LOG
 	m_pthis->m_iTickEnd[0] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[0] - m_pthis->m_iTickStart[0];
-	if ( itick >100 )
-		std::cout << "Camera 0: " << itick << " " << picNr << endl;
+	if ( itick >BIG_TRIGGER ){
+		wcout << "相机 0: " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 0: " << itick << "。图片序号： " << picNr << endl;
+	}
 	m_pthis->m_iTickStart[0] = m_pthis->m_iTickEnd[0];
-	//	m_pthis->m_iFileWriteCount[0] =0;
-	//}
+#endif
 
 	return 0;
 }
@@ -172,8 +170,10 @@ int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
 #ifdef TY_LOG
 	m_pthis->m_iTickEnd[1] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[1] - m_pthis->m_iTickStart[1];
-	if ( itick >100 )
-		std::cout << "Camera 1: " << itick << " " << picNr << endl;
+	if ( itick >BIG_TRIGGER ){
+		wcout << "相机 1: " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 1: " << itick << "。图片序号： " << picNr << endl;
+	}
 	m_pthis->m_iTickStart[1] = m_pthis->m_iTickEnd[1];
 #endif	
 	return 0;
@@ -207,8 +207,10 @@ int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
 #ifdef TY_LOG
 	m_pthis->m_iTickEnd[2] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[2] - m_pthis->m_iTickStart[2];
-	if ( itick >100 )
-		std::cout << "Camera 2: " << itick << " " << picNr << endl;
+	if ( itick >BIG_TRIGGER ){
+		wcout << "相机 2: " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 2: " << itick << "。图片序号： " << picNr << endl;
+	}
 	m_pthis->m_iTickStart[2] = m_pthis->m_iTickEnd[2];
 #endif
 	return 0;
@@ -242,8 +244,10 @@ int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
 #ifdef TY_LOG
 	m_pthis->m_iTickEnd[3] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[3] - m_pthis->m_iTickStart[3];
-	if ( itick >100 )
-		std::cout << "Camera 3: " << itick << " " << picNr << endl;
+	if ( itick > BIG_TRIGGER ){
+		wcout << "相机 3: " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 3: " << itick << "。图片序号： " << picNr << endl;
+	}
 	m_pthis->m_iTickStart[3] = m_pthis->m_iTickEnd[3];
 #endif
 	return 0;
@@ -277,8 +281,10 @@ int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
 #ifdef TY_LOG
 	m_pthis->m_iTickEnd[4] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[4] - m_pthis->m_iTickStart[4];
-	if ( itick >100 )
-		std::cout << "Camera 4: " << itick << " " << picNr << endl;
+	if ( itick >BIG_TRIGGER ){
+		wcout << "相机 4: " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 4: " << itick << "。图片序号： " << picNr << endl;
+	}
 	m_pthis->m_iTickStart[4] = m_pthis->m_iTickEnd[4];
 #endif
 	return 0;
@@ -312,8 +318,10 @@ int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
 #ifdef TY_LOG
 	m_pthis->m_iTickEnd[5] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[5] - m_pthis->m_iTickStart[5];
-	if ( itick >100 )
-		std::cout << "Camera 5: " << itick << " " << picNr << endl;
+	if ( itick >BIG_TRIGGER ){
+		wcout << "相机 5: " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 5: " << itick << "。图片序号： " << picNr << endl;
+	}
 	m_pthis->m_iTickStart[5] = m_pthis->m_iTickEnd[5];
 #endif
 	return 0;
@@ -390,7 +398,6 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, lengthJPEGfile0(0), lengthJPEGfile1(0), lengthJPEGfile2(0), lengthJPEGfile3(0), lengthJPEGfile4(0), lengthJPEGfile5(0)
 	, m_pBmpInfo(NULL)
 	, JPEGQuality(70)
-	, writeToFile(false)
 	//, fileWriteCount(0), fileWriteCount1(0)
 	, m_CpState(0)
 	, fps(0), fps1(0), fps2(0), fps3(0), fps4(0), fps5(0)
@@ -483,7 +490,8 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	//ShowWindow(SW_MAXIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
-	//M_SaveJpeg.SetCheck(BST_CHECKED);
+	M_SaveJpeg.SetCheck(BST_CHECKED);
+	writeToFile = true;
 
 	//读取配置文件，
 	m_cstrIni = L"c:\\TYTunnelTestVehicle.ini";
@@ -783,7 +791,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl.version = 0;
 		ctrl.data = &apcdata;
 		ctrl.func = ApcFunc;
-		ctrl.flags = FG_APC_DEFAULTS;
+		ctrl.flags = FG_APC_HIGH_PRIORITY;
 		ctrl.timeout = 10000;
 	
 		//For DMA1
@@ -794,7 +802,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl1.version = 0;
 		ctrl1.data = &apcdata1;
 		ctrl1.func = ApcFunc1;
-		ctrl1.flags = FG_APC_DEFAULTS;
+		ctrl1.flags = FG_APC_HIGH_PRIORITY;
 		ctrl1.timeout = 10000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[0], &ctrl, FG_APC_CONTROL_BASIC);
@@ -860,7 +868,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl2.version = 0;
 		ctrl2.data = &apcdata2;
 		ctrl2.func = ApcFunc2;
-		ctrl2.flags = FG_APC_DEFAULTS;
+		ctrl2.flags = FG_APC_HIGH_PRIORITY;
 		ctrl2.timeout = 10000;
 	
 		//For DMA1
@@ -871,7 +879,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl3.version = 0;
 		ctrl3.data = &apcdata3;
 		ctrl3.func = ApcFunc3;
-		ctrl3.flags = FG_APC_DEFAULTS;
+		ctrl3.flags = FG_APC_HIGH_PRIORITY;
 		ctrl3.timeout = 10000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg1, m_pthis->DmaIndex[0], &ctrl2, FG_APC_CONTROL_BASIC);
@@ -937,7 +945,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl4.version = 0;
 		ctrl4.data = &apcdata4;
 		ctrl4.func = ApcFunc4;
-		ctrl4.flags = FG_APC_DEFAULTS;
+		ctrl4.flags = FG_APC_HIGH_PRIORITY;
 		ctrl4.timeout = 10000;
 	
 		//For DMA1
@@ -948,7 +956,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl5.version = 0;
 		ctrl5.data = &apcdata5;
 		ctrl5.func = ApcFunc5;
-		ctrl5.flags = FG_APC_DEFAULTS;
+		ctrl5.flags = FG_APC_HIGH_PRIORITY;
 		ctrl5.timeout = 10000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg2, m_pthis->DmaIndex[0], &ctrl4, FG_APC_CONTROL_BASIC);
@@ -1584,6 +1592,7 @@ void CSISO_APC_GbEDlg::OnClose()
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if(m_CpState == 1)
 		OnBnClickedStop();
+
 	CDialogEx::OnClose();
 }
 
@@ -1901,8 +1910,8 @@ TY_STATUS CSISO_APC_GbEDlg::GetGain(unsigned int iIndexCamera, unsigned int &iGa
 
 	TY_STATUS eStatus = clSerialOperator(iIndexCamera, line, cReturn);
 	if(TY_OK == eStatus) {
-		CString cst(cReturn);
-		iGain = _tstoi(cst.Mid(4, (int)strlen(cReturn)-6).GetString());
+		string cst(cReturn, 4, (int)strlen(cReturn)-6);
+		iGain = stoi(cst);
 	}
 	return eStatus;
 }
