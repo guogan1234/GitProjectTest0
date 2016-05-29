@@ -424,7 +424,7 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_Fps4, m_stc_fps4);
 	DDX_Control(pDX, IDC_Fps5, m_stc_fps5);
 	DDX_Control(pDX, IDC_COMBOCollectMode, m_comboBoxCollectMode);
-	//DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
+	DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
 	//DDX_Control(pDX, IDC_STATICConnectStatus, m_stc_ConnectStatus);
 	DDX_Control(pDX, IDC_COMBO_ExposureTime, m_comboBox_ExposureTime);
 	//DDX_Control(pDX, IDC_EDIT_ExposureTime, m_stc_ExposureTime);
@@ -447,7 +447,7 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_CLOSE()
 	ON_CBN_SELCHANGE(IDC_COMBOCollectMode, &CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode)
-	//ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
+	ON_CBN_SELCHANGE(IDC_COMBOConnectStatus, &CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus)
 	ON_BN_CLICKED(IDC_BUTTONCollectFrequency, &CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency)
 	ON_BN_CLICKED(IDC_BUTTON_ExposureTime, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime)
 	ON_BN_CLICKED(IDC_BUTTON_Gain, &CSISO_APC_GbEDlg::OnBnClickedButtonGain)
@@ -511,8 +511,8 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	DmaIndex[0] = 0;
 	DmaIndex[1] = 1;
 
-	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = false;
-	m_buttonPreview.SetCheck(BST_UNCHECKED);
+	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = true;
+	m_buttonPreview.SetCheck(BST_CHECKED);
 
 	/*********Initialize for JPEG*************/ 
 	create_dc_table(dc_data,dc_len);
@@ -611,13 +611,13 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	((CEdit *)GetDlgItem(IDC_EDITCollectFrequency))->SetWindowTextW(cstrCollectFrequency);
 
 	//初始化连接状态
-	//m_comboBoxConnectStatus.InsertString(0, L"相机 0");
-	//m_comboBoxConnectStatus.InsertString(1, L"相机 1");
-	//m_comboBoxConnectStatus.InsertString(2, L"相机 2");
-	//m_comboBoxConnectStatus.InsertString(3, L"相机 3");
-	//m_comboBoxConnectStatus.InsertString(4, L"相机 4");
-	//m_comboBoxConnectStatus.InsertString(5, L"相机 5");
-	//m_comboBoxConnectStatus.SetCurSel(0);
+	m_comboBoxConnectStatus.InsertString(0, L"相机 0");
+	m_comboBoxConnectStatus.InsertString(1, L"相机 1");
+	m_comboBoxConnectStatus.InsertString(2, L"相机 2");
+	m_comboBoxConnectStatus.InsertString(3, L"相机 3");
+	m_comboBoxConnectStatus.InsertString(4, L"相机 4");
+	m_comboBoxConnectStatus.InsertString(5, L"相机 5");
+	m_comboBoxConnectStatus.SetCurSel(0);
 
 	m_comboBox_ExposureTime.InsertString(0, L"相机 0");
 	m_comboBox_ExposureTime.InsertString(1, L"相机 1");
@@ -792,7 +792,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl.data = &apcdata;
 		ctrl.func = ApcFunc;
 		ctrl.flags = FG_APC_HIGH_PRIORITY;
-		ctrl.timeout = 10000;
+		ctrl.timeout = 100000;
 	
 		//For DMA1
 		apcdata1.fg = m_pthis->fg;
@@ -803,7 +803,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl1.data = &apcdata1;
 		ctrl1.func = ApcFunc1;
 		ctrl1.flags = FG_APC_HIGH_PRIORITY;
-		ctrl1.timeout = 10000;
+		ctrl1.timeout = 100000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[0], &ctrl, FG_APC_CONTROL_BASIC);
 		if (status != FG_OK) {
@@ -869,7 +869,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl2.data = &apcdata2;
 		ctrl2.func = ApcFunc2;
 		ctrl2.flags = FG_APC_HIGH_PRIORITY;
-		ctrl2.timeout = 10000;
+		ctrl2.timeout = 100000;
 	
 		//For DMA1
 		apcdata3.fg = m_pthis->fg1;
@@ -880,7 +880,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl3.data = &apcdata3;
 		ctrl3.func = ApcFunc3;
 		ctrl3.flags = FG_APC_HIGH_PRIORITY;
-		ctrl3.timeout = 10000;
+		ctrl3.timeout = 100000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg1, m_pthis->DmaIndex[0], &ctrl2, FG_APC_CONTROL_BASIC);
 		if (status != FG_OK) {
@@ -946,7 +946,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl4.data = &apcdata4;
 		ctrl4.func = ApcFunc4;
 		ctrl4.flags = FG_APC_HIGH_PRIORITY;
-		ctrl4.timeout = 10000;
+		ctrl4.timeout = 100000;
 	
 		//For DMA1
 		apcdata5.fg = m_pthis->fg2;
@@ -957,7 +957,7 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		ctrl5.data = &apcdata5;
 		ctrl5.func = ApcFunc5;
 		ctrl5.flags = FG_APC_HIGH_PRIORITY;
-		ctrl5.timeout = 10000;
+		ctrl5.timeout = 100000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg2, m_pthis->DmaIndex[0], &ctrl4, FG_APC_CONTROL_BASIC);
 		if (status != FG_OK) {
@@ -1616,57 +1616,19 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 	SetCollectMode(eCollectMode);
 }
 
-//void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	if (!fg && !fg1 && !fg2)
-//		return;
-//
-//	int iStatus = -1, iReturn;
-//	switch(m_comboBoxConnectStatus.GetCurSel())
-//	{
-//	case 0:
-//		if(fg)
-//			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_A);
-//		break;
-//	case 1:
-//		if(fg)
-//			iReturn = Fg_getParameter(fg,FG_CAMSTATUS,&iStatus, PORT_B);
-//		break;
-//	case 2: 
-//		if(fg1)
-//			iReturn = Fg_getParameter(fg1,FG_CAMSTATUS,&iStatus, PORT_A);
-//		break;
-//	case 3: 
-//		if(fg1)
-//			iReturn = Fg_getParameter(fg1,FG_CAMSTATUS,&iStatus, PORT_B);
-//		break;
-//	case 4: 
-//		if(fg2)
-//			iReturn = Fg_getParameter(fg2,FG_CAMSTATUS,&iStatus, PORT_A);
-//		break;
-//	case 5:
-//		if(fg2)
-//			iReturn = Fg_getParameter(fg2,FG_CAMSTATUS,&iStatus, PORT_B);
-//		break;
-//	default:;
-//	};
-//
-//	switch (iStatus)
-//	{
-//	case 0:
-//		m_stc_ConnectStatus.SetWindowTextW(L"Unconnected");
-//		break;
-//	case 1:
-//		m_stc_ConnectStatus.SetWindowTextW(L"Connected");
-//		break;
-//	case -1:
-//	default:
-//		m_stc_ConnectStatus.SetWindowTextW(L"Uninitialized");
-//		break;
-//	}
-//	
-//}
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboconnectstatus()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (!fg && !fg1 && !fg2)
+		return;
+
+	bool bConnect;
+	GetConnectStatus(m_comboBoxConnectStatus.GetCurSel(), bConnect);
+	
+	wstring strStatus;
+	strStatus = (true == bConnect) ? L"已连接" : L"未连接";
+	GetDlgItem(IDC_STATICConnectStatus)->SetWindowTextW(strStatus.c_str());
+}
 
 
 void CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency()
@@ -2004,4 +1966,15 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectFrequency(unsigned int iCollectFrequency)
 	return TY_OK;
 }
 
+TY_STATUS CSISO_APC_GbEDlg::GetConnectStatus(unsigned iIndexCamera, bool &bConnect)
+{
+	if(0 > iIndexCamera || iIndexCamera > 5)
+		return TY_ERROR;
 
+	unsigned iGain;
+	TY_STATUS status;
+	status = GetGain(m_comboBoxConnectStatus.GetCurSel(), iGain);
+	bConnect = (TY_OK == status) ? true : false;
+
+	return TY_OK;
+}

@@ -134,8 +134,7 @@ public:
 	unsigned int m_iCollectFrequency;
 	
 	//连接状态的变量
-	//CComboBox m_comboBoxConnectStatus;
-	//CStatic m_stc_ConnectStatus;
+	CComboBox m_comboBoxConnectStatus;
 
 	//相机曝光时间
 	CComboBox m_comboBox_ExposureTime;
@@ -171,6 +170,8 @@ public:
 
 	unsigned int GetCollectFrequency(){return m_iCollectFrequency;}
 	TY_STATUS SetCollectFrequency(unsigned int iCollectFrequency);
+
+	TY_STATUS GetConnectStatus(unsigned iIndexCamera, bool &bConnect);
 
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
