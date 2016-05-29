@@ -397,7 +397,7 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, bufferJPEGfile0(NULL), bufferJPEGfile1(NULL), bufferJPEGfile2(NULL), bufferJPEGfile3(NULL), bufferJPEGfile4(NULL), bufferJPEGfile5(NULL)
 	, lengthJPEGfile0(0), lengthJPEGfile1(0), lengthJPEGfile2(0), lengthJPEGfile3(0), lengthJPEGfile4(0), lengthJPEGfile5(0)
 	, m_pBmpInfo(NULL)
-	, JPEGQuality(70)
+	, JPEGQuality(80)
 	//, fileWriteCount(0), fileWriteCount1(0)
 	, m_CpState(0)
 	, fps(0), fps1(0), fps2(0), fps3(0), fps4(0), fps5(0)
@@ -506,7 +506,7 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	SetSaveDir(cDirPrefix);
 
 	M_JpegQuality.Format(L"%d", JPEGQuality);
-
+	
 	// DMA list for All Cards 
 	DmaIndex[0] = 0;
 	DmaIndex[1] = 1;
