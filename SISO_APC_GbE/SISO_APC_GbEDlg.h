@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-
+#include <vector>
 //#include "board_and_dll_chooser.h"
 
 #include <fgrab_struct.h>
@@ -31,7 +31,8 @@ struct fg_apc_data {
 	Fg_Struct *fg;
 	unsigned int port;
 	dma_mem *mem;
-//	int displayid;
+	unsigned iIndex;
+	unsigned iDisplayId;
 };
 enum TY_STATUS {TY_ERROR =-1, TY_OK = 0};
 
@@ -42,6 +43,8 @@ class CSISO_APC_GbEDlg : public CDialogEx
 // 构造
 public:
 	CSISO_APC_GbEDlg(CWnd* pParent = NULL);	// 标准构造函数
+	
+	JPEGEncoder jpe[6];
 	//for jpe0
 	unsigned long dc_data[256],dc_len[256];
 	unsigned long ac_data[256],ac_len[256];
@@ -69,17 +72,17 @@ public:
 	Fg_Struct *fg, *fg1, *fg2;
 	dma_mem *pMem0, *pMem1, *pMem2, *pMem3, *pMem4, *pMem5;
 	
-	unsigned int DmaIndex[2];
+	vector<unsigned> DmaIndex;
 	struct fg_apc_data apcdata, apcdata1, apcdata2, apcdata3, apcdata4, apcdata5;
 	struct FgApcControl ctrl, ctrl1, ctrl2, ctrl3, ctrl4, ctrl5;
 	
 	int xOffset;
 	int yOffset;
-	unsigned int width, width1, width2, width3, width4, width5;
-	unsigned int height, height1, height2, height3, height4, height5;
+	vector<unsigned> width;
+	vector<unsigned> height;
 	
-	unsigned int ticks, ticks1, ticks2, ticks3, ticks4, ticks5;
-	unsigned m_iTickStart[6], m_iTickEnd[6];         //为了计算每100帧的耗费时间。
+	vector<unsigned> ticks;
+	vector<unsigned> m_iTickStart, m_iTickEnd;         //为了计算每100帧的耗费时间。
 
 	HANDLE	hThShow;
 	HANDLE m_PutEvent0, m_PutEvent1, m_PutEvent2, m_PutEvent3, m_PutEvent4, m_PutEvent5;
@@ -91,28 +94,19 @@ public:
 	char       m_chBmpBuf[4096];  ///< BIMTAPINFO 存储缓冲区，m_pBmpInfo即指向此缓冲区
 	int JPEGQuality;
 	bool writeToFile;
-	
-	//unsigned m_iFileWriteCount[6];
-	//unsigned int fileWriteCount1;
 	int		m_CpState;
 
 	/***********QTable***********/
 	unsigned char QTable[64], QTable1[64], QTable2[64], QTable3[64], QTable4[64], QTable5[64];
 	unsigned char calcQuantizationMatrixFromPercent(int p_percent);
-	int getQuantizationTable(Fg_Struct* fg);
-	int getQuantizationTable1(Fg_Struct* fg);
-	int getQuantizationTable2(Fg_Struct* fg);
-	int getQuantizationTable3(Fg_Struct* fg);
-	int getQuantizationTable4(Fg_Struct* fg);
-	int getQuantizationTable5(Fg_Struct* fg);
+	int getQuantizationTable(Fg_Struct* fg, const char *cMatrix_ID, unsigned char (*Qtable)[64]); 
 	void DealJPEG(LONG64 dmalenJPEG,void* iPtrJPEG,char* filename,int w,int h,bool bIsSave,bool bIsShow,int DrawItemID,void* pjpe);
 	void DecodeImg(unsigned char* bufferJPEGfile,int lengthJPEGfile,int itemID,int w,int h);
 	void DrawImage(int itemID,unsigned char* buf,int w,int h);
-	bool checkROIconsistency(int maxWidth, int maxHeight, int xOffset, int xLength, int yOffset, int YLength);
 	/*********Cacluate Fps************/
-	double fps, fps1, fps2, fps3, fps4, fps5;
-	uint64_t oldStatusJPEG, oldStatusJPEG1, oldStatusJPEG2, oldStatusJPEG3, oldStatusJPEG4, oldStatusJPEG5;
-	uint64_t statusJPEG, statusJPEG1, statusJPEG2, statusJPEG3, statusJPEG4, statusJPEG5;
+	vector<double> fps;
+	vector<uint64_t> oldStatusJPEG;
+	vector<uint64_t> statusJPEG;
 	
 	CString m_cstrIni;
 	char m_cDirPrefix[256]; //存储路径的前缀。
@@ -143,7 +137,7 @@ public:
 	CComboBox m_comboBox_Gain;
 
 	//预览
-	bool m_bPreview[6];
+	vector<bool> m_bPreview;
 	CButton m_buttonPreview;
 	CComboBox m_comboBoxPreview;
 

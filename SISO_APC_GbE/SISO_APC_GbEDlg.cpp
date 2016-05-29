@@ -69,7 +69,7 @@ const unsigned char QTableStd[64] =
 	72,  92,  95,  98, 112, 100, 103,  99
 }; 
 /********JPEG Header files*********/
-JPEGEncoder jpe0, jpe1, jpe2, jpe3, jpe4, jpe5;
+
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 class CAboutDlg : public CDialogEx
@@ -100,230 +100,36 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
-////////////////////////////////////////////////////////////////////////
-// Asynchronous procedure call
-// Callback function 
 int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 {
-	if(!data->fg)
-		return -1;
-	//Calculate fps
-	LONG64 dmalenJPEG = 0;
-	SYSTEMTIME st;
-	char strFile[255];
-	GetLocalTime(&st);
-	m_pthis->statusJPEG = picNr;
-
-	//For Jpeg 
-	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	//m_pthis->getQuantizationTable( m_pthis->fg);
-	//jpe0.SetQuantTable(m_pthis->QTable);	
-
-
-	sprintf_s(strFile,"%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex, "\\Cam",m_pthis->m_iStartIndex, 
-		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
-
-	//*****************Get TansferLen of the current DMA channel***************//
-	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
-	unsigned long* iPtrJPEG = (unsigned long*)Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG,iPtrJPEG,strFile,m_pthis->width,m_pthis->height,m_pthis->writeToFile,m_pthis->m_bPreview[0],IDC_ImgDisplay,&jpe0);
-
-#ifdef TY_LOG
-	m_pthis->m_iTickEnd[0] = GetTickCount();
-	unsigned itick =m_pthis->m_iTickEnd[0] - m_pthis->m_iTickStart[0];
-	if ( itick >BIG_TRIGGER ){
-		wcout << "相机 0: " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 0: " << itick << "。图片序号： " << picNr << endl;
-	}
-	m_pthis->m_iTickStart[0] = m_pthis->m_iTickEnd[0];
-#endif
-
-	return 0;
-}
-
-int ApcFunc1(frameindex_t picNr, struct fg_apc_data *data)
-{
 	if(data->fg == NULL)
 		return -1;
 
-	LONG64 dmalenJPEG = 0;
 	SYSTEMTIME st;
-	char strFile[255];
 	GetLocalTime(&st);
 
-	/////For Jpeg 1
-	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	//m_pthis->getQuantizationTable1( data->fg);
-	//jpe1.SetQuantTable( m_pthis->QTable1);	
-
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +1, "\\Cam",m_pthis->m_iStartIndex +1, 
+	char strFile[255];
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + data->iIndex, "\\Cam",m_pthis->m_iStartIndex + data->iIndex, 
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
+	LONG64 dmalenJPEG = 0;
 	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
 	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width1,m_pthis->height1,m_pthis->writeToFile,m_pthis->m_bPreview[1],IDC_ImgDisplay1,&jpe1);
+	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width[data->iIndex],m_pthis->height[data->iIndex],m_pthis->writeToFile,m_pthis->m_bPreview[data->iIndex],data->iDisplayId,&m_pthis->jpe[data->iIndex]);
 
 	//Calculate fps
-	m_pthis->statusJPEG1 = picNr;
+	m_pthis->statusJPEG[data->iIndex] = picNr;
 
 #ifdef TY_LOG
-	m_pthis->m_iTickEnd[1] = GetTickCount();
-	unsigned itick =m_pthis->m_iTickEnd[1] - m_pthis->m_iTickStart[1];
+	m_pthis->m_iTickEnd[data->iIndex] = GetTickCount();
+	unsigned itick =m_pthis->m_iTickEnd[data->iIndex] - m_pthis->m_iTickStart[data->iIndex];
 	if ( itick >BIG_TRIGGER ){
-		wcout << "相机 1: " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 1: " << itick << "。图片序号： " << picNr << endl;
+		  wcout << "相机 " << data->iIndex << ": " << itick << "。图片序号： " << picNr << endl;
+		g_isLog << "相机 " << data->iIndex << ": " << itick << "。图片序号： " << picNr << endl;
 	}
-	m_pthis->m_iTickStart[1] = m_pthis->m_iTickEnd[1];
+	m_pthis->m_iTickStart[data->iIndex] = m_pthis->m_iTickEnd[data->iIndex];
 #endif	
-	return 0;
-}
-
-int ApcFunc2(frameindex_t picNr, struct fg_apc_data *data)
-{
-	if(data->fg == NULL)
-		return -1;
-
-	LONG64 dmalenJPEG = 0;
-	SYSTEMTIME st;
-	char strFile[255];
-	GetLocalTime(&st);
-
-	/////For Jpeg 1
-	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	//m_pthis->getQuantizationTable2( data->fg);
-	//jpe2.SetQuantTable( m_pthis->QTable2);	
-
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex +2, "\\Cam",m_pthis->m_iStartIndex +2, 
-		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
-
-	//*****************Get TansferLen of the current DMA channel***************//
-	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
-	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width2,m_pthis->height2,m_pthis->writeToFile,m_pthis->m_bPreview[2],IDC_ImgDisplay2,&jpe2);
-
-	//Calculate fps
-	m_pthis->statusJPEG2 = picNr;
-#ifdef TY_LOG
-	m_pthis->m_iTickEnd[2] = GetTickCount();
-	unsigned itick =m_pthis->m_iTickEnd[2] - m_pthis->m_iTickStart[2];
-	if ( itick >BIG_TRIGGER ){
-		wcout << "相机 2: " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 2: " << itick << "。图片序号： " << picNr << endl;
-	}
-	m_pthis->m_iTickStart[2] = m_pthis->m_iTickEnd[2];
-#endif
-	return 0;
-}
-
-int ApcFunc3(frameindex_t picNr, struct fg_apc_data *data)
-{
-	if(data->fg == NULL)
-		return -1;
-
-	LONG64 dmalenJPEG = 0;
-	SYSTEMTIME st;
-	char strFile[255];
-	GetLocalTime(&st);
-
-	/////For Jpeg 1
-	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	//m_pthis->getQuantizationTable3( data->fg);
-	//jpe3.SetQuantTable( m_pthis->QTable3);	
-
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 3, "\\Cam",m_pthis->m_iStartIndex + 3, 
-		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
-
-	//*****************Get TansferLen of the current DMA channel***************//
-	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
-	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width3,m_pthis->height3,m_pthis->writeToFile,m_pthis->m_bPreview[3],IDC_ImgDisplay3,&jpe3);
-
-	//Calculate fps
-	m_pthis->statusJPEG3 = picNr;
-#ifdef TY_LOG
-	m_pthis->m_iTickEnd[3] = GetTickCount();
-	unsigned itick =m_pthis->m_iTickEnd[3] - m_pthis->m_iTickStart[3];
-	if ( itick > BIG_TRIGGER ){
-		wcout << "相机 3: " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 3: " << itick << "。图片序号： " << picNr << endl;
-	}
-	m_pthis->m_iTickStart[3] = m_pthis->m_iTickEnd[3];
-#endif
-	return 0;
-}
-
-int ApcFunc4(frameindex_t picNr, struct fg_apc_data *data)
-{
-	if(data->fg == NULL)
-		return -1;
-
-	LONG64 dmalenJPEG = 0;
-	SYSTEMTIME st;
-	char strFile[255];
-	GetLocalTime(&st);
-
-	/////For Jpeg 1
-	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	//m_pthis->getQuantizationTable4( data->fg);
-	//jpe4.SetQuantTable( m_pthis->QTable4);	
-
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 4, "\\Cam",m_pthis->m_iStartIndex + 4, 
-		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
-
-	//*****************Get TansferLen of the current DMA channel***************//
-	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
-	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width4,m_pthis->height4,m_pthis->writeToFile,m_pthis->m_bPreview[4],IDC_ImgDisplay4,&jpe4);
-
-	//Calculate fps
-	m_pthis->statusJPEG4 = picNr;
-#ifdef TY_LOG
-	m_pthis->m_iTickEnd[4] = GetTickCount();
-	unsigned itick =m_pthis->m_iTickEnd[4] - m_pthis->m_iTickStart[4];
-	if ( itick >BIG_TRIGGER ){
-		wcout << "相机 4: " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 4: " << itick << "。图片序号： " << picNr << endl;
-	}
-	m_pthis->m_iTickStart[4] = m_pthis->m_iTickEnd[4];
-#endif
-	return 0;
-}
-
-int ApcFunc5(frameindex_t picNr, struct fg_apc_data *data)
-{
-	if(data->fg == NULL)
-		return -1;
-
-	LONG64 dmalenJPEG = 0;
-	SYSTEMTIME st;
-	char strFile[255];
-	GetLocalTime(&st);
-
-	/////For Jpeg 1
-	//setJPEGQuality(data->fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-	//m_pthis->getQuantizationTable5( data->fg);
-	//jpe5.SetQuantTable( m_pthis->QTable5);	
-
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + 5, "\\Cam",m_pthis->m_iStartIndex + 5, 
-		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
-
-	//*****************Get TansferLen of the current DMA channel***************//
-	Fg_getParameterEx(data->fg,FG_TRANSFER_LEN,&dmalenJPEG,data->port,data->mem,picNr); 
-	void* iPtrJPEG = Fg_getImagePtrEx(data->fg, picNr, data->port, data->mem);//Get the Pointer of the Jpeg files
-	m_pthis->DealJPEG(dmalenJPEG, iPtrJPEG,strFile,m_pthis->width5,m_pthis->height5,m_pthis->writeToFile,m_pthis->m_bPreview[5],IDC_ImgDisplay5,&jpe5);
-
-	//Calculate fps
-	m_pthis->statusJPEG5 = picNr;
-#ifdef TY_LOG
-	m_pthis->m_iTickEnd[5] = GetTickCount();
-	unsigned itick =m_pthis->m_iTickEnd[5] - m_pthis->m_iTickStart[5];
-	if ( itick >BIG_TRIGGER ){
-		wcout << "相机 5: " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 5: " << itick << "。图片序号： " << picNr << endl;
-	}
-	m_pthis->m_iTickStart[5] = m_pthis->m_iTickEnd[5];
-#endif
 	return 0;
 }
 
@@ -336,14 +142,14 @@ DWORD WINAPI thfuncshow(LPVOID param)
 			if(WaitForSingleObject(m_pthis->m_PutEvent0,10)==WAIT_OBJECT_0)//等待Jpeg存储并缓冲完毕
 			{
 				ResetEvent(m_pthis->m_PutEvent0);//存储置零
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile0,m_pthis->lengthJPEGfile0,IDC_ImgDisplay,m_pthis->width,m_pthis->height);//图像显示
+				m_pthis->DecodeImg(m_pthis->bufferJPEGfile0,m_pthis->lengthJPEGfile0,IDC_ImgDisplay,m_pthis->width[0],m_pthis->height[0]);//图像显示
 				SetEvent(m_pthis->m_DrawEvent0);//显示之后将显示线程置零
 			}
 
 			if(WaitForSingleObject(m_pthis->m_PutEvent1,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent1);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile1,m_pthis->lengthJPEGfile1,IDC_ImgDisplay1,m_pthis->width1,m_pthis->height1);
+				m_pthis->DecodeImg(m_pthis->bufferJPEGfile1,m_pthis->lengthJPEGfile1,IDC_ImgDisplay1,m_pthis->width[1],m_pthis->height[1]);
 				SetEvent(m_pthis->m_DrawEvent1);
 			}
 		}
@@ -351,13 +157,13 @@ DWORD WINAPI thfuncshow(LPVOID param)
 			if(WaitForSingleObject(m_pthis->m_PutEvent2,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent2);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile2,m_pthis->lengthJPEGfile2,IDC_ImgDisplay2,m_pthis->width2,m_pthis->height2);
+				m_pthis->DecodeImg(m_pthis->bufferJPEGfile2,m_pthis->lengthJPEGfile2,IDC_ImgDisplay2,m_pthis->width[2],m_pthis->height[2]);
 				SetEvent(m_pthis->m_DrawEvent2);
 			}
 			if(WaitForSingleObject(m_pthis->m_PutEvent3,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent3);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile3,m_pthis->lengthJPEGfile3,IDC_ImgDisplay3,m_pthis->width3,m_pthis->height3);
+				m_pthis->DecodeImg(m_pthis->bufferJPEGfile3,m_pthis->lengthJPEGfile3,IDC_ImgDisplay3,m_pthis->width[3],m_pthis->height[3]);
 				SetEvent(m_pthis->m_DrawEvent3);
 			}
 		}
@@ -365,13 +171,13 @@ DWORD WINAPI thfuncshow(LPVOID param)
 			if(WaitForSingleObject(m_pthis->m_PutEvent4,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent4);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile4,m_pthis->lengthJPEGfile4,IDC_ImgDisplay4,m_pthis->width4, m_pthis->height4);
+				m_pthis->DecodeImg(m_pthis->bufferJPEGfile4,m_pthis->lengthJPEGfile4,IDC_ImgDisplay4,m_pthis->width[4], m_pthis->height[4]);
 				SetEvent(m_pthis->m_DrawEvent4);
 			}
 			if(WaitForSingleObject(m_pthis->m_PutEvent5,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent5);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile5, m_pthis->lengthJPEGfile5,IDC_ImgDisplay5,m_pthis->width5,m_pthis->height5);
+				m_pthis->DecodeImg(m_pthis->bufferJPEGfile5, m_pthis->lengthJPEGfile5,IDC_ImgDisplay5,m_pthis->width[5],m_pthis->height[5]);
 				SetEvent(m_pthis->m_DrawEvent5);
 			}
 		}
@@ -388,21 +194,20 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, fg(NULL), fg1(NULL), fg2(NULL) 
 	, pMem0(NULL), pMem1(NULL), pMem2(NULL), pMem3(NULL), pMem4(NULL), pMem5(NULL)
 	, xOffset(0), yOffset(0)
-	, width(0), width1(0), width2(0), width3(0), width4(0), width5(0)
-	, height(0), height1(0), height2(0), height3(0), height4(0), height5(0)
-	, ticks(0), ticks1(0), ticks2(0), ticks3(0), ticks4(0), ticks5(0)
+	, width(6, 0), height(6, 0), ticks(6, 0), m_iTickStart(6, 0), m_iTickEnd(6, 0)
 	, hThShow(NULL)
 	, m_PutEvent0(NULL), m_PutEvent1(NULL), m_PutEvent2(NULL), m_PutEvent3(NULL), m_PutEvent4(NULL), m_PutEvent5(NULL)
 	, m_DrawEvent0(NULL), m_DrawEvent1(NULL), m_DrawEvent2(NULL), m_DrawEvent3(NULL), m_DrawEvent4(NULL), m_DrawEvent5(NULL)
 	, bufferJPEGfile0(NULL), bufferJPEGfile1(NULL), bufferJPEGfile2(NULL), bufferJPEGfile3(NULL), bufferJPEGfile4(NULL), bufferJPEGfile5(NULL)
 	, lengthJPEGfile0(0), lengthJPEGfile1(0), lengthJPEGfile2(0), lengthJPEGfile3(0), lengthJPEGfile4(0), lengthJPEGfile5(0)
 	, m_pBmpInfo(NULL)
-	, JPEGQuality(80)
-	//, fileWriteCount(0), fileWriteCount1(0)
+	, JPEGQuality(75)
 	, m_CpState(0)
-	, fps(0), fps1(0), fps2(0), fps3(0), fps4(0), fps5(0)
-	, oldStatusJPEG(0), oldStatusJPEG1(0), oldStatusJPEG2(0), oldStatusJPEG3(0), oldStatusJPEG4(0), oldStatusJPEG5(0)
-	, statusJPEG(0), statusJPEG1(0), statusJPEG2(0), statusJPEG3(0), statusJPEG4(0), statusJPEG5(0)
+	, DmaIndex(2, 0)
+	, m_bPreview(6, true)
+	, fps(6, 0)
+	, statusJPEG(6, 0)
+	, oldStatusJPEG(6, 0)
 	, m_iStartIndex(-1)
 	, m_eCollectMode(MODE_TRIGGER)
 	, m_iCollectFrequency(40)
@@ -516,34 +321,34 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	/*********Initialize for JPEG*************/ 
 	create_dc_table(dc_data,dc_len);
-	jpe0.SetDCHuffTable(dc_data,dc_len);
+	jpe[0].SetDCHuffTable(dc_data,dc_len);
 	create_ac_table(ac_data,ac_len);
-	jpe0.SetACHuffTable(ac_data,ac_len);
+	jpe[0].SetACHuffTable(ac_data,ac_len);
 
 	create_dc_table(dc_data1,dc_len1);
-	jpe1.SetDCHuffTable(dc_data1,dc_len1);
+	jpe[1].SetDCHuffTable(dc_data1,dc_len1);
 	create_ac_table(ac_data1,ac_len1);
-	jpe1.SetACHuffTable(ac_data1,ac_len1);
+	jpe[1].SetACHuffTable(ac_data1,ac_len1);
 
 	create_dc_table(dc_data2,dc_len2);
-	jpe2.SetDCHuffTable(dc_data2,dc_len2);
+	jpe[2].SetDCHuffTable(dc_data2,dc_len2);
 	create_ac_table(ac_data2,ac_len2);
-	jpe2.SetACHuffTable(ac_data2,ac_len2);
+	jpe[2].SetACHuffTable(ac_data2,ac_len2);
 
 	create_dc_table(dc_data3,dc_len3);
-	jpe3.SetDCHuffTable(dc_data3,dc_len3);
+	jpe[3].SetDCHuffTable(dc_data3,dc_len3);
 	create_ac_table(ac_data3,ac_len3);
-	jpe3.SetACHuffTable(ac_data3,ac_len3);
+	jpe[3].SetACHuffTable(ac_data3,ac_len3);
 
 	create_dc_table(dc_data4,dc_len4);
-	jpe4.SetDCHuffTable(dc_data4,dc_len4);
+	jpe[4].SetDCHuffTable(dc_data4,dc_len4);
 	create_ac_table(ac_data4,ac_len4);
-	jpe4.SetACHuffTable(ac_data4,ac_len4);
+	jpe[4].SetACHuffTable(ac_data4,ac_len4);
 
 	create_dc_table(dc_data5,dc_len5);
-	jpe5.SetDCHuffTable(dc_data5,dc_len5);
+	jpe[5].SetDCHuffTable(dc_data5,dc_len5);
 	create_ac_table(ac_data5,ac_len5);
-	jpe5.SetACHuffTable(ac_data5,ac_len5);
+	jpe[5].SetACHuffTable(ac_data5,ac_len5);
 
 	njInit(); //nanoJPEG decoder Initialization
 
@@ -554,9 +359,9 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	//	初始化BITMAPINFO 结构，此结构在保存bmp文件、显示采集图像时使用
 	m_pBmpInfo->bmiHeader.biSize			= sizeof(BITMAPINFOHEADER);
 	//	图像宽度，一般为输出窗口宽度
-	m_pBmpInfo->bmiHeader.biWidth			= width;
+	m_pBmpInfo->bmiHeader.biWidth			= width[0];
 	//	图像宽度，一般为输出窗口高度
-    m_pBmpInfo->bmiHeader.biHeight			= height;
+    m_pBmpInfo->bmiHeader.biHeight			= height[0];
 	
 	/*
 	*	以下设置一般相同，
@@ -744,65 +549,69 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	//Fg_setParameterWithType(fg, Device1_Process0_Buffer_XLength_Id, &Device1_Process0_Buffer_XLength, 0, FG_PARAM_TYPE_STRUCT_FIELDPARAMACCESS);
 	
 	if(fg){
-		Fg_getParameter(fg,FG_WIDTH,&width,DmaIndex[0]);
-		Fg_getParameter(fg,FG_HEIGHT,&height,DmaIndex[0]);
+		Fg_getParameter(fg,FG_WIDTH,&width[0],DmaIndex[0]);
+		Fg_getParameter(fg,FG_HEIGHT,&height[0],DmaIndex[0]);
 	
-		Fg_getParameter(fg,FG_WIDTH,&width1,DmaIndex[1]);
-		Fg_getParameter(fg,FG_HEIGHT,&height1,DmaIndex[1]);
+		Fg_getParameter(fg,FG_WIDTH,&width[1],DmaIndex[1]);
+		Fg_getParameter(fg,FG_HEIGHT,&height[1],DmaIndex[1]);
 
 		//	图像宽度，一般为输出窗口宽度
-		m_pBmpInfo->bmiHeader.biWidth			= width;
+		m_pBmpInfo->bmiHeader.biWidth			= width[0];
 		//	图像宽度，一般为输出窗口高度
-		m_pBmpInfo->bmiHeader.biHeight			= height;
+		m_pBmpInfo->bmiHeader.biHeight			= height[0];
 	
 		/********Getting  general parameter from DMA*********/
 		unsigned int nr_of_buffer = 16;
 		size_t bytesPerPixel = 1; 
 
 		 /**************Memory allocation For DMA 0***********/ 
-		size_t totalBufSize = width*height*bytesPerPixel;
+		size_t totalBufSize = width[0]*height[0]*bytesPerPixel;
 		if((pMem0 = Fg_AllocMemEx(fg,totalBufSize*nr_of_buffer,nr_of_buffer)) == NULL){
 			const char*	err_str = Fg_getLastErrorDescription(fg);
 			return;
 		} 
 
 		/************************Memory allocation For DMA 1*****************/ 
-		size_t totalBufSize1 = width1*height1*bytesPerPixel;
+		size_t totalBufSize1 = width[1]*height[1]*bytesPerPixel;
 		if((pMem1 = Fg_AllocMemEx(fg,totalBufSize1*nr_of_buffer,nr_of_buffer)) == NULL){
 			const char*	err_str = Fg_getLastErrorDescription(fg);
 			return;
 		}
 	
-		/******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
-		setJPEGQuality(fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-		/*********Get Matrix table from the board*********/
+		///******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
+		//setJPEGQuality(fg,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+		///*********Get Matrix table from the board*********/
 	
-		m_pthis->getQuantizationTable( m_pthis->fg);
-		m_pthis->getQuantizationTable1( m_pthis->fg);
+		//m_pthis->getQuantizationTable( m_pthis->fg);
+		//m_pthis->getQuantizationTable1( m_pthis->fg);
 	
-		jpe0.SetQuantTable( m_pthis->QTable);	
-		jpe1.SetQuantTable( m_pthis->QTable1);	
+		//jpe0.SetQuantTable( m_pthis->QTable);	
+		//jpe1.SetQuantTable( m_pthis->QTable1);	
 
 		//For DMA0
 		apcdata.fg = m_pthis->fg;
 		apcdata.port = m_pthis->DmaIndex[0];
 		apcdata.mem = m_pthis->pMem0;
+		apcdata.iIndex = 0;
+		apcdata.iDisplayId = IDC_ImgDisplay;
 
 		ctrl.version = 0;
 		ctrl.data = &apcdata;
 		ctrl.func = ApcFunc;
-		ctrl.flags = FG_APC_HIGH_PRIORITY;
+		ctrl.flags = FG_APC_HIGH_PRIORITY | FG_APC_IGNORE_TIMEOUTS;
 		ctrl.timeout = 100000;
 	
 		//For DMA1
 		apcdata1.fg = m_pthis->fg;
 		apcdata1.port = m_pthis->DmaIndex[1];
 		apcdata1.mem = m_pthis->pMem1;
+		apcdata1.iIndex = 1;
+		apcdata1.iDisplayId = IDC_ImgDisplay1;
 
 		ctrl1.version = 0;
 		ctrl1.data = &apcdata1;
-		ctrl1.func = ApcFunc1;
-		ctrl1.flags = FG_APC_HIGH_PRIORITY;
+		ctrl1.func = ApcFunc;
+		ctrl1.flags = FG_APC_HIGH_PRIORITY | FG_APC_IGNORE_TIMEOUTS;
 		ctrl1.timeout = 100000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg, m_pthis->DmaIndex[0], &ctrl, FG_APC_CONTROL_BASIC);
@@ -821,11 +630,11 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	}
 
 	if(fg1){
-		Fg_getParameter(fg1,FG_WIDTH,&width2,DmaIndex[0]);
-		Fg_getParameter(fg1,FG_HEIGHT,&height2,DmaIndex[0]);
+		Fg_getParameter(fg1,FG_WIDTH,&width[2],DmaIndex[0]);
+		Fg_getParameter(fg1,FG_HEIGHT,&height[2],DmaIndex[0]);
 	
-		Fg_getParameter(fg1,FG_WIDTH,&width3,DmaIndex[1]);
-		Fg_getParameter(fg1,FG_HEIGHT,&height3,DmaIndex[1]);
+		Fg_getParameter(fg1,FG_WIDTH,&width[3],DmaIndex[1]);
+		Fg_getParameter(fg1,FG_HEIGHT,&height[3],DmaIndex[1]);
 
 		//	图像宽度，一般为输出窗口宽度
 		//m_pBmpInfo->bmiHeader.biWidth			= width;
@@ -837,49 +646,53 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		size_t bytesPerPixel = 1; 
 
 		 /**************Memory allocation For DMA 0***********/ 
-		size_t totalBufSize = width2*height2*bytesPerPixel;
+		size_t totalBufSize = width[2]*height[2]*bytesPerPixel;
 		if((pMem2 = Fg_AllocMemEx(fg1,totalBufSize*nr_of_buffer,nr_of_buffer)) == NULL){
 			const char*	err_str = Fg_getLastErrorDescription(fg1);
 			return;
 		} 
 
 		/************************Memory allocation For DMA 1*****************/ 
-		size_t totalBufSize1 = width3*height3*bytesPerPixel;
+		size_t totalBufSize1 = width[3]*height[3]*bytesPerPixel;
 		if((pMem3 = Fg_AllocMemEx(fg1,totalBufSize1*nr_of_buffer,nr_of_buffer)) == NULL){
 			const char*	err_str = Fg_getLastErrorDescription(fg1);
 			return;
 		}
 	
-		/******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
-		setJPEGQuality(fg1,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-		/*********Get Matrix table from the board*********/
+		///******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
+		//setJPEGQuality(fg1,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+		///*********Get Matrix table from the board*********/
 	
-		m_pthis->getQuantizationTable2( m_pthis->fg1);
-		m_pthis->getQuantizationTable3( m_pthis->fg1);
+		//m_pthis->getQuantizationTable2( m_pthis->fg1);
+		//m_pthis->getQuantizationTable3( m_pthis->fg1);
 	
-		jpe2.SetQuantTable( m_pthis->QTable2);	
-		jpe3.SetQuantTable( m_pthis->QTable3);	
+		//jpe2.SetQuantTable( m_pthis->QTable2);	
+		//jpe3.SetQuantTable( m_pthis->QTable3);	
 
 		//For DMA0
 		apcdata2.fg = m_pthis->fg1;
 		apcdata2.port = m_pthis->DmaIndex[0];
 		apcdata2.mem = m_pthis->pMem2;
+		apcdata2.iIndex = 2;
+		apcdata2.iDisplayId = IDC_ImgDisplay2;
 
 		ctrl2.version = 0;
 		ctrl2.data = &apcdata2;
-		ctrl2.func = ApcFunc2;
-		ctrl2.flags = FG_APC_HIGH_PRIORITY;
+		ctrl2.func = ApcFunc;
+		ctrl2.flags = FG_APC_HIGH_PRIORITY | FG_APC_IGNORE_TIMEOUTS;
 		ctrl2.timeout = 100000;
 	
 		//For DMA1
 		apcdata3.fg = m_pthis->fg1;
 		apcdata3.port = m_pthis->DmaIndex[1];
 		apcdata3.mem = m_pthis->pMem3;
+		apcdata3.iIndex = 3;
+		apcdata3.iDisplayId = IDC_ImgDisplay3;
 
 		ctrl3.version = 0;
 		ctrl3.data = &apcdata3;
-		ctrl3.func = ApcFunc3;
-		ctrl3.flags = FG_APC_HIGH_PRIORITY;
+		ctrl3.func = ApcFunc;
+		ctrl3.flags = FG_APC_HIGH_PRIORITY | FG_APC_IGNORE_TIMEOUTS;
 		ctrl3.timeout = 100000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg1, m_pthis->DmaIndex[0], &ctrl2, FG_APC_CONTROL_BASIC);
@@ -898,11 +711,11 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 	}
 
 	if(fg2){
-		Fg_getParameter(fg2,FG_WIDTH,&width4,DmaIndex[0]);
-		Fg_getParameter(fg2,FG_HEIGHT,&height4,DmaIndex[0]);
+		Fg_getParameter(fg2,FG_WIDTH,&width[4],DmaIndex[0]);
+		Fg_getParameter(fg2,FG_HEIGHT,&height[4],DmaIndex[0]);
 	
-		Fg_getParameter(fg2,FG_WIDTH,&width5,DmaIndex[1]);
-		Fg_getParameter(fg2,FG_HEIGHT,&height5,DmaIndex[1]);
+		Fg_getParameter(fg2,FG_WIDTH,&width[5],DmaIndex[1]);
+		Fg_getParameter(fg2,FG_HEIGHT,&height[5],DmaIndex[1]);
 
 		//	图像宽度，一般为输出窗口宽度
 		//m_pBmpInfo->bmiHeader.biWidth			= width;
@@ -914,49 +727,53 @@ void CSISO_APC_GbEDlg::OnBnClickedBtnLoad()
 		size_t bytesPerPixel = 1; 
 
 		 /**************Memory allocation For DMA 0***********/ 
-		size_t totalBufSize = width4*height4*bytesPerPixel;
+		size_t totalBufSize = width[4]*height[4]*bytesPerPixel;
 		if((pMem4 = Fg_AllocMemEx(fg2,totalBufSize*nr_of_buffer,nr_of_buffer)) == NULL){
 			const char*	err_str = Fg_getLastErrorDescription(fg2);
 			return;
 		} 
 
 		/************************Memory allocation For DMA 1*****************/ 
-		size_t totalBufSize1 = width5*height5*bytesPerPixel;
+		size_t totalBufSize1 = width[5]*height[5]*bytesPerPixel;
 		if((pMem5 = Fg_AllocMemEx(fg2,totalBufSize1*nr_of_buffer,nr_of_buffer)) == NULL){
 			const char*	err_str = Fg_getLastErrorDescription(fg2);
 			return;
 		}
 	
-		/******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
-		setJPEGQuality(fg2,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
-		/*********Get Matrix table from the board*********/
+		///******************GetTable and SetTable for Jpeg 0 and Jpeg 1********************/
+		//setJPEGQuality(fg2,m_pthis->JPEGQuality);// transfer JPEG Quality to operator
+		///*********Get Matrix table from the board*********/
 	
-		m_pthis->getQuantizationTable( m_pthis->fg2);
-		m_pthis->getQuantizationTable1( m_pthis->fg2);
+		//m_pthis->getQuantizationTable( m_pthis->fg2);
+		//m_pthis->getQuantizationTable1( m_pthis->fg2);
 	
-		jpe4.SetQuantTable( m_pthis->QTable4);	
-		jpe5.SetQuantTable( m_pthis->QTable5);	
+		//jpe4.SetQuantTable( m_pthis->QTable4);	
+		//jpe5.SetQuantTable( m_pthis->QTable5);	
 
 		//For DMA0
 		apcdata4.fg = m_pthis->fg2;
 		apcdata4.port = m_pthis->DmaIndex[0];
 		apcdata4.mem = m_pthis->pMem4;
+		apcdata4.iIndex = 4;
+		apcdata4.iDisplayId = IDC_ImgDisplay4;
 
 		ctrl4.version = 0;
 		ctrl4.data = &apcdata4;
-		ctrl4.func = ApcFunc4;
-		ctrl4.flags = FG_APC_HIGH_PRIORITY;
+		ctrl4.func = ApcFunc;
+		ctrl4.flags = FG_APC_HIGH_PRIORITY | FG_APC_IGNORE_TIMEOUTS;
 		ctrl4.timeout = 100000;
 	
 		//For DMA1
 		apcdata5.fg = m_pthis->fg2;
 		apcdata5.port = m_pthis->DmaIndex[1];
 		apcdata5.mem = m_pthis->pMem5;
+		apcdata5.iIndex = 5;
+		apcdata5.iDisplayId = IDC_ImgDisplay5;
 
 		ctrl5.version = 0;
 		ctrl5.data = &apcdata5;
-		ctrl5.func = ApcFunc5;
-		ctrl5.flags = FG_APC_HIGH_PRIORITY;
+		ctrl5.func = ApcFunc;
+		ctrl5.flags = FG_APC_HIGH_PRIORITY | FG_APC_IGNORE_TIMEOUTS;
 		ctrl5.timeout = 100000;
 
 		int status = Fg_registerApcHandler(m_pthis->fg2, m_pthis->DmaIndex[0], &ctrl4, FG_APC_CONTROL_BASIC);
@@ -1050,25 +867,25 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 		}
 	}
 	setJPEGQuality(fg,JPEGQuality);// transfer JPEG Quality to operator
-	getQuantizationTable( fg);
-	jpe0.SetQuantTable(QTable);
+	getQuantizationTable(fg, "Device1_Process0_Encoder_quantization_matrix", &QTable);
+	jpe[0].SetQuantTable(QTable);
 
-	getQuantizationTable1( fg);
-	jpe1.SetQuantTable(QTable1);
+	getQuantizationTable(fg, "Device1_Process1_Encoder_quantization_matrix", &QTable1);
+	jpe[1].SetQuantTable(QTable1);
 
 	setJPEGQuality(fg1,JPEGQuality);// transfer JPEG Quality to operator
-	getQuantizationTable2( fg1);
-	jpe2.SetQuantTable(QTable2);
+	getQuantizationTable(fg1, "Device1_Process0_Encoder_quantization_matrix", &QTable2);
+	jpe[2].SetQuantTable(QTable2);
 
-	getQuantizationTable3( fg1);
-	jpe3.SetQuantTable(QTable3);
+	getQuantizationTable(fg1, "Device1_Process1_Encoder_quantization_matrix", &QTable3);
+	jpe[3].SetQuantTable(QTable3);
 
 	setJPEGQuality(fg2,JPEGQuality);// transfer JPEG Quality to operator
-	getQuantizationTable4( fg2);
-	jpe4.SetQuantTable(QTable4);
+	getQuantizationTable(fg2, "Device1_Process0_Encoder_quantization_matrix", &QTable4);
+	jpe[4].SetQuantTable(QTable4);
 
-	getQuantizationTable5( fg2);
-	jpe5.SetQuantTable(QTable5);
+	getQuantizationTable(fg2, "Device1_Process1_Encoder_quantization_matrix", &QTable5);
+	jpe[5].SetQuantTable(QTable5);
 	////Create Thread
 	DWORD id;
 	m_CpState=1;
@@ -1167,14 +984,14 @@ void CSISO_APC_GbEDlg::OnBnClickedStop()
 	lengthJPEGfile4 = 0;
 	lengthJPEGfile5 = 0;
 	
-	fps = 0; fps1 = 0;fps2 = 0; fps3 = 0;fps4 = 0; fps5 = 0;
+	fps[0] = fps[1] = fps[2] = fps[3] = fps[4] = fps[5] = 0;
 	CString strtmp,strtmp1,strtmp2,strtmp3,strtmp4,strtmp5;
-	strtmp.Format(_T("fps:%.3f"), fps);
-	strtmp1.Format(_T("fps:%.3f"), fps1);
-	strtmp2.Format(_T("fps:%.3f"), fps2);
-	strtmp3.Format(_T("fps:%.3f"), fps3);
-	strtmp4.Format(_T("fps:%.3f"), fps4);
-	strtmp5.Format(_T("fps:%.3f"), fps5);
+	strtmp.Format(_T("fps:%.3f"), fps[0]);
+	strtmp1.Format(_T("fps:%.3f"), fps[1]);
+	strtmp2.Format(_T("fps:%.3f"), fps[2]);
+	strtmp3.Format(_T("fps:%.3f"), fps[3]);
+	strtmp4.Format(_T("fps:%.3f"), fps[4]);
+	strtmp5.Format(_T("fps:%.3f"), fps[5]);
 	m_stc_fps.SetWindowTextW(strtmp);
 	m_stc_fps1.SetWindowTextW(strtmp1);
 	m_stc_fps2.SetWindowTextW(strtmp2);
@@ -1382,7 +1199,7 @@ unsigned char CSISO_APC_GbEDlg::calcQuantizationMatrixFromPercent(int p_percent)
 };
 
 
-int CSISO_APC_GbEDlg::getQuantizationTable(Fg_Struct* fg) 
+int CSISO_APC_GbEDlg::getQuantizationTable(Fg_Struct* fg, const char *cMatrix_ID, unsigned char (*Qtable)[64]) 
 {
 	int Device1_Process0_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Encoder_quantization_matrix");
 	FieldParameterInt readQuantizationValue;
@@ -1392,7 +1209,7 @@ int CSISO_APC_GbEDlg::getQuantizationTable(Fg_Struct* fg)
 		readQuantizationValue.index = i;
 		readQuantizationValue.value = 0;
 		 Fg_getParameter(fg, Device1_Process0_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
-		QTable[i] = readQuantizationValue.value;
+		(*Qtable)[i] = readQuantizationValue.value;
 		//if (i % 8 == 0)
 			//printf("\n");
 		//printf("%d ", readQuantizationValue.value);
@@ -1400,118 +1217,6 @@ int CSISO_APC_GbEDlg::getQuantizationTable(Fg_Struct* fg)
 	}
 	return 0;
 }
-
-int CSISO_APC_GbEDlg::getQuantizationTable1(Fg_Struct* fg) 
-{
-	int Device1_Process1_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Encoder_quantization_matrix");
-	FieldParameterInt readQuantizationValue;
-	//printf("New QTable:");
-	for (int i = 0; i < 64; i++)
-	{
-		readQuantizationValue.index = i;
-		readQuantizationValue.value = 0;
-		 Fg_getParameter(fg, Device1_Process1_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
-		QTable1[i] = readQuantizationValue.value;
-		//if (i % 8 == 0)
-			//printf("\n");
-		//printf("%d ", readQuantizationValue.value);
-	}
-	return 0;
-}
-
-int CSISO_APC_GbEDlg::getQuantizationTable2(Fg_Struct* fg) 
-{
-	int Device1_Process0_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Encoder_quantization_matrix");
-	FieldParameterInt readQuantizationValue;
-	//printf("New QTable:");
-	for (int i = 0; i < 64; i++)
-	{
-		readQuantizationValue.index = i;
-		readQuantizationValue.value = 0;
-		 Fg_getParameter(fg, Device1_Process0_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
-		QTable2[i] = readQuantizationValue.value;
-		//if (i % 8 == 0)
-		//	printf("\n");
-		//printf("%d ", readQuantizationValue.value);
-
-	}
-	return 0;
-}
-
-int CSISO_APC_GbEDlg::getQuantizationTable3(Fg_Struct* fg) 
-{
-	int Device1_Process1_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Encoder_quantization_matrix");
-	FieldParameterInt readQuantizationValue;
-	//printf("New QTable:");
-	for (int i = 0; i < 64; i++)
-	{
-		readQuantizationValue.index = i;
-		readQuantizationValue.value = 0;
-		 Fg_getParameter(fg, Device1_Process1_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
-		QTable3[i] = readQuantizationValue.value;
-		//if (i % 8 == 0)
-		//	printf("\n");
-		//printf("%d ", readQuantizationValue.value);
-	}
-	return 0;
-}
-
-int CSISO_APC_GbEDlg::getQuantizationTable4(Fg_Struct* fg) 
-{
-	int Device1_Process0_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Encoder_quantization_matrix");
-	FieldParameterInt readQuantizationValue;
-	//printf("New QTable:");
-	for (int i = 0; i < 64; i++)
-	{
-		readQuantizationValue.index = i;
-		readQuantizationValue.value = 0;
-		 Fg_getParameter(fg, Device1_Process0_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
-		QTable4[i] = readQuantizationValue.value;
-		//if (i % 8 == 0)
-		//	printf("\n");
-		//printf("%d ", readQuantizationValue.value);
-
-	}
-	return 0;
-}
-
-int CSISO_APC_GbEDlg::getQuantizationTable5(Fg_Struct* fg) 
-{
-	int Device1_Process1_Encoder_quantization_matrix_Id = Fg_getParameterIdByName(fg, "Device1_Process1_Encoder_quantization_matrix");
-	FieldParameterInt readQuantizationValue;
-	//printf("New QTable:");
-	for (int i = 0; i < 64; i++)
-	{
-		readQuantizationValue.index = i;
-		readQuantizationValue.value = 0;
-		 Fg_getParameter(fg, Device1_Process1_Encoder_quantization_matrix_Id, &readQuantizationValue, 0); 
-		QTable5[i] = readQuantizationValue.value;
-		//if (i % 8 == 0)
-		//	printf("\n");
-		//printf("%d ", readQuantizationValue.value);
-	}
-	return 0;
-}
-
-bool CSISO_APC_GbEDlg::checkROIconsistency(int maxWidth, int maxHeight, int xOffset, int xLength, int yOffset, int yLength)
-{
-	if ((xLength > maxWidth)	
-		|| (xLength < 16)	
-		|| (xLength % 16 != 0)	
-		|| (xLength + xOffset > maxWidth) 
-		|| (xOffset > maxWidth - 16)
-		|| (xOffset < 0)
-		|| (xOffset % 8 != 0)
-		|| (yLength > maxHeight)	
-		|| (yLength < 8)	
-		|| (yLength % 8 != 0)	
-		|| (yLength + yOffset > maxHeight) 
-		|| (yOffset > maxHeight - 8)
-		|| (yOffset < 0))
-		return false;
-	else
-		return true;
-};
 
 void CSISO_APC_GbEDlg::OnBnClickedSavejpeg()
 {
@@ -1546,44 +1251,21 @@ void CSISO_APC_GbEDlg::OnClickedShowimg()
 
 void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	fps = 1000.0 * (statusJPEG - oldStatusJPEG) / (GetTickCount() - ticks);
-	oldStatusJPEG = statusJPEG;
-	ticks = GetTickCount();
+	CString strtmp[6];
+	for (unsigned i = 0; i < 6 ; ++i)
+	{
+		fps[i] = 1000.0 * (statusJPEG[i] - oldStatusJPEG[i]) / (GetTickCount() - ticks[i]);
+		oldStatusJPEG[i] = statusJPEG[i];
+		ticks[i] = GetTickCount();
+		strtmp[i].Format(_T("fps:%.3f"), fps[i]);
+	}
 
-	fps1 = 1000.0 * (statusJPEG1 - oldStatusJPEG1) / (GetTickCount() - ticks1);
-	oldStatusJPEG1 = statusJPEG1;
-	ticks1 = GetTickCount();
-
-	fps2 = 1000.0 * (statusJPEG2 - oldStatusJPEG2) / (GetTickCount() - ticks2);
-	oldStatusJPEG2 = statusJPEG2;
-	ticks2 = GetTickCount();
-
-	fps3 = 1000.0 * (statusJPEG3 - oldStatusJPEG3) / (GetTickCount() - ticks3);
-	oldStatusJPEG3 = m_pthis->statusJPEG3;
-	ticks3 = GetTickCount();
-
-	fps4 = 1000.0 * (statusJPEG4 - oldStatusJPEG4) / (GetTickCount() - ticks4);
-	oldStatusJPEG4 = statusJPEG4;
-	ticks4 = GetTickCount();
-
-	fps5 = 1000.0 * (statusJPEG5 - oldStatusJPEG5) / (GetTickCount() - ticks5);
-	oldStatusJPEG5 = statusJPEG5;
-	ticks5 = GetTickCount();
-
-	CString strtmp, strtmp1, strtmp2, strtmp3, strtmp4, strtmp5;
-	strtmp.Format(_T("fps:%.3f"), fps);
-	strtmp1.Format(_T("fps:%.3f"), fps1);
-	strtmp2.Format(_T("fps:%.3f"), fps2);
-	strtmp3.Format(_T("fps:%.3f"), fps3);
-	strtmp4.Format(_T("fps:%.3f"), fps4);
-	strtmp5.Format(_T("fps:%.3f"), fps5);
-	
-	m_stc_fps.SetWindowTextW(strtmp);
-	m_stc_fps1.SetWindowTextW(strtmp1);
-	m_stc_fps2.SetWindowTextW(strtmp2);
-	m_stc_fps3.SetWindowTextW(strtmp3);
-	m_stc_fps4.SetWindowTextW(strtmp4);
-	m_stc_fps5.SetWindowTextW(strtmp5);
+	m_stc_fps.SetWindowTextW(strtmp[0]);
+	m_stc_fps1.SetWindowTextW(strtmp[1]);
+	m_stc_fps2.SetWindowTextW(strtmp[2]);
+	m_stc_fps3.SetWindowTextW(strtmp[3]);
+	m_stc_fps4.SetWindowTextW(strtmp[4]);
+	m_stc_fps5.SetWindowTextW(strtmp[5]);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
