@@ -21,7 +21,7 @@
 #include <clser.h>
 
 #include "jpeg/JPEGEncoder.h"
-#include "SDrawInterface.h"
+//#include "SDrawInterface.h"
 
 
 

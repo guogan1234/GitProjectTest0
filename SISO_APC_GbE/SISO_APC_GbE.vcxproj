@@ -225,7 +225,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SDrawInterface.cpp" />
     <ClCompile Include="SISO_APC_GbE.cpp" />
     <ClCompile Include="SISO_APC_GbEDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
