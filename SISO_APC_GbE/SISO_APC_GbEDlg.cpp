@@ -866,39 +866,16 @@ void CSISO_APC_GbEDlg::OnBnClickedGrab()
 			return ;
 		}
 	}
-	setJPEGQuality(fg,JPEGQuality);// transfer JPEG Quality to operator
-	getQuantizationTable(fg, "Device1_Process0_Encoder_quantization_matrix", &QTable);
-	jpe[0].SetQuantTable(QTable);
 
-	getQuantizationTable(fg, "Device1_Process1_Encoder_quantization_matrix", &QTable1);
-	jpe[1].SetQuantTable(QTable1);
+	SetJpegQuality(JPEGQuality);
 
-	setJPEGQuality(fg1,JPEGQuality);// transfer JPEG Quality to operator
-	getQuantizationTable(fg1, "Device1_Process0_Encoder_quantization_matrix", &QTable2);
-	jpe[2].SetQuantTable(QTable2);
-
-	getQuantizationTable(fg1, "Device1_Process1_Encoder_quantization_matrix", &QTable3);
-	jpe[3].SetQuantTable(QTable3);
-
-	setJPEGQuality(fg2,JPEGQuality);// transfer JPEG Quality to operator
-	getQuantizationTable(fg2, "Device1_Process0_Encoder_quantization_matrix", &QTable4);
-	jpe[4].SetQuantTable(QTable4);
-
-	getQuantizationTable(fg2, "Device1_Process1_Encoder_quantization_matrix", &QTable5);
-	jpe[5].SetQuantTable(QTable5);
-	////Create Thread
-	DWORD id;
 	m_CpState=1;
 	SetTimer(0,1000,NULL);//ID为0，定时间隔1000ms,相应函数Ontimer()
-//	ticks_a=GetTickCount();
-//	ticks = GetTickCount();
-//	ticks2= GetTickCount();
-//	ticks_c=GetTickCount();
 
+	////Create Thread
+	DWORD id;
 	hThShow=CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)thfuncshow,this,0,&id);
 
-	//m_pthis -> GetDlgItem(IDC_Stop)->EnableWindow(TRUE);
-	//m_pthis -> GetDlgItem(IDC_Grab)->EnableWindow(FALSE);
 }
 
 void CSISO_APC_GbEDlg::OnBnClickedStop()
@@ -1226,12 +1203,8 @@ void CSISO_APC_GbEDlg::OnBnClickedSavejpeg()
 
 void CSISO_APC_GbEDlg::OnClickedActivequality()
 {
-	
-	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
-	//s = M_JpegQuality.GetString();
-	// n= _tstoi(s);
-	JPEGQuality = _tstoi(M_JpegQuality.GetString());
+	SetJpegQuality(_tstoi(M_JpegQuality.GetString()));
 }
 
 //void CSISO_APC_GbEDlg::OnClickedExit()
@@ -1454,6 +1427,28 @@ TY_STATUS CSISO_APC_GbEDlg::SetJpegQuality(unsigned int iQuality)
 		return TY_ERROR;
 	
 	JPEGQuality = iQuality;
+
+	setJPEGQuality(fg,JPEGQuality);// transfer JPEG Quality to operator
+	getQuantizationTable(fg, "Device1_Process0_Encoder_quantization_matrix", &QTable);
+	jpe[0].SetQuantTable(QTable);
+
+	getQuantizationTable(fg, "Device1_Process1_Encoder_quantization_matrix", &QTable1);
+	jpe[1].SetQuantTable(QTable1);
+
+	setJPEGQuality(fg1,JPEGQuality);// transfer JPEG Quality to operator
+	getQuantizationTable(fg1, "Device1_Process0_Encoder_quantization_matrix", &QTable2);
+	jpe[2].SetQuantTable(QTable2);
+
+	getQuantizationTable(fg1, "Device1_Process1_Encoder_quantization_matrix", &QTable3);
+	jpe[3].SetQuantTable(QTable3);
+
+	setJPEGQuality(fg2,JPEGQuality);// transfer JPEG Quality to operator
+	getQuantizationTable(fg2, "Device1_Process0_Encoder_quantization_matrix", &QTable4);
+	jpe[4].SetQuantTable(QTable4);
+
+	getQuantizationTable(fg2, "Device1_Process1_Encoder_quantization_matrix", &QTable5);
+	jpe[5].SetQuantTable(QTable5);
+
 	return TY_OK;
 }
 
