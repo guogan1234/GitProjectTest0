@@ -1528,11 +1528,16 @@ TY_STATUS CSISO_APC_GbEDlg::clSerialOperator(unsigned int iIndexCamera, char *li
 	
 	size_t len = strlen(line);
 	line[len] = 10;
+	line[len+1] = 0;
 	len = strlen(line);
 	int error = clSerialWrite(hSer, line, (unsigned int*)&len, 500);
+	
+	if (CString("SA=3")==CString(line).Trim())
+		Sleep(2000);
 
 	len = 256;
 	error = clSerialRead(hSer, cReturn, (unsigned int*)&len, 256);
+	
 	if(error == CL_ERR_NO_ERR)
 	{
 		eStatus = TY_OK;
@@ -1571,6 +1576,9 @@ TY_STATUS CSISO_APC_GbEDlg::SetGain(unsigned int iIndexCamera, unsigned int iGai
 		if(cst.Trim() != CString("COMPLETE"))
 			eStatus = TY_ERROR;
 	}
+
+	eStatus = SaveUserSet(iIndexCamera);
+
 	return eStatus;
 }
 
@@ -1603,6 +1611,8 @@ TY_STATUS CSISO_APC_GbEDlg::SetExposureTime(unsigned int iIndexCamera, unsigned 
 		if(cst.Trim() != CString("COMPLETE"))
 			eStatus = TY_ERROR;
 	}
+
+	eStatus = SaveUserSet(iIndexCamera);
 	return eStatus;
 }
 
@@ -1654,4 +1664,19 @@ TY_STATUS CSISO_APC_GbEDlg::GetConnectStatus(unsigned iIndexCamera, bool &bConne
 	bConnect = (TY_OK == status) ? true : false;
 
 	return TY_OK;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::SaveUserSet(unsigned iIndexCamera)
+{
+	char line[256] = {0};
+	strcpy_s(line, "SA=3");
+	char cReturn[256] = {0};
+
+	TY_STATUS eStatus = clSerialOperator(iIndexCamera, line, cReturn);
+	if(TY_OK == eStatus) {
+		CString cst(cReturn);
+		if(cst.Trim() != CString("COMPLETE"))
+			eStatus = TY_ERROR;
+	}
+	return eStatus;
 }

@@ -141,6 +141,7 @@ public:
 	CButton m_buttonPreview;
 	CComboBox m_comboBoxPreview;
 
+	TY_STATUS SaveUserSet(unsigned iIndexCamera);
 	//以下接口需要被实现
 	TY_STATUS SetCollectMode(COLLECT_MODE eMode);
 	COLLECT_MODE GetCollectMode(){return m_eCollectMode;}
