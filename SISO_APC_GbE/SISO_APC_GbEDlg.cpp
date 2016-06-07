@@ -2,6 +2,7 @@
 // SISO_APC_GbEDlg.cpp : 实现文件
 //
 
+
 #include "stdafx.h"
 #include "SISO_APC_GbE.h"
 #include "SISO_APC_GbEDlg.h"
@@ -299,16 +300,16 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	writeToFile = true;
 
 	//读取配置文件，
-	m_cstrIni = L"c:\\TYTunnelTestVehicle.ini";
-	char cDirPrefix[256] = {0};
+	ptree pt;
+	read_json("TYConf.json", pt);
+	m_iStartIndex = pt.get<int>("CameraInfo.StartIndex");
+	string sDirPrefix = pt.get<string>("Save.DirPrefix");
 
-	m_iStartIndex = GetPrivateProfileInt(L"CameraInfo", L"StartIndex", -1, m_cstrIni);
-	DWORD iNumber = GetPrivateProfileStringA("Save", "DirPrefix", "", cDirPrefix, 256, "c:\\TYTunnelTestVehicle.ini");
-	if(m_iStartIndex < 0 || iNumber ==0){
-		MessageBox(CString("找不到文件")+ m_cstrIni);
+	if(m_iStartIndex < 0 || sDirPrefix.size() ==0){
+		MessageBox(CString("找不到配置文件"));
 	}
 
-	SetSaveDir(cDirPrefix);
+	SetSaveDir(sDirPrefix.c_str());
 
 	M_JpegQuality.Format(L"%d", JPEGQuality);
 	
@@ -1452,7 +1453,7 @@ TY_STATUS CSISO_APC_GbEDlg::SetJpegQuality(unsigned int iQuality)
 	return TY_OK;
 }
 
-TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(char* cSaveDir)
+TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(const char* cSaveDir)
 {
 	if(!cSaveDir)
 		return TY_ERROR;

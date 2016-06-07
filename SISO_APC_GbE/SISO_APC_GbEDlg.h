@@ -4,7 +4,8 @@
 
 #pragma once
 
-
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 /********SISO******/
 #include <stdio.h>
 #include <time.h>
@@ -24,7 +25,7 @@
 //#include "SDrawInterface.h"
 
 
-
+using namespace boost::property_tree;
 using namespace std; 
 
 struct fg_apc_data {
@@ -108,7 +109,6 @@ public:
 	vector<uint64_t> oldStatusJPEG;
 	vector<uint64_t> statusJPEG;
 	
-	CString m_cstrIni;
 	char m_cDirPrefix[256]; //存储路径的前缀。
 	int   m_iStartIndex;     //摄像头的起始序列号。
 
@@ -149,7 +149,7 @@ public:
 	TY_STATUS SetJpegQuality(unsigned int iQuality);
 	unsigned int GetJpegQuality(){return JPEGQuality;}
 
-	TY_STATUS SetSaveDir(char* cSaveDir);
+	TY_STATUS SetSaveDir(const char* cSaveDir);
 	
 	TY_STATUS SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE eMode);
 	TY_STATUS GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE &eMode);
