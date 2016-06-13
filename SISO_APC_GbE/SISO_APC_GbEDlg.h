@@ -10,6 +10,9 @@
 #include <boost/log/common.hpp>
 #include <boost/log/attributes.hpp>
 #include <boost/log/utility/setup/from_stream.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
+
 /********SISO******/
 #include <stdio.h>
 #include <time.h>
@@ -30,6 +33,7 @@ namespace prot = boost::property_tree;
 namespace logging = boost::log;
 namespace attrs = boost::log::attributes;
 namespace src = boost::log::sources;
+namespace fs = boost::filesystem;
 
 using namespace std; 
 

@@ -29,34 +29,6 @@ CSISO_APC_GbEDlg* m_pthis;
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(test_lg, src::severity_logger< >)
 src::severity_logger< >& lg = test_lg::get();
 
-/**********创建一个指定的文件目录 fromPengxiao**************/
-BOOL CreateNDir(CString strDesPath) 
-{ 
-	int rt=0; 
-	int ks; 
-	CString exdir,newdir; 
-	exdir=strDesPath; 
-	while(rt==0) 
-	{ 
-		ks=exdir.ReverseFind('\\'); 
-		exdir=exdir.Left(ks); 
-		if(ks<0)break; 
-		rt=PathFileExists(exdir); 
-	} 
-	rt=1; 
-	while(ks>1 && rt==1) 
-	{ 
-		ks=strDesPath.Find('\\',ks+1); 
-		if(ks>0) 
-		{ 
-			newdir=strDesPath.Left(ks); 
-		}else 
-			newdir=strDesPath; 
-		rt=CreateDirectory(newdir,NULL);	
-	} 
-	return rt; 
-}
-
 const unsigned char QTableStd[64] = 
 {
 	16,  11,  10,  16,  24,  40,  51,  61,
@@ -1471,19 +1443,20 @@ TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(const char* cSaveDir)
 	//创建存储的目录。
 	if(m_cDirPrefix[strlen(m_cDirPrefix) -1] != '\\')
 		strcat_s(m_cDirPrefix, "\\");
-	CString cDir(m_cDirPrefix), cDir1, cDir2, cDir3, cDir4, cDir5, cDir6;
-	cDir1.Format(L"%s%d\\", cDir, m_iStartIndex);
-	cDir2.Format(L"%s%d\\", cDir, m_iStartIndex + 1);
-	cDir3.Format(L"%s%d\\", cDir, m_iStartIndex + 2);
-	cDir4.Format(L"%s%d\\", cDir, m_iStartIndex + 3);
-	cDir5.Format(L"%s%d\\", cDir, m_iStartIndex + 4);
-	cDir6.Format(L"%s%d\\", cDir, m_iStartIndex + 5);
-	CreateNDir(cDir1);
-	CreateNDir(cDir2);
-	CreateNDir(cDir3);
-	CreateNDir(cDir4);
-	CreateNDir(cDir5);
-	CreateNDir(cDir6);
+	std::string sDir(m_cDirPrefix), sDir0, sDir1, sDir2, sDir3, sDir4, sDir5;
+	sDir0 = sDir + boost::lexical_cast<std::string>(m_iStartIndex) + std::string("\\");
+	sDir1 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+1) + std::string("\\");
+	sDir2 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+2) + std::string("\\");
+	sDir3 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+3) + std::string("\\");
+	sDir4 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+4) + std::string("\\");
+	sDir5 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+5) + std::string("\\");
+	fs::create_directories(sDir0);
+	fs::create_directories(sDir1);
+	fs::create_directories(sDir2);
+	fs::create_directories(sDir3);
+	fs::create_directories(sDir4);
+	fs::create_directories(sDir5);
+
 	return TY_OK;
 }
 	

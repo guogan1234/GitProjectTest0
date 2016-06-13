@@ -1,0 +1,15 @@
+
+1. gpiotool.exe -b 0 -s 0:se,pu,ni
+
+2. cvtres.exe 
+C:\Windows\Microsoft.NET\Framework\v4.0.30319 
+E:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin
+
+3. VisualApplets自动生成的代码在以下目录.
+C:\Program Files (x86)\SiliconSoftware\VisualApplets_2.2.1\Sdk\
+
+4. b2.exe  --build-type=complete --stagedir=".\lib\vc12_x64" address-model=64   
+
+
+
+
