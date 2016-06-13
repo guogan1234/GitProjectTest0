@@ -26,10 +26,9 @@
 #endif
 CSISO_APC_GbEDlg* m_pthis;
 
-#ifdef TY_LOG
-ofstream g_isLog("TriggerLog.txt");
-const unsigned BIG_TRIGGER = 100;
-#endif
+BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(test_lg, src::severity_logger< >)
+src::severity_logger< >& lg = test_lg::get();
+
 /**********创建一个指定的文件目录 fromPengxiao**************/
 BOOL CreateNDir(CString strDesPath) 
 { 
@@ -122,15 +121,12 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	//Calculate fps
 	m_pthis->statusJPEG[data->iIndex] = picNr;
 
-#ifdef TY_LOG
 	m_pthis->m_iTickEnd[data->iIndex] = GetTickCount();
 	unsigned itick =m_pthis->m_iTickEnd[data->iIndex] - m_pthis->m_iTickStart[data->iIndex];
-	if ( itick >BIG_TRIGGER ){
-		  wcout << "相机 " << data->iIndex << ": " << itick << "。图片序号： " << picNr << endl;
-		g_isLog << "相机 " << data->iIndex << ": " << itick << "。图片序号： " << picNr << endl;
+	if ( itick > 100 ){
+		BOOST_LOG_SEV(lg, info) << "相机 " << data->iIndex << ": " << itick << "。图片序号： " << picNr;
 	}
 	m_pthis->m_iTickStart[data->iIndex] = m_pthis->m_iTickEnd[data->iIndex];
-#endif	
 	return 0;
 }
 
@@ -300,8 +296,8 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	writeToFile = true;
 
 	//读取配置文件，
-	ptree pt;
-	read_json("TYConf.json", pt);
+	prot::ptree pt;
+	prot::read_ini("TYConf.ini", pt);
 	m_iStartIndex = pt.get<int>("CameraInfo.StartIndex");
 	string sDirPrefix = pt.get<string>("Save.DirPrefix");
 
@@ -310,6 +306,18 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	}
 
 	SetSaveDir(sDirPrefix.c_str());
+	
+	//读取log配置文件
+	std::ifstream settings("TYLog.ini");
+	if (!settings.is_open())
+	{
+		std::cout << "Could not open settings.txt file" << std::endl;
+		return 1;
+	}
+
+	// Read the settings and initialize logging library
+	logging::init_from_stream(settings);
+	logging::core::get()->add_global_attribute("TimeStamp", attrs::local_clock());
 
 	M_JpegQuality.Format(L"%d", JPEGQuality);
 	

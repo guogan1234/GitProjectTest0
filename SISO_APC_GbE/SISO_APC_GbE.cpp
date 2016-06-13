@@ -56,12 +56,7 @@ BOOL CSISO_APC_GbEApp::InitInstance()
 	// 公共控件类。
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
-#ifdef TY_LOG
-	AllocConsole();
-	*stdin  = *( _fdopen(_open_osfhandle((intptr_t)::GetStdHandle(STD_INPUT_HANDLE), _O_TEXT), "r"));  
-	*stdout = *( _fdopen(_open_osfhandle((intptr_t)::GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT), "wt"));  
-	std::ios_base::sync_with_stdio(); 
-#endif
+
 	CWinApp::InitInstance();
 
 

@@ -5,13 +5,16 @@
 #pragma once
 
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+#include <boost/regex.hpp>
+#include <boost/log/common.hpp>
+#include <boost/log/attributes.hpp>
+#include <boost/log/utility/setup/from_stream.hpp>
 /********SISO******/
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <vector>
-//#include "board_and_dll_chooser.h"
 
 #include <fgrab_struct.h>
 #include <fgrab_prototyp.h>
@@ -22,11 +25,23 @@
 #include <clser.h>
 
 #include "jpeg/JPEGEncoder.h"
-//#include "SDrawInterface.h"
 
+namespace prot = boost::property_tree;
+namespace logging = boost::log;
+namespace attrs = boost::log::attributes;
+namespace src = boost::log::sources;
 
-using namespace boost::property_tree;
 using namespace std; 
+
+enum severity_level
+{
+	trace,
+	debug,
+	info,
+	warning,
+	error,
+	critical
+};
 
 struct fg_apc_data {
 	Fg_Struct *fg;
