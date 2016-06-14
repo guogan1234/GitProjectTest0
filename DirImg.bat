@@ -3,7 +3,7 @@ for /l %%a in (0, 1, 30) do (
 	call :DirImg %%a
 )
 
-pause
+timeout -t 10
 
 :DirImg
 if exist d:\TongYanSuiDao\Image\%1\ (
