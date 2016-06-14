@@ -1,6 +1,11 @@
-del d:\TongYanSuiDao\Image\0\*.jpg
-del d:\TongYanSuiDao\Image\1\*.jpg
-del d:\TongYanSuiDao\Image\2\*.jpg
-del d:\TongYanSuiDao\Image\3\*.jpg
-del d:\TongYanSuiDao\Image\4\*.jpg
-del d:\TongYanSuiDao\Image\5\*.jpg
+@echo off
+for /l %%a in (0, 1, 30) do (
+	call :DelImg %%a
+)
+
+:DelImg
+if exist d:\TongYanSuiDao\Image\%1\ (
+	echo 正在删除目录 d:\TongYanSuiDao\Image\%1\ 中的jpg文件。
+	del d:\TongYanSuiDao\Image\%1\*.jpg
+)
+

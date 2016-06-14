@@ -1,7 +1,12 @@
-dir /B /A-D d:\TongYanSuiDao\Image\0\*.jpg | find /V /C ""
-dir /B /A-D d:\TongYanSuiDao\Image\1\*.jpg | find /V /C ""
-dir /B /A-D d:\TongYanSuiDao\Image\2\*.jpg | find /V /C ""
-dir /B /A-D d:\TongYanSuiDao\Image\3\*.jpg | find /V /C ""
-dir /B /A-D d:\TongYanSuiDao\Image\4\*.jpg | find /V /C ""
-dir /B /A-D d:\TongYanSuiDao\Image\5\*.jpg | find /V /C ""
+@echo off
+for /l %%a in (0, 1, 30) do (
+	call :DirImg %%a
+)
+
 pause
+
+:DirImg
+if exist d:\TongYanSuiDao\Image\%1\ (
+	set /p ="Ïà»ú %1 ÓÐÍ¼Æ¬   " <nul  
+	dir /B /A-D d:\TongYanSuiDao\Image\%1\*.jpg | find /V /C ""
+)
