@@ -81,7 +81,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	char strFile[255];
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iStartIndex + data->iIndex, "\\Cam",m_pthis->m_iStartIndex + data->iIndex, 
+	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%I64d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iCameraIndex[data->iIndex], "\\Cam",m_pthis->m_iCameraIndex[data->iIndex],
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
@@ -177,7 +177,7 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, fps(6, 0)
 	, statusJPEG(6, 0)
 	, oldStatusJPEG(6, 0)
-	, m_iStartIndex(-1)
+	, m_iCameraIndex(6, 0)
 	, m_eCollectMode(MODE_TRIGGER)
 	, m_iCollectFrequency(40)
 {
@@ -270,10 +270,15 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	//读取配置文件，
 	prot::ptree pt;
 	prot::read_ini("TYConf.ini", pt);
-	m_iStartIndex = pt.get<int>("CameraInfo.StartIndex");
+	m_iCameraIndex[0] = pt.get<int>("CameraInfo.0");
+	m_iCameraIndex[1] = pt.get<int>("CameraInfo.1");
+	m_iCameraIndex[2] = pt.get<int>("CameraInfo.2");
+	m_iCameraIndex[3] = pt.get<int>("CameraInfo.3");
+	m_iCameraIndex[4] = pt.get<int>("CameraInfo.4");
+	m_iCameraIndex[5] = pt.get<int>("CameraInfo.5");
 	string sDirPrefix = pt.get<string>("Save.DirPrefix");
 
-	if(m_iStartIndex < 0 || sDirPrefix.size() ==0){
+	if(sDirPrefix.size() ==0){
 		MessageBox(CString("找不到配置文件"));
 	}
 
@@ -395,38 +400,51 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	CString cstrCollectFrequency;
 	cstrCollectFrequency.Format(L"%d", m_iCollectFrequency);
 	((CEdit *)GetDlgItem(IDC_EDITCollectFrequency))->SetWindowTextW(cstrCollectFrequency);
+	
+	//设置相机名称
+	CString strCamera[6];
+	for (int ix = 0; ix < 6; ix++) {
+		//strCamera[ix] = CString("相机 ") + CString(itoa(m_iCameraIndex[ix]));
+		strCamera[ix].Format(L"相机 %d", m_iCameraIndex[ix]);
+	}
+	((CStatic *)GetDlgItem(IDC_Name0))->SetWindowTextW(strCamera[0]);
+	((CStatic *)GetDlgItem(IDC_Name1))->SetWindowTextW(strCamera[1]);
+	((CStatic *)GetDlgItem(IDC_Name2))->SetWindowTextW(strCamera[2]);
+	((CStatic *)GetDlgItem(IDC_Name3))->SetWindowTextW(strCamera[3]);
+	((CStatic *)GetDlgItem(IDC_Name4))->SetWindowTextW(strCamera[4]);
+	((CStatic *)GetDlgItem(IDC_Name5))->SetWindowTextW(strCamera[5]);
 
 	//初始化连接状态
-	m_comboBoxConnectStatus.InsertString(0, L"相机 0");
-	m_comboBoxConnectStatus.InsertString(1, L"相机 1");
-	m_comboBoxConnectStatus.InsertString(2, L"相机 2");
-	m_comboBoxConnectStatus.InsertString(3, L"相机 3");
-	m_comboBoxConnectStatus.InsertString(4, L"相机 4");
-	m_comboBoxConnectStatus.InsertString(5, L"相机 5");
+	m_comboBoxConnectStatus.InsertString(0, strCamera[0]);
+	m_comboBoxConnectStatus.InsertString(1, strCamera[1]);
+	m_comboBoxConnectStatus.InsertString(2, strCamera[2]);
+	m_comboBoxConnectStatus.InsertString(3, strCamera[3]);
+	m_comboBoxConnectStatus.InsertString(4, strCamera[4]);
+	m_comboBoxConnectStatus.InsertString(5, strCamera[5]);
 	m_comboBoxConnectStatus.SetCurSel(0);
 
-	m_comboBox_ExposureTime.InsertString(0, L"相机 0");
-	m_comboBox_ExposureTime.InsertString(1, L"相机 1");
-	m_comboBox_ExposureTime.InsertString(2, L"相机 2");
-	m_comboBox_ExposureTime.InsertString(3, L"相机 3");
-	m_comboBox_ExposureTime.InsertString(4, L"相机 4");
-	m_comboBox_ExposureTime.InsertString(5, L"相机 5");
+	m_comboBox_ExposureTime.InsertString(0, strCamera[0]);
+	m_comboBox_ExposureTime.InsertString(1, strCamera[1]);
+	m_comboBox_ExposureTime.InsertString(2, strCamera[2]);
+	m_comboBox_ExposureTime.InsertString(3, strCamera[3]);
+	m_comboBox_ExposureTime.InsertString(4, strCamera[4]);
+	m_comboBox_ExposureTime.InsertString(5, strCamera[5]);
 	m_comboBox_ExposureTime.SetCurSel(0);
 
-	m_comboBox_Gain.InsertString(0, L"相机 0");
-	m_comboBox_Gain.InsertString(1, L"相机 1");
-	m_comboBox_Gain.InsertString(2, L"相机 2");
-	m_comboBox_Gain.InsertString(3, L"相机 3");
-	m_comboBox_Gain.InsertString(4, L"相机 4");
-	m_comboBox_Gain.InsertString(5, L"相机 5");
+	m_comboBox_Gain.InsertString(0, strCamera[0]);
+	m_comboBox_Gain.InsertString(1, strCamera[1]);
+	m_comboBox_Gain.InsertString(2, strCamera[2]);
+	m_comboBox_Gain.InsertString(3, strCamera[3]);
+	m_comboBox_Gain.InsertString(4, strCamera[4]);
+	m_comboBox_Gain.InsertString(5, strCamera[5]);
 	m_comboBox_Gain.SetCurSel(0);
 
-	m_comboBoxPreview.InsertString(0, L"相机 0");
-	m_comboBoxPreview.InsertString(1, L"相机 1");
-	m_comboBoxPreview.InsertString(2, L"相机 2");
-	m_comboBoxPreview.InsertString(3, L"相机 3");
-	m_comboBoxPreview.InsertString(4, L"相机 4");
-	m_comboBoxPreview.InsertString(5, L"相机 5");
+	m_comboBoxPreview.InsertString(0, strCamera[0]);
+	m_comboBoxPreview.InsertString(1, strCamera[1]);
+	m_comboBoxPreview.InsertString(2, strCamera[2]);
+	m_comboBoxPreview.InsertString(3, strCamera[3]);
+	m_comboBoxPreview.InsertString(4, strCamera[4]);
+	m_comboBoxPreview.InsertString(5, strCamera[5]);
 	m_comboBoxPreview.SetCurSel(0);
 
 	UpdateData(false);
@@ -1444,12 +1462,12 @@ TY_STATUS CSISO_APC_GbEDlg::SetSaveDir(const char* cSaveDir)
 	if(m_cDirPrefix[strlen(m_cDirPrefix) -1] != '\\')
 		strcat_s(m_cDirPrefix, "\\");
 	std::string sDir(m_cDirPrefix), sDir0, sDir1, sDir2, sDir3, sDir4, sDir5;
-	sDir0 = sDir + boost::lexical_cast<std::string>(m_iStartIndex) + std::string("\\");
-	sDir1 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+1) + std::string("\\");
-	sDir2 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+2) + std::string("\\");
-	sDir3 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+3) + std::string("\\");
-	sDir4 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+4) + std::string("\\");
-	sDir5 = sDir + boost::lexical_cast<std::string>(m_iStartIndex+5) + std::string("\\");
+	sDir0 = sDir + boost::lexical_cast<std::string>(m_iCameraIndex[0]) + std::string("\\");
+	sDir1 = sDir + boost::lexical_cast<std::string>(m_iCameraIndex[1]) + std::string("\\");
+	sDir2 = sDir + boost::lexical_cast<std::string>(m_iCameraIndex[2]) + std::string("\\");
+	sDir3 = sDir + boost::lexical_cast<std::string>(m_iCameraIndex[3]) + std::string("\\");
+	sDir4 = sDir + boost::lexical_cast<std::string>(m_iCameraIndex[4]) + std::string("\\");
+	sDir5 = sDir + boost::lexical_cast<std::string>(m_iCameraIndex[5]) + std::string("\\");
 	fs::create_directories(sDir0);
 	fs::create_directories(sDir1);
 	fs::create_directories(sDir2);

@@ -129,7 +129,7 @@ public:
 	vector<uint64_t> statusJPEG;
 	
 	char m_cDirPrefix[256]; //存储路径的前缀。
-	int   m_iStartIndex;     //摄像头的起始序列号。
+	vector<int>   m_iCameraIndex;     //摄像头的起始序列号。
 
 	CButton M_SaveJpeg;
 	
