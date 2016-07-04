@@ -187,6 +187,7 @@ public:
 
 	TY_STATUS GetConnectStatus(unsigned iIndexCamera, bool &bConnect);
 
+	double    GetFPS(unsigned iIndexCamera);
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
 
@@ -222,4 +223,5 @@ public:
 	afx_msg void OnCbnSelchangeComboExposuretime();
 	afx_msg void OnCbnSelchangeComboGain();
 	afx_msg void OnCbnSelchangeComboPreview();
+	afx_msg void OnBnClickedImgdisplay();
 };

@@ -228,6 +228,7 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_ExposureTime, &CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime)
 	ON_CBN_SELCHANGE(IDC_COMBO_Gain, &CSISO_APC_GbEDlg::OnCbnSelchangeComboGain)
 	ON_CBN_SELCHANGE(IDC_COMBO_Preview, &CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview)
+	ON_BN_DOUBLECLICKED(IDC_ImgDisplay, &CSISO_APC_GbEDlg::OnBnClickedImgdisplay)
 END_MESSAGE_MAP()
 
 
@@ -1679,4 +1680,14 @@ TY_STATUS CSISO_APC_GbEDlg::SaveUserSet(unsigned iIndexCamera)
 			eStatus = TY_ERROR;
 	}
 	return eStatus;
+}
+
+double CSISO_APC_GbEDlg::GetFPS(unsigned iIndexCamera)
+{
+	return fps[iIndexCamera];
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedImgdisplay()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }
