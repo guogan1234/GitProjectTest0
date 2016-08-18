@@ -85,7 +85,7 @@ int ApcFunc(frameindex_t picNr, struct fg_apc_data *data)
 	GetLocalTime(&st);
 
 	char strFile[255];
-	sprintf_s(strFile, "%s%d%s%d_%d_%d_%d_%.2d_%.2d_%.2d_%.3d_%d_%I64d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iCameraIndex[data->iIndex], "\\Cam",m_pthis->m_iCameraIndex[data->iIndex],
+	sprintf_s(strFile, "%s%d%s%d-%d_%.2d_%.2d_%.2d_%.2d_%.2d_%.3d-%d-%I64d.jpg",m_pthis->m_cDirPrefix, m_pthis->m_iCameraIndex[data->iIndex], "\\Cam",m_pthis->m_iCameraIndex[data->iIndex],
 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond, st.wMilliseconds, m_pthis->JPEGQuality,picNr);
 
 	//*****************Get TansferLen of the current DMA channel***************//
