@@ -21,10 +21,14 @@
 #include "nanojpeg/nanojpeg.c"
 #include "frameGrabberInit.h"
 
+#include "afxsock.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 CSISO_APC_GbEDlg* m_pthis;
+
+unsigned char msgType = '0';
 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(test_lg, src::severity_logger< >)
 src::severity_logger< >& lg = test_lg::get();
@@ -231,6 +235,190 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_BN_DOUBLECLICKED(IDC_ImgDisplay, &CSISO_APC_GbEDlg::OnBnClickedImgdisplay)
 END_MESSAGE_MAP()
 
+CString madeReturnMsg(unsigned char msgType, TY_STATUS r, CString srcTimeStr)
+{
+	CString strMsg = L"{";
+	strMsg.AppendChar(msgType);
+	if (r == TY_ERROR)
+	{
+		strMsg.Append(L"0");
+	}
+	else
+	{
+		strMsg.Append(L"1");
+	}
+	//拼接返回字符串，并发送
+	strMsg += srcTimeStr;
+	//Unicode下CString转char*
+	USES_CONVERSION;
+	//调用函数，T2A和W2A均支持ATL和MFC中的字符转换
+	char * ch_msg = T2A(strMsg);
+	//saveMsgToFile(ch_msg);
+	return strMsg;
+}
+
+unsigned int StartServer(LPVOID lParam)
+{
+	//初始化Winscok
+	if (!AfxSocketInit())
+	{
+		AfxMessageBox(L"Initail failed.");
+		return 1;
+	}
+
+	bool m_exit = false;
+
+	CSISO_APC_GbEDlg *aDlg = (CSISO_APC_GbEDlg *)lParam;
+
+	CString strPort = L"10000";
+
+	//aDlg->GetDlgItemText(IDC_EDIT_PORT, strPort);
+
+	UINT nPort = _tstoi(strPort.GetString());
+
+	//socket------------------------------------------------
+
+	CSocket aSocket, serverSocket;
+	//最好不要使用aSocket.Create创建，因为容易会出现10048错误
+	if (!aSocket.Socket())
+	{
+		TCHAR szError[256] = { 0 };
+
+		swprintf(szError, L"Create Faild: %d", GetLastError());
+
+		AfxMessageBox(szError);
+
+		return 1;
+	}
+
+	BOOL bOptVal = TRUE;
+	int bOptLen = sizeof(BOOL);
+
+	//设置Socket的选项, 解决10048错误必须的步骤
+	aSocket.SetSockOpt(SO_REUSEADDR, (void *)&bOptVal, bOptLen, SOL_SOCKET);
+
+	//绑定端口
+	if (!aSocket.Bind(nPort))
+	{
+		TCHAR szError[256] = { 0 };
+
+		swprintf(szError, L"Bind Faild: %d", GetLastError());
+
+		AfxMessageBox(szError);
+
+		return 1;
+	}
+	//监听
+	if (!aSocket.Listen(10))
+	{
+		TCHAR szError[256] = { 0 };
+
+		swprintf(szError, L"Listen Faild: %d", GetLastError());
+
+		AfxMessageBox(szError);
+
+		return 1;
+	}
+
+	CString strText;
+
+	//aDlg->GetDlgItemText(IDC_EDIT_LOG, strText);
+
+	strText += "Server Start!  ";
+
+	//aDlg->SetDlgItemText(IDC_EDIT_LOG, strText);
+
+	while (!m_exit)
+	{
+		//接收外部连接
+		if (!aSocket.Accept(serverSocket))//Accept方法返回的serverSocket不能接收更多的连接，原始套接字aSocket保持开放和监听。
+		{
+			continue;
+		}
+		else
+		{
+			CString str;
+			CString strMsg = L"";
+			char * ch_msg = NULL;
+			CString recvDataTimeMsg;
+			int res_send = 0;
+
+			//声明标识符
+			USES_CONVERSION;
+			//调用函数，T2A和W2A均支持ATL和MFC中的字符转换
+			char szRecvMsg[512] = { 0 };
+			char szOutMsg[512] = { 0 };
+			int i = 0;
+			//i = 1;//测试，不停发送
+			enum TY_STATUS r = TY_OK;
+			while (true)
+			{
+				//接收客户端内容:阻塞
+				i = serverSocket.Receive(szRecvMsg, 512);
+
+				if (i <= 0)
+				{
+					continue;
+					//break;//使客户端能断开重连，调试中。。。
+				}
+				else
+				{
+					try
+					{
+						r = praseRecvData(szRecvMsg, aDlg);
+						//获取原数据包时间字符串带包尾";"
+						str = szRecvMsg;
+						recvDataTimeMsg = str.Right(20);
+						//组成返回数据包
+						strMsg = madeReturnMsg(msgType, r, recvDataTimeMsg);
+
+						sprintf(szOutMsg, "Receive Msg: %s  ", szRecvMsg);
+						//aDlg->GetDlgItemText(IDC_EDIT_LOG, strText);//0x00b4f0e0	0x00b4f330
+						if (strText.GetLength()>5000)
+						{
+							strText = L"";//0x7874cf98
+						}
+						strText += szOutMsg;//0x00b4f3e0	0x00b4f568
+						//aDlg->SetDlgItemText(IDC_EDIT_LOG, strText);
+
+						//发送内容给客户端
+						//serverSocket.Send("Have Receive The Msg", 50);
+						//strMsg = "{8007D:/Test2016:05:22-19:35:33;";//测试，返回数据包写死
+						//调用函数，T2A和W2A均支持ATL和MFC中的字符转换
+						ch_msg = T2A(strMsg);
+						//res_send = serverSocket.Send(strMsg, strMsg.GetLength());
+						res_send = serverSocket.Send(ch_msg, strMsg.GetLength());
+						//int res_send = serverSocket.Send(strMsg.GetString(), strMsg.GetLength());
+						//关闭
+						//serverSocket.Close();
+					}
+					catch (...)
+					{
+						//Log
+						int temp = 0;
+						for (int i = 0; i<5; i++)
+						{
+							temp = i;
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	//关闭
+	aSocket.Close();
+	serverSocket.Close();
+
+	//aDlg->GetDlgItemText(IDC_EDIT_LOG, strText);
+
+	strText += "Have Close!";
+
+	//aDlg->SetDlgItemText(IDC_EDIT_LOG, strText);
+
+	return 0;
+}
 
 // CSISO_APC_GbEDlg 消息处理程序
 BOOL CSISO_APC_GbEDlg::OnInitDialog()
@@ -450,8 +638,13 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 
 	UpdateData(false);
 	OnBnClickedBtnLoad();
+	m_pWinThread = AfxBeginThread(StartServer, this);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
+
+
+
+
 
 void CSISO_APC_GbEDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -1690,4 +1883,272 @@ double CSISO_APC_GbEDlg::GetFPS(unsigned iIndexCamera)
 void CSISO_APC_GbEDlg::OnBnClickedImgdisplay()
 {
 	// TODO: 在此添加控件通知处理程序代码
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_1(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+
+	//调用，返回
+
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_2(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString FBL_W, FBL_H;
+	FBL_W = str.Mid(5, 4);
+	FBL_H = str.Mid(10, 4);
+	//分辨率
+	int fbl_W, fbl_H = 0;
+	fbl_W = _ttoi(FBL_W);
+	fbl_H = _ttoi(FBL_H);
+	//调用，返回
+
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_3(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString strBH, strValue = L"";
+	strBH = str.Mid(5, 2);
+	strValue = str.Mid(7, 7);
+	//获取数值
+	int value = 0;
+	value = _ttoi(strValue);
+	//控制哪些相机
+	int BH = -1;
+	BH = _ttoi(strBH);
+	if (BH == 0)
+	{
+		//全部控制
+		int count = 1;
+		r = dlg->SetExposureTime(0, value);
+	}
+	else
+	{
+		//单个控制
+		r = dlg->SetExposureTime(BH, value);
+	}
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_4(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString strValueLen, strValue = L"";
+	strValueLen = str.Mid(2, 3);
+	int valueLen = 0;
+	valueLen = _ttoi(strValueLen);
+	strValue = str.Mid(5, valueLen);
+	//相机增益
+	int value = 0;
+	value = _ttoi(strValue);
+	//调用，返回
+	int count = 1;
+	r = dlg->SetGain(0, value);
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_5(char * recvData, CSISO_APC_GbEDlg * aDlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	unsigned char temp;
+	temp = recvData[5];
+	if (temp == '1')
+	{
+		enum CSISO_APC_GbEDlg::COLLECT_MODE mode = CSISO_APC_GbEDlg::MODE_TIMER;
+		r = aDlg->SetCollectMode(mode);
+		return r;
+	}
+	else if (temp == '2')
+	{
+		//enum CCsocketServerDlg::COLLECT_MODE mode =  MODE_TRIGGER;
+		aDlg->SetCollectMode(CSISO_APC_GbEDlg::MODE_TRIGGER);
+		return r;
+	}
+	/*
+	else if (temp == '3')
+	{
+		aDlg->SetCollectMode(CSISO_APC_GbEDlg::MODE_TIMER);
+		return r;
+	}
+	*/
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_6(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str, strValue, strValueLen;
+	str = recvData;
+	//获取数值在数据包中的长度
+	int i;
+	strValueLen = str.Mid(2, 3);
+	i = _ttoi(strValueLen);
+	//获取数值字符串
+	strValue = str.Mid(5, i);
+	//转换出数据值
+	//double value = _ttol(strValue);
+	double value = _wtof(strValue);
+	//调用设置接口
+	dlg->SetCollectFrequency(value);
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_7(char * recvData, CSISO_APC_GbEDlg * aDlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str;
+	str = recvData;
+	//获取数值字符串
+	CString strValue;
+	strValue = str.Mid(5, 3);
+	//转换出数据值
+	int value = _ttoi(strValue);
+	//调用设置接口
+	r = aDlg->SetJpegQuality(value);
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_8(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	enum TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString strValueLen, strValue = L"";
+	strValueLen = str.Mid(2, 3);
+	int valueLen = -1;
+	valueLen = _ttoi(strValueLen);
+	//获取路径
+	strValue = str.Mid(5, valueLen);
+	USES_CONVERSION;
+	//调用函数，T2A和W2A均支持ATL和MFC中的字符转换
+	char * ch_value = T2A(strValue);
+	//调用，设置
+	dlg->SetSaveDir(ch_value);
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_9(char * recvData, CSISO_APC_GbEDlg * aDlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	unsigned char temp;
+	temp = recvData[5];
+	if (temp == '0')//不预览
+	{
+		r = aDlg->SetPreviewMode(0,CSISO_APC_GbEDlg::PREVIEW_CLOSE);
+	}
+	if (temp == '1')//预览
+	{
+		r = aDlg->SetPreviewMode(0,CSISO_APC_GbEDlg::PREVIEW_OPEN);
+	}
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_a(char * recvData, CSISO_APC_GbEDlg * aDlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	unsigned char temp;
+	temp = recvData[2];
+	if (temp == '0')//结束采集
+	{
+		r = aDlg->BeginCollect();
+	}
+	if (temp == '1')//开始采集
+	{
+		r = aDlg->StopCollect();
+	}
+	return r;
+}
+
+TY_STATUS praseRecvData(char * recvData, CSISO_APC_GbEDlg * aDlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	//向TXT文件中记录接收的数据包
+	//saveMsgToFile(recvData);
+
+	int len = strlen(recvData);
+	unsigned char ch0, ch1;
+	ch0 = recvData[0];
+	if (ch0 == '{')
+	{
+		//验证是否为1个完整数据包，不是返回
+
+		//解析
+		ch1 = recvData[1];
+		switch (ch1)
+		{
+		case '1'://连接模式
+			msgType = '1';
+			r = aDlg->Y_Control_1(recvData, aDlg);
+			break;
+		case '2'://图像分辨率
+			msgType = '2';
+			r = aDlg->Y_Control_2(recvData, aDlg);
+			break;
+		case '3'://相机快门速度
+			msgType = '3';
+			r = aDlg->Y_Control_3(recvData, aDlg);
+			break;
+		case '4'://相机增益
+			msgType = '4';
+			r = aDlg->Y_Control_4(recvData, aDlg);
+			break;
+		case '5'://采集模式
+			msgType = '5';
+			r = aDlg->Y_Control_5(recvData, aDlg);
+			break;
+		case '6'://采集频率
+			msgType = '6';
+			r = aDlg->Y_Control_6(recvData, aDlg);
+			break;
+		case '7'://图片压缩率
+			msgType = '7';
+			r = aDlg->Y_Control_7(recvData, aDlg);
+			break;
+		case '8'://文件存储路径
+			msgType = '8';
+			r = aDlg->Y_Control_8(recvData, aDlg);
+			break;
+		case '9'://预览
+			msgType = '9';
+			r = aDlg->Y_Control_9(recvData, aDlg);
+			break;
+		case 'a'://开始、结束采集
+			msgType = 'a';
+			r = aDlg->Y_Control_a(recvData, aDlg);
+			break;
+		}
+	}
+	return r;
 }

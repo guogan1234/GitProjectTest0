@@ -162,26 +162,28 @@ public:
 
 	TY_STATUS SaveUserSet(unsigned iIndexCamera);
 	//以下接口需要被实现
+	//5.采集模式
 	TY_STATUS SetCollectMode(COLLECT_MODE eMode);
 	COLLECT_MODE GetCollectMode(){return m_eCollectMode;}
 
+	//7.图像压缩率
 	TY_STATUS SetJpegQuality(unsigned int iQuality);
 	unsigned int GetJpegQuality(){return JPEGQuality;}
-
+	//8.文件存储路径
 	TY_STATUS SetSaveDir(const char* cSaveDir);
-	
+	//9.预览
 	TY_STATUS SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE eMode);
 	TY_STATUS GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE &eMode);
 
 	TY_STATUS BeginCollect();
 	TY_STATUS StopCollect();
-
+	//4.相机增益
 	TY_STATUS GetGain(unsigned int iIndexCamera, unsigned int &iGain);
 	TY_STATUS SetGain(unsigned int iIndexCamera, unsigned int iGain);
-
+	//3.相机快门速度
 	TY_STATUS GetExposureTime(unsigned int iIndexCamera, unsigned int &iExposureTime);
 	TY_STATUS SetExposureTime(unsigned int iIndexCamera, unsigned int iExposureTime);
-
+	//6.采集频率
 	unsigned int GetCollectFrequency(){return m_iCollectFrequency;}
 	TY_STATUS SetCollectFrequency(unsigned int iCollectFrequency);
 
@@ -190,6 +192,8 @@ public:
 	double    GetFPS(unsigned iIndexCamera);
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };
+
+	CWinThread *m_pWinThread;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
@@ -224,4 +228,17 @@ public:
 	afx_msg void OnCbnSelchangeComboGain();
 	afx_msg void OnCbnSelchangeComboPreview();
 	afx_msg void OnBnClickedImgdisplay();
+
+	TY_STATUS Y_Control_1(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_2(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_3(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_4(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_5(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_6(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_7(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_8(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_9(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_a(char* recvData, CSISO_APC_GbEDlg* dlg);
 };
+
+TY_STATUS praseRecvData(char* recvData, CSISO_APC_GbEDlg* dlg);
