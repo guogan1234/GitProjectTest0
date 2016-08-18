@@ -208,6 +208,8 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	//DDX_Control(pDX, IDC_EDIT_ExposureTime, m_stc_ExposureTime);
 	DDX_Control(pDX, IDC_COMBO_Gain, m_comboBox_Gain);
 	DDX_Control(pDX, IDC_COMBO_Preview, m_comboBoxPreview);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_0, m_comboBox_DisplayMode);
+	DDX_Control(pDX, IDC_COMBODisplay, m_comboBox_CameraIndex);
 }
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
@@ -233,6 +235,7 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_Gain, &CSISO_APC_GbEDlg::OnCbnSelchangeComboGain)
 	ON_CBN_SELCHANGE(IDC_COMBO_Preview, &CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview)
 	ON_BN_DOUBLECLICKED(IDC_ImgDisplay, &CSISO_APC_GbEDlg::OnBnClickedImgdisplay)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_0, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0)
 END_MESSAGE_MAP()
 
 CString madeReturnMsg(unsigned char msgType, TY_STATUS r, CString srcTimeStr)
@@ -636,6 +639,20 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_comboBoxPreview.InsertString(5, strCamera[5]);
 	m_comboBoxPreview.SetCurSel(0);
 
+	//初始化图片显示下拉框
+	m_comboBox_CameraIndex.InsertString(0, strCamera[0]);
+	m_comboBox_CameraIndex.InsertString(1, strCamera[1]);
+	m_comboBox_CameraIndex.InsertString(2, strCamera[2]);
+	m_comboBox_CameraIndex.InsertString(3, strCamera[3]);
+	m_comboBox_CameraIndex.InsertString(4, strCamera[4]);
+	m_comboBox_CameraIndex.InsertString(5, strCamera[5]);
+	m_comboBox_CameraIndex.SetCurSel(0);
+
+	m_comboBox_DisplayMode.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode.InsertString(1, L"放大");
+	//m_comboBox_DisplayMode[ix].InsertString(2, L"原图");
+	m_comboBox_DisplayMode.SetCurSel(0);
+		
 	UpdateData(false);
 	OnBnClickedBtnLoad();
 	m_pWinThread = AfxBeginThread(StartServer, this);
@@ -2151,4 +2168,78 @@ TY_STATUS praseRecvData(char * recvData, CSISO_APC_GbEDlg * aDlg)
 		}
 	}
 	return r;
+}
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0()
+{
+	unsigned int iCameraIndex = m_comboBox_CameraIndex.GetCurSel();
+	if (m_bPreview[iCameraIndex] == false) {
+		MessageBox(L"相机预览没有打开！");
+		return;
+	}
+
+	CWnd* pwnd;
+	switch (iCameraIndex)
+	{
+	case 0:
+		pwnd = GetDlgItem(IDC_ImgDisplay);
+		break;
+	case 1:
+		pwnd = GetDlgItem(IDC_ImgDisplay1);
+		break;
+	case 2:
+		pwnd = GetDlgItem(IDC_ImgDisplay2);
+		break;
+	case 3:
+		pwnd = GetDlgItem(IDC_ImgDisplay3);
+		break;
+	case 4:
+		pwnd = GetDlgItem(IDC_ImgDisplay4);
+		break;
+	case 5:
+		pwnd = GetDlgItem(IDC_ImgDisplay5);
+		break;
+	default:
+		break;
+	}
+ 
+	CRect srect;
+	pwnd->GetWindowRect(&srect);
+	int iMode = m_comboBox_DisplayMode.GetCurSel();
+	switch (iMode)
+	{
+	case 0:
+	{
+		switch (iCameraIndex)
+		{
+		case 0:
+			pwnd->SetWindowPos(&CWnd::wndTop, 12, 30, 544, 400, SWP_SHOWWINDOW);
+			break;
+		case 1:
+			pwnd->SetWindowPos(&CWnd::wndTop, 584, 30, 544, 400, SWP_SHOWWINDOW);
+			break;
+		case 2:
+			pwnd->SetWindowPos(&CWnd::wndTop, 1156, 30, 544, 400, SWP_SHOWWINDOW);
+			break;
+		case 3:
+			pwnd->SetWindowPos(&CWnd::wndTop, 12, 454, 544, 400, SWP_SHOWWINDOW);
+			break;
+		case 4:
+			pwnd->SetWindowPos(&CWnd::wndTop, 584, 454, 544, 400, SWP_SHOWWINDOW);
+			break;
+		case 5:
+			pwnd->SetWindowPos(&CWnd::wndTop, 1156, 454, 544, 400, SWP_SHOWWINDOW);
+			break;
+		default:
+			break;
+		}
+	}
+		break;
+	case 1:
+		pwnd->SetWindowPos(&CWnd::wndTop, 12, 2, 1684, 853, SWP_SHOWWINDOW);
+		break;
+	case 2:
+	default:
+		break;
+	}
 }

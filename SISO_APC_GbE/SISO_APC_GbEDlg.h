@@ -155,6 +155,9 @@ public:
 	//相机增益
 	CComboBox m_comboBox_Gain;
 
+	//图片显示模式下拉框
+	CComboBox m_comboBox_DisplayMode;
+	CComboBox m_comboBox_CameraIndex;
 	//预览
 	vector<bool> m_bPreview;
 	CButton m_buttonPreview;
@@ -227,6 +230,7 @@ public:
 	afx_msg void OnCbnSelchangeComboExposuretime();
 	afx_msg void OnCbnSelchangeComboGain();
 	afx_msg void OnCbnSelchangeComboPreview();
+	afx_msg void OnCbnSelchangeComboDisplaymode0();
 	afx_msg void OnBnClickedImgdisplay();
 
 	TY_STATUS Y_Control_1(char* recvData, CSISO_APC_GbEDlg* dlg);
