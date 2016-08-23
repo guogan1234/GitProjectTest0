@@ -177,7 +177,7 @@ public:
 	//9.预览
 	TY_STATUS SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE eMode);
 	TY_STATUS GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MODE &eMode);
-
+	//a.开始/结束采集
 	TY_STATUS BeginCollect();
 	TY_STATUS StopCollect();
 	//4.相机增益
@@ -189,9 +189,9 @@ public:
 	//6.采集频率
 	unsigned int GetCollectFrequency(){return m_iCollectFrequency;}
 	TY_STATUS SetCollectFrequency(unsigned int iCollectFrequency);
-
+	//c.获取连接状态
 	TY_STATUS GetConnectStatus(unsigned iIndexCamera, bool &bConnect);
-
+	//b.获取实时FPS
 	double    GetFPS(unsigned iIndexCamera);
 // 对话框数据
 	enum { IDD = IDD_SISO_APC_GBE_DIALOG };

@@ -1932,6 +1932,7 @@ TY_STATUS CSISO_APC_GbEDlg::Y_Control_2(char * recvData, CSISO_APC_GbEDlg * dlg)
 	return r;
 }
 
+//相机快门速度
 TY_STATUS CSISO_APC_GbEDlg::Y_Control_3(char * recvData, CSISO_APC_GbEDlg * dlg)
 {
 	TY_STATUS r;
@@ -1951,13 +1952,21 @@ TY_STATUS CSISO_APC_GbEDlg::Y_Control_3(char * recvData, CSISO_APC_GbEDlg * dlg)
 	if (BH == 0)
 	{
 		//全部控制
-		int count = 1;
-		r = dlg->SetExposureTime(0, value);
+		for (int count = 0; count < 6; count++)
+		{
+			r = dlg->SetExposureTime(count, value);
+		}
 	}
 	else
 	{
-		//单个控制
-		r = dlg->SetExposureTime(BH, value);
+		for (int count = 0; count < 6; count++)
+		{
+			if (m_iCameraIndex[count] == BH)
+			{
+				//单个控制
+				r = dlg->SetExposureTime(BH, value);
+			}
+		}	
 	}
 	return r;
 }
@@ -1978,8 +1987,12 @@ TY_STATUS CSISO_APC_GbEDlg::Y_Control_4(char * recvData, CSISO_APC_GbEDlg * dlg)
 	int value = 0;
 	value = _ttoi(strValue);
 	//调用，返回
-	int count = 1;
-	r = dlg->SetGain(0, value);
+	//全部控制
+	for (int count = 0; count < 6; count++)
+	{
+		r = dlg->SetGain(count, value);
+	}
+
 	return r;
 }
 
