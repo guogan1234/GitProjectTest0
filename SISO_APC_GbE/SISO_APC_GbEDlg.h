@@ -150,18 +150,30 @@ public:
 	CComboBox m_comboBoxConnectStatus;
 
 	//相机曝光时间
-	CComboBox m_comboBox_ExposureTime;
+	//CComboBox m_comboBox_ExposureTime;
 
 	//相机增益
-	CComboBox m_comboBox_Gain;
+	//CComboBox m_comboBox_Gain;
 
 	//图片显示模式下拉框
-	CComboBox m_comboBox_DisplayMode;
-	CComboBox m_comboBox_CameraIndex;
+	CComboBox m_comboBox_DisplayMode_0;
+	CComboBox m_comboBox_DisplayMode_1;
+	CComboBox m_comboBox_DisplayMode_2;
+	CComboBox m_comboBox_DisplayMode_3;
+	CComboBox m_comboBox_DisplayMode_4;
+	CComboBox m_comboBox_DisplayMode_5;
+	//CComboBox m_comboBox_CameraIndex;
+	
+	//图片显示模式
+	enum IMAGE_SHOW {SHOW_SMALL, SHOW_BIG};
+	IMAGE_SHOW m_ImageShow;
+	unsigned m_iImageCameraIndex;
+
 	//预览
 	vector<bool> m_bPreview;
 	CButton m_buttonPreview;
-	CComboBox m_comboBoxPreview;
+
+	//CComboBox m_comboBoxPreview;
 
 	TY_STATUS SaveUserSet(unsigned iIndexCamera);
 	//以下接口需要被实现
@@ -215,6 +227,12 @@ public:
 	void OnBnClickedBtnLoad();
 	void OnBnClickedGrab();
 	void OnBnClickedStop();
+	void GetExposuretimeValue(unsigned iIndex, int nID);
+	void GetGainValue(unsigned iIndex, int nID);
+	void ChangeImageMode(unsigned iCameraIndex, int iMode);
+	void SetExposuretimeValue(unsigned iCameraIndex, int nID);
+	void SetGainValue(unsigned iCameraIndex, int nID);
+
 	afx_msg void OnBnClickedSavejpeg();
 	afx_msg void OnClickedActivequality();
 	//afx_msg void OnClickedExit();
@@ -227,9 +245,9 @@ public:
 	afx_msg void OnBnClickedButtoncollectfrequency();
 	afx_msg void OnBnClickedButtonExposuretime();
 	afx_msg void OnBnClickedButtonGain();
-	afx_msg void OnCbnSelchangeComboExposuretime();
-	afx_msg void OnCbnSelchangeComboGain();
-	afx_msg void OnCbnSelchangeComboPreview();
+	//afx_msg void OnCbnSelchangeComboExposuretime();
+	//afx_msg void OnCbnSelchangeComboGain();
+	//afx_msg void OnCbnSelchangeComboPreview();
 	afx_msg void OnCbnSelchangeComboDisplaymode0();
 	afx_msg void OnBnClickedImgdisplay();
 
@@ -243,6 +261,24 @@ public:
 	TY_STATUS Y_Control_8(char* recvData, CSISO_APC_GbEDlg* dlg);
 	TY_STATUS Y_Control_9(char* recvData, CSISO_APC_GbEDlg* dlg);
 	TY_STATUS Y_Control_a(char* recvData, CSISO_APC_GbEDlg* dlg);
+	afx_msg void OnCbnSelchangeComboDisplaymode1();
+	afx_msg void OnCbnSelchangeComboDisplaymode2();
+	afx_msg void OnCbnSelchangeComboDisplaymode3();
+	afx_msg void OnCbnSelchangeComboDisplaymode4();
+	afx_msg void OnCbnSelchangeComboDisplaymode5();
+	afx_msg void OnBnClickedButtonExposuretime1();
+	afx_msg void OnBnClickedButtonExposuretime0();
+	afx_msg void OnBnClickedButtonExposuretime2();
+	afx_msg void OnBnClickedButtonExposuretime3();
+	afx_msg void OnBnClickedButtonExposuretime4();
+	afx_msg void OnBnClickedButtonExposuretime5();
+	afx_msg void OnBnClickedButtonGain0();
+	afx_msg void OnBnClickedButtonGain1();
+	afx_msg void OnBnClickedButtonGain2();
+	afx_msg void OnBnClickedButtonGain3();
+	afx_msg void OnBnClickedButtonGain4();
+	afx_msg void OnBnClickedButtonGain5();
+
 };
 
 TY_STATUS praseRecvData(char* recvData, CSISO_APC_GbEDlg* dlg);

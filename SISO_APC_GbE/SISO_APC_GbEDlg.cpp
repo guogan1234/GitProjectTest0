@@ -115,14 +115,18 @@ DWORD WINAPI thfuncshow(LPVOID param)
 			if(WaitForSingleObject(m_pthis->m_PutEvent0,10)==WAIT_OBJECT_0)//等待Jpeg存储并缓冲完毕
 			{
 				ResetEvent(m_pthis->m_PutEvent0);//存储置零
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile0,m_pthis->lengthJPEGfile0,IDC_ImgDisplay,m_pthis->width[0],m_pthis->height[0]);//图像显示
+				if (m_pthis->m_ImageShow == CSISO_APC_GbEDlg::SHOW_SMALL || m_pthis->m_ImageShow == 0) {
+					m_pthis->DecodeImg(m_pthis->bufferJPEGfile0, m_pthis->lengthJPEGfile0, IDC_ImgDisplay, m_pthis->width[0], m_pthis->height[0]);//图像显示
+				}
 				SetEvent(m_pthis->m_DrawEvent0);//显示之后将显示线程置零
 			}
 
 			if(WaitForSingleObject(m_pthis->m_PutEvent1,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent1);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile1,m_pthis->lengthJPEGfile1,IDC_ImgDisplay1,m_pthis->width[1],m_pthis->height[1]);
+				if (m_pthis->m_ImageShow == CSISO_APC_GbEDlg::SHOW_SMALL || m_pthis->m_ImageShow == 1) {
+					m_pthis->DecodeImg(m_pthis->bufferJPEGfile1, m_pthis->lengthJPEGfile1, IDC_ImgDisplay1, m_pthis->width[1], m_pthis->height[1]);
+				}
 				SetEvent(m_pthis->m_DrawEvent1);
 			}
 		}
@@ -130,13 +134,17 @@ DWORD WINAPI thfuncshow(LPVOID param)
 			if(WaitForSingleObject(m_pthis->m_PutEvent2,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent2);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile2,m_pthis->lengthJPEGfile2,IDC_ImgDisplay2,m_pthis->width[2],m_pthis->height[2]);
+				if (m_pthis->m_ImageShow == CSISO_APC_GbEDlg::SHOW_SMALL || m_pthis->m_ImageShow == 2) {
+					m_pthis->DecodeImg(m_pthis->bufferJPEGfile2, m_pthis->lengthJPEGfile2, IDC_ImgDisplay2, m_pthis->width[2], m_pthis->height[2]);
+				}
 				SetEvent(m_pthis->m_DrawEvent2);
 			}
 			if(WaitForSingleObject(m_pthis->m_PutEvent3,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent3);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile3,m_pthis->lengthJPEGfile3,IDC_ImgDisplay3,m_pthis->width[3],m_pthis->height[3]);
+				if (m_pthis->m_ImageShow == CSISO_APC_GbEDlg::SHOW_SMALL || m_pthis->m_ImageShow == 3) {
+					m_pthis->DecodeImg(m_pthis->bufferJPEGfile3, m_pthis->lengthJPEGfile3, IDC_ImgDisplay3, m_pthis->width[3], m_pthis->height[3]);
+				}
 				SetEvent(m_pthis->m_DrawEvent3);
 			}
 		}
@@ -144,13 +152,17 @@ DWORD WINAPI thfuncshow(LPVOID param)
 			if(WaitForSingleObject(m_pthis->m_PutEvent4,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent4);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile4,m_pthis->lengthJPEGfile4,IDC_ImgDisplay4,m_pthis->width[4], m_pthis->height[4]);
+				if (m_pthis->m_ImageShow == CSISO_APC_GbEDlg::SHOW_SMALL || m_pthis->m_ImageShow == 4) {
+					m_pthis->DecodeImg(m_pthis->bufferJPEGfile4, m_pthis->lengthJPEGfile4, IDC_ImgDisplay4, m_pthis->width[4], m_pthis->height[4]);
+				}
 				SetEvent(m_pthis->m_DrawEvent4);
 			}
 			if(WaitForSingleObject(m_pthis->m_PutEvent5,10)==WAIT_OBJECT_0)
 			{
 				ResetEvent(m_pthis->m_PutEvent5);
-				m_pthis->DecodeImg(m_pthis->bufferJPEGfile5, m_pthis->lengthJPEGfile5,IDC_ImgDisplay5,m_pthis->width[5],m_pthis->height[5]);
+				if (m_pthis->m_ImageShow == CSISO_APC_GbEDlg::SHOW_SMALL || m_pthis->m_ImageShow == 5) {
+					m_pthis->DecodeImg(m_pthis->bufferJPEGfile5, m_pthis->lengthJPEGfile5, IDC_ImgDisplay5, m_pthis->width[5], m_pthis->height[5]);
+				}
 				SetEvent(m_pthis->m_DrawEvent5);
 			}
 		}
@@ -184,6 +196,8 @@ CSISO_APC_GbEDlg::CSISO_APC_GbEDlg(CWnd* pParent /*=NULL*/)
 	, m_iCameraIndex(6, 0)
 	, m_eCollectMode(MODE_TRIGGER)
 	, m_iCollectFrequency(40)
+	, m_ImageShow(SHOW_SMALL)
+	, m_iImageCameraIndex(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pthis = this;
@@ -204,12 +218,17 @@ void CSISO_APC_GbEDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBOCollectMode, m_comboBoxCollectMode);
 	DDX_Control(pDX, IDC_COMBOConnectStatus, m_comboBoxConnectStatus);
 	//DDX_Control(pDX, IDC_STATICConnectStatus, m_stc_ConnectStatus);
-	DDX_Control(pDX, IDC_COMBO_ExposureTime, m_comboBox_ExposureTime);
+	//DDX_Control(pDX, IDC_COMBO_ExposureTime, m_comboBox_ExposureTime);
 	//DDX_Control(pDX, IDC_EDIT_ExposureTime, m_stc_ExposureTime);
-	DDX_Control(pDX, IDC_COMBO_Gain, m_comboBox_Gain);
-	DDX_Control(pDX, IDC_COMBO_Preview, m_comboBoxPreview);
-	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_0, m_comboBox_DisplayMode);
-	DDX_Control(pDX, IDC_COMBODisplay, m_comboBox_CameraIndex);
+	//DDX_Control(pDX, IDC_COMBO_Gain, m_comboBox_Gain);
+	//DDX_Control(pDX, IDC_COMBO_Preview, m_comboBoxPreview);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_0, m_comboBox_DisplayMode_0);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_1, m_comboBox_DisplayMode_1);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_2, m_comboBox_DisplayMode_2);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_3, m_comboBox_DisplayMode_3);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_4, m_comboBox_DisplayMode_4);
+	DDX_Control(pDX, IDC_COMBO_DISPLAYMODE_5, m_comboBox_DisplayMode_5);
+	//DDX_Control(pDX, IDC_COMBODisplay, m_comboBox_CameraIndex);
 }
 
 BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
@@ -231,11 +250,28 @@ BEGIN_MESSAGE_MAP(CSISO_APC_GbEDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTONCollectFrequency, &CSISO_APC_GbEDlg::OnBnClickedButtoncollectfrequency)
 	ON_BN_CLICKED(IDC_BUTTON_ExposureTime, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime)
 	ON_BN_CLICKED(IDC_BUTTON_Gain, &CSISO_APC_GbEDlg::OnBnClickedButtonGain)
-	ON_CBN_SELCHANGE(IDC_COMBO_ExposureTime, &CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime)
-	ON_CBN_SELCHANGE(IDC_COMBO_Gain, &CSISO_APC_GbEDlg::OnCbnSelchangeComboGain)
-	ON_CBN_SELCHANGE(IDC_COMBO_Preview, &CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview)
-	ON_BN_DOUBLECLICKED(IDC_ImgDisplay, &CSISO_APC_GbEDlg::OnBnClickedImgdisplay)
+	//ON_CBN_SELCHANGE(IDC_COMBO_ExposureTime, &CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime)
+	//ON_CBN_SELCHANGE(IDC_COMBO_Gain, &CSISO_APC_GbEDlg::OnCbnSelchangeComboGain)
+	//ON_CBN_SELCHANGE(IDC_COMBO_Preview, &CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview)
+	//ON_BN_DOUBLECLICKED(IDC_ImgDisplay, &CSISO_APC_GbEDlg::OnBnClickedImgdisplay)
 	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_0, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_1, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode1)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_2, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode2)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_3, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode3)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_4, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode4)
+	ON_CBN_SELCHANGE(IDC_COMBO_DISPLAYMODE_5, &CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode5)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime1, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime1)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime0, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime0)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime2, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime2)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime3, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime3)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime4, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime4)
+	ON_BN_CLICKED(IDC_BUTTON_ExposureTime5, &CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime5)
+	ON_BN_CLICKED(IDC_BUTTON_Gain0, &CSISO_APC_GbEDlg::OnBnClickedButtonGain0)
+	ON_BN_CLICKED(IDC_BUTTON_Gain1, &CSISO_APC_GbEDlg::OnBnClickedButtonGain1)
+	ON_BN_CLICKED(IDC_BUTTON_Gain2, &CSISO_APC_GbEDlg::OnBnClickedButtonGain2)
+	ON_BN_CLICKED(IDC_BUTTON_Gain3, &CSISO_APC_GbEDlg::OnBnClickedButtonGain3)
+	ON_BN_CLICKED(IDC_BUTTON_Gain4, &CSISO_APC_GbEDlg::OnBnClickedButtonGain4)
+	ON_BN_CLICKED(IDC_BUTTON_Gain5, &CSISO_APC_GbEDlg::OnBnClickedButtonGain5)
 END_MESSAGE_MAP()
 
 CString madeReturnMsg(unsigned char msgType, TY_STATUS r, CString srcTimeStr)
@@ -494,8 +530,8 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	DmaIndex[0] = 0;
 	DmaIndex[1] = 1;
 
-	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = true;
-	m_buttonPreview.SetCheck(BST_CHECKED);
+	m_bPreview[0] = m_bPreview[1] = m_bPreview[2] = m_bPreview[3] = m_bPreview[4] = m_bPreview[5] = false;
+	m_buttonPreview.SetCheck(BST_UNCHECKED);
 
 	/*********Initialize for JPEG*************/ 
 	create_dc_table(dc_data,dc_len);
@@ -615,47 +651,101 @@ BOOL CSISO_APC_GbEDlg::OnInitDialog()
 	m_comboBoxConnectStatus.InsertString(5, strCamera[5]);
 	m_comboBoxConnectStatus.SetCurSel(0);
 
-	m_comboBox_ExposureTime.InsertString(0, strCamera[0]);
-	m_comboBox_ExposureTime.InsertString(1, strCamera[1]);
-	m_comboBox_ExposureTime.InsertString(2, strCamera[2]);
-	m_comboBox_ExposureTime.InsertString(3, strCamera[3]);
-	m_comboBox_ExposureTime.InsertString(4, strCamera[4]);
-	m_comboBox_ExposureTime.InsertString(5, strCamera[5]);
-	m_comboBox_ExposureTime.SetCurSel(0);
+	//m_comboBox_ExposureTime.InsertString(0, strCamera[0]);
+	//m_comboBox_ExposureTime.InsertString(1, strCamera[1]);
+	//m_comboBox_ExposureTime.InsertString(2, strCamera[2]);
+	//m_comboBox_ExposureTime.InsertString(3, strCamera[3]);
+	//m_comboBox_ExposureTime.InsertString(4, strCamera[4]);
+	//m_comboBox_ExposureTime.InsertString(5, strCamera[5]);
+	//m_comboBox_ExposureTime.SetCurSel(0);
 
-	m_comboBox_Gain.InsertString(0, strCamera[0]);
-	m_comboBox_Gain.InsertString(1, strCamera[1]);
-	m_comboBox_Gain.InsertString(2, strCamera[2]);
-	m_comboBox_Gain.InsertString(3, strCamera[3]);
-	m_comboBox_Gain.InsertString(4, strCamera[4]);
-	m_comboBox_Gain.InsertString(5, strCamera[5]);
-	m_comboBox_Gain.SetCurSel(0);
+	//m_comboBox_Gain.InsertString(0, strCamera[0]);
+	//m_comboBox_Gain.InsertString(1, strCamera[1]);
+	//m_comboBox_Gain.InsertString(2, strCamera[2]);
+	//m_comboBox_Gain.InsertString(3, strCamera[3]);
+	//m_comboBox_Gain.InsertString(4, strCamera[4]);
+	//m_comboBox_Gain.InsertString(5, strCamera[5]);
+	//m_comboBox_Gain.SetCurSel(0);
 
-	m_comboBoxPreview.InsertString(0, strCamera[0]);
-	m_comboBoxPreview.InsertString(1, strCamera[1]);
-	m_comboBoxPreview.InsertString(2, strCamera[2]);
-	m_comboBoxPreview.InsertString(3, strCamera[3]);
-	m_comboBoxPreview.InsertString(4, strCamera[4]);
-	m_comboBoxPreview.InsertString(5, strCamera[5]);
-	m_comboBoxPreview.SetCurSel(0);
+	//m_comboBoxPreview.InsertString(0, strCamera[0]);
+	//m_comboBoxPreview.InsertString(1, strCamera[1]);
+	//m_comboBoxPreview.InsertString(2, strCamera[2]);
+	//m_comboBoxPreview.InsertString(3, strCamera[3]);
+	//m_comboBoxPreview.InsertString(4, strCamera[4]);
+	//m_comboBoxPreview.InsertString(5, strCamera[5]);
+	//m_comboBoxPreview.SetCurSel(0);
 
 	//初始化图片显示下拉框
-	m_comboBox_CameraIndex.InsertString(0, strCamera[0]);
-	m_comboBox_CameraIndex.InsertString(1, strCamera[1]);
-	m_comboBox_CameraIndex.InsertString(2, strCamera[2]);
-	m_comboBox_CameraIndex.InsertString(3, strCamera[3]);
-	m_comboBox_CameraIndex.InsertString(4, strCamera[4]);
-	m_comboBox_CameraIndex.InsertString(5, strCamera[5]);
-	m_comboBox_CameraIndex.SetCurSel(0);
+	//m_comboBox_CameraIndex.InsertString(0, strCamera[0]);
+	//m_comboBox_CameraIndex.InsertString(1, strCamera[1]);
+	//m_comboBox_CameraIndex.InsertString(2, strCamera[2]);
+	//m_comboBox_CameraIndex.InsertString(3, strCamera[3]);
+	//m_comboBox_CameraIndex.InsertString(4, strCamera[4]);
+	//m_comboBox_CameraIndex.InsertString(5, strCamera[5]);
+	//m_comboBox_CameraIndex.SetCurSel(0);
 
-	m_comboBox_DisplayMode.InsertString(0, L"缩小");
-	m_comboBox_DisplayMode.InsertString(1, L"放大");
-	//m_comboBox_DisplayMode[ix].InsertString(2, L"原图");
-	m_comboBox_DisplayMode.SetCurSel(0);
-		
-	UpdateData(false);
+	m_comboBox_DisplayMode_0.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode_0.InsertString(1, L"放大");
+	m_comboBox_DisplayMode_0.SetCurSel(0);
+	m_comboBox_DisplayMode_1.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode_1.InsertString(1, L"放大");
+	m_comboBox_DisplayMode_1.SetCurSel(0);
+	m_comboBox_DisplayMode_2.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode_2.InsertString(1, L"放大");
+	m_comboBox_DisplayMode_2.SetCurSel(0);
+	m_comboBox_DisplayMode_3.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode_3.InsertString(1, L"放大");
+	m_comboBox_DisplayMode_3.SetCurSel(0);
+	m_comboBox_DisplayMode_4.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode_4.InsertString(1, L"放大");
+	m_comboBox_DisplayMode_4.SetCurSel(0);
+	m_comboBox_DisplayMode_5.InsertString(0, L"缩小");
+	m_comboBox_DisplayMode_5.InsertString(1, L"放大");
+	m_comboBox_DisplayMode_5.SetCurSel(0);
+
+
+	
+	//获得D盘剩余容量空间
+	DWORD dwTotalDiskSpace, dwFreeDiskSpace, dwUsedDiskSpace;
+
+	ULARGE_INTEGER uiFreeBytesAvailableToCaller;
+	ULARGE_INTEGER uiTotalNumberOfBytes;
+	ULARGE_INTEGER uiTotalNumberOfFreeBytes;
+
+	if (GetDiskFreeSpaceEx(L"D:\\", &uiFreeBytesAvailableToCaller,
+		&uiTotalNumberOfBytes,
+		&uiTotalNumberOfFreeBytes))
+	{
+		//dwTotalDiskSpace = (DWORD)(uiTotalNumberOfBytes.QuadPart / 1024 / 1024);
+		dwFreeDiskSpace = (DWORD)(uiFreeBytesAvailableToCaller.QuadPart >> 30);
+		//dwUsedDiskSpace = dwTotalDiskSpace - dwFreeDiskSpace;
+		CString strInfo;
+		strInfo.Format(L"D盘剩余容量%dG。", dwFreeDiskSpace);
+		((CStatic *)GetDlgItem(IDC_STATIC_FREE_DISK_SPACE))->SetWindowTextW(strInfo);
+	}
+
 	OnBnClickedBtnLoad();
+	if (fg)
+	{
+		GetExposuretimeValue(0, IDC_EDIT_ExposureTime0);
+		GetExposuretimeValue(1, IDC_EDIT_ExposureTime1);
+		GetExposuretimeValue(2, IDC_EDIT_ExposureTime2);
+		GetExposuretimeValue(3, IDC_EDIT_ExposureTime3);
+		GetExposuretimeValue(4, IDC_EDIT_ExposureTime4);
+		GetExposuretimeValue(5, IDC_EDIT_ExposureTime5);
+
+		GetGainValue(0, IDC_EDIT_Gain0);
+		GetGainValue(1, IDC_EDIT_Gain1);
+		GetGainValue(2, IDC_EDIT_Gain2);
+		GetGainValue(3, IDC_EDIT_Gain3);
+		GetGainValue(4, IDC_EDIT_Gain4);
+		GetGainValue(5, IDC_EDIT_Gain5);
+	}
+
 	m_pWinThread = AfxBeginThread(StartServer, this);
+	
+	UpdateData(false);
+	//ShowWindow(SW_SHOWMAXIMIZED);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -1427,28 +1517,41 @@ void CSISO_APC_GbEDlg::OnClickedActivequality()
 
 void CSISO_APC_GbEDlg::OnClickedShowimg()
 {
-	int iCameraIndex = m_comboBoxPreview.GetCurSel();
+	//int iCameraIndex = m_comboBoxPreview.GetCurSel();
 
-	m_bPreview[iCameraIndex] = m_buttonPreview.GetCheck() ? true : false;
+	if (m_buttonPreview.GetCheck()) {
+		for (size_t i = 0; i < 6; i++)
+		{
+			m_bPreview[i] = true;
+		}
+	}
+	else {
+		for (size_t i = 0; i < 6; i++)
+		{
+			m_bPreview[i] = false;
+		}
+	}
 }
 
 void CSISO_APC_GbEDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	CString strtmp[6];
-	for (unsigned i = 0; i < 6 ; ++i)
-	{
-		fps[i] = 1000.0 * (statusJPEG[i] - oldStatusJPEG[i]) / (GetTickCount() - ticks[i]);
-		oldStatusJPEG[i] = statusJPEG[i];
-		ticks[i] = GetTickCount();
-		strtmp[i].Format(_T("fps:%.3f"), fps[i]);
-	}
+	if (m_ImageShow == SHOW_SMALL) {
+		CString strtmp[6];
+		for (unsigned i = 0; i < 6; ++i)
+		{
+			fps[i] = 1000.0 * (statusJPEG[i] - oldStatusJPEG[i]) / (GetTickCount() - ticks[i]);
+			oldStatusJPEG[i] = statusJPEG[i];
+			ticks[i] = GetTickCount();
+			strtmp[i].Format(_T("fps:%.3f"), fps[i]);
+		}
 
-	m_stc_fps.SetWindowTextW(strtmp[0]);
-	m_stc_fps1.SetWindowTextW(strtmp[1]);
-	m_stc_fps2.SetWindowTextW(strtmp[2]);
-	m_stc_fps3.SetWindowTextW(strtmp[3]);
-	m_stc_fps4.SetWindowTextW(strtmp[4]);
-	m_stc_fps5.SetWindowTextW(strtmp[5]);
+		m_stc_fps.SetWindowTextW(strtmp[0]);
+		m_stc_fps1.SetWindowTextW(strtmp[1]);
+		m_stc_fps2.SetWindowTextW(strtmp[2]);
+		m_stc_fps3.SetWindowTextW(strtmp[3]);
+		m_stc_fps4.SetWindowTextW(strtmp[4]);
+		m_stc_fps5.SetWindowTextW(strtmp[5]);
+	}
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -1461,15 +1564,15 @@ void CSISO_APC_GbEDlg::OnClose()
 	CDialogEx::OnClose();
 }
 
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview()
-{
-	int iCameraIndex = m_comboBoxPreview.GetCurSel();
-
-	if(m_bPreview[iCameraIndex])
-		m_buttonPreview.SetCheck(BST_CHECKED);
-	else
-		m_buttonPreview.SetCheck(BST_UNCHECKED);
-}
+//void CSISO_APC_GbEDlg::OnCbnSelchangeComboPreview()
+//{
+//	int iCameraIndex = m_comboBoxPreview.GetCurSel();
+//
+//	if(m_bPreview[iCameraIndex])
+//		m_buttonPreview.SetCheck(BST_CHECKED);
+//	else
+//		m_buttonPreview.SetCheck(BST_UNCHECKED);
+//}
 
 void CSISO_APC_GbEDlg::OnCbnSelchangeCombocollectmode()
 {
@@ -1517,9 +1620,13 @@ void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime()
 		MessageBox(L"相机曝光时间必须介于10~8000000之间");
 		return;
 	}
-	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	//int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	TY_STATUS eStatus;
+	for (size_t i = 0; i < 6; i++)
+	{
+		eStatus = SetExposureTime(i, iExposureTime);
+	}
 	
-	TY_STATUS eStatus = SetExposureTime(iPortNr, iExposureTime);
 	if (TY_OK == eStatus){
 		MessageBox(L"设置相机曝光时间成功");
 	}
@@ -1537,9 +1644,13 @@ void CSISO_APC_GbEDlg::OnBnClickedButtonGain()
 		return;
 	}
 
-	int iPortNr = m_comboBox_Gain.GetCurSel();
+	//int iPortNr = m_comboBox_Gain.GetCurSel();
+	TY_STATUS eStatus;
+	for (size_t i = 0; i < 6; i++)
+	{
+		eStatus = SetGain(i, iGain);
+	}
 	
-	TY_STATUS eStatus = SetGain(iPortNr, iGain);
 	if (TY_OK == eStatus){
 		MessageBox(L"设置相机增益成功");
 	}
@@ -1549,15 +1660,15 @@ void CSISO_APC_GbEDlg::OnBnClickedButtonGain()
 }
 
 
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime()
+void CSISO_APC_GbEDlg::GetExposuretimeValue(unsigned iIndex, int nID)
 {
-	int iPortNr = m_comboBox_ExposureTime.GetCurSel();
+	//int iPortNr = m_comboBox_ExposureTime.GetCurSel();
 	unsigned int iExposureTime = 0;
-	TY_STATUS eStatus = GetExposureTime(iPortNr, iExposureTime);
+	TY_STATUS eStatus = GetExposureTime(iIndex, iExposureTime);
 	if (TY_OK == eStatus){
 		CString cstrExposureTime;
 		cstrExposureTime.Format(L"%d", iExposureTime);
-		((CEdit *)GetDlgItem(IDC_EDIT_ExposureTime))->SetWindowTextW(cstrExposureTime);
+		((CEdit *)GetDlgItem(nID))->SetWindowTextW(cstrExposureTime);
 	}
 	else{
 		MessageBox(L"获取相机曝光时间失败");
@@ -1565,15 +1676,15 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeComboExposuretime()
 }
 
 
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboGain()
+void CSISO_APC_GbEDlg::GetGainValue(unsigned iIndex, int nID)
 {
-	int iPortNr = m_comboBox_Gain.GetCurSel();
+	//int iPortNr = m_comboBox_Gain.GetCurSel();
 	unsigned int iGain = 0;
-	TY_STATUS eStatus = GetGain(iPortNr, iGain);
+	TY_STATUS eStatus = GetGain(iIndex, iGain);
 	if (TY_OK == eStatus){
 		CString cstrGain;
 		cstrGain.Format(L"%d", iGain);
-		((CEdit *)GetDlgItem(IDC_EDIT_Gain))->SetWindowTextW(cstrGain);
+		((CEdit *)GetDlgItem(nID))->SetWindowTextW(cstrGain);
 	}
 	else{
 		MessageBox(L"获取相机增益失败");
@@ -1588,7 +1699,7 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectMode(COLLECT_MODE eCollectMode)
 
 		unsigned int Trigger_TriggerMode_Select;
 		Trigger_TriggerMode_Select = (MODE_TRIGGER == m_eCollectMode) ? 0 : 1; 
-
+		
 		if(fg != NULL)
 		{
 			int Device1_Process0_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg, "Device1_Process0_Trigger_TriggerMode_Select");
@@ -1627,6 +1738,7 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectMode(COLLECT_MODE eCollectMode)
 			int Device1_Process1_Trigger_TriggerMode_Select_Id = Fg_getParameterIdByName(fg2, "Device1_Process1_Trigger_TriggerMode_Select");
 			Fg_setParameterWithType(fg2, Device1_Process1_Trigger_TriggerMode_Select_Id, Trigger_TriggerMode_Select, 0);
 		}
+		m_comboBoxCollectMode.SetCurSel(Trigger_TriggerMode_Select);
 	}
 	return TY_OK;
 }
@@ -1637,6 +1749,10 @@ TY_STATUS CSISO_APC_GbEDlg::SetJpegQuality(unsigned int iQuality)
 		return TY_ERROR;
 	
 	JPEGQuality = iQuality;
+	
+	CString strJpegQua;
+	strJpegQua.Format(L"%d", JPEGQuality);
+	GetDlgItem(IDC_JpegQuality)->SetWindowTextW(strJpegQua);
 
 	setJPEGQuality(fg,JPEGQuality);// transfer JPEG Quality to operator
 	getQuantizationTable(fg, "Device1_Process0_Encoder_quantization_matrix", &QTable);
@@ -1695,6 +1811,9 @@ TY_STATUS CSISO_APC_GbEDlg::SetPreviewMode(unsigned int iIndexCamera, PREVIEW_MO
 		return TY_ERROR;
 	
 	m_bPreview[iIndexCamera] = (PREVIEW_OPEN == eMode) ? true : false;
+	
+	m_buttonPreview.SetCheck(m_bPreview[iIndexCamera]);
+	
 	return TY_OK;
 }
 
@@ -1710,12 +1829,14 @@ TY_STATUS CSISO_APC_GbEDlg::GetPreviewMode(unsigned int iIndexCamera, PREVIEW_MO
 TY_STATUS CSISO_APC_GbEDlg::BeginCollect()
 {
 	writeToFile = true;
+	M_SaveJpeg.SetCheck(BST_CHECKED);
 	return TY_OK;
 }
 
 TY_STATUS CSISO_APC_GbEDlg::StopCollect()
 {
 	writeToFile = false;
+	M_SaveJpeg.SetCheck(BST_UNCHECKED);
 	return TY_OK;
 }
 
@@ -1789,6 +1910,33 @@ TY_STATUS CSISO_APC_GbEDlg::SetGain(unsigned int iIndexCamera, unsigned int iGai
 	}
 
 	eStatus = SaveUserSet(iIndexCamera);
+   
+	//更新界面
+	CString strGain;
+	strGain.Format(L"%d", iGain);
+	switch (iIndexCamera)
+	{
+	case 0:
+		GetDlgItem(IDC_EDIT_Gain0)->SetWindowTextW(strGain);
+		break;
+	case 1:
+		GetDlgItem(IDC_EDIT_Gain1)->SetWindowTextW(strGain);
+		break;
+	case 2:
+		GetDlgItem(IDC_EDIT_Gain2)->SetWindowTextW(strGain);
+		break;
+	case 3:
+		GetDlgItem(IDC_EDIT_Gain3)->SetWindowTextW(strGain);
+		break;
+	case 4:
+		GetDlgItem(IDC_EDIT_Gain4)->SetWindowTextW(strGain);
+		break;
+	case 5:
+		GetDlgItem(IDC_EDIT_Gain5)->SetWindowTextW(strGain);
+		break;
+	default:
+		break;
+	}
 
 	return eStatus;
 }
@@ -1824,6 +1972,34 @@ TY_STATUS CSISO_APC_GbEDlg::SetExposureTime(unsigned int iIndexCamera, unsigned 
 	}
 
 	eStatus = SaveUserSet(iIndexCamera);
+	
+	//更新界面
+	CString strExposureTime;
+	strExposureTime.Format(L"%d", iExposureTime);
+	switch (iIndexCamera)
+	{
+	case 0:
+		GetDlgItem(IDC_EDIT_ExposureTime0)->SetWindowTextW(strExposureTime);
+		break;
+	case 1:
+		GetDlgItem(IDC_EDIT_ExposureTime1)->SetWindowTextW(strExposureTime);
+		break;
+	case 2:
+		GetDlgItem(IDC_EDIT_ExposureTime2)->SetWindowTextW(strExposureTime);
+		break;
+	case 3:
+		GetDlgItem(IDC_EDIT_ExposureTime3)->SetWindowTextW(strExposureTime);
+		break;
+	case 4:
+		GetDlgItem(IDC_EDIT_ExposureTime4)->SetWindowTextW(strExposureTime);
+		break;
+	case 5:
+		GetDlgItem(IDC_EDIT_ExposureTime5)->SetWindowTextW(strExposureTime);
+		break;
+	default:
+		break;
+	}
+	
 	return eStatus;
 }
 
@@ -1836,6 +2012,11 @@ TY_STATUS CSISO_APC_GbEDlg::SetCollectFrequency(unsigned int iCollectFrequency)
 		return TY_ERROR;
 
 	m_iCollectFrequency = iCollectFrequency;
+	
+	CString strCollectFrequency;
+	strCollectFrequency.Format(L"%d", iCollectFrequency);
+	GetDlgItem(IDC_EDITCollectFrequency)->SetWindowTextW(strCollectFrequency);
+
 	uint64_t Trigger_Generator_Period_Period = 1000000000/(8*m_iCollectFrequency);
 	if(fg != NULL)
 	{
@@ -1897,10 +2078,10 @@ double CSISO_APC_GbEDlg::GetFPS(unsigned iIndexCamera)
 	return fps[iIndexCamera];
 }
 
-void CSISO_APC_GbEDlg::OnBnClickedImgdisplay()
-{
-	// TODO: 在此添加控件通知处理程序代码
-}
+//void CSISO_APC_GbEDlg::OnBnClickedImgdisplay()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//}
 
 TY_STATUS CSISO_APC_GbEDlg::Y_Control_1(char * recvData, CSISO_APC_GbEDlg * dlg)
 {
@@ -2183,14 +2364,15 @@ TY_STATUS praseRecvData(char * recvData, CSISO_APC_GbEDlg * aDlg)
 	return r;
 }
 
-void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0()
+void CSISO_APC_GbEDlg::ChangeImageMode(unsigned iCameraIndex, int iMode)
 {
-	unsigned int iCameraIndex = m_comboBox_CameraIndex.GetCurSel();
 	if (m_bPreview[iCameraIndex] == false) {
 		MessageBox(L"相机预览没有打开！");
 		return;
 	}
-
+	
+	m_ImageShow = (IMAGE_SHOW)iMode;
+	m_iImageCameraIndex = iCameraIndex;
 	CWnd* pwnd;
 	switch (iCameraIndex)
 	{
@@ -2215,10 +2397,7 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0()
 	default:
 		break;
 	}
- 
-	CRect srect;
-	pwnd->GetWindowRect(&srect);
-	int iMode = m_comboBox_DisplayMode.GetCurSel();
+
 	switch (iMode)
 	{
 	case 0:
@@ -2247,7 +2426,7 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0()
 			break;
 		}
 	}
-		break;
+	break;
 	case 1:
 		pwnd->SetWindowPos(&CWnd::wndTop, 12, 2, 1684, 853, SWP_SHOWWINDOW);
 		break;
@@ -2255,4 +2434,140 @@ void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0()
 	default:
 		break;
 	}
+}
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode0()
+{
+	int iMode = m_comboBox_DisplayMode_0.GetCurSel();
+	ChangeImageMode(0, iMode);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode1()
+{
+	int iMode = m_comboBox_DisplayMode_1.GetCurSel();
+	ChangeImageMode(1, iMode);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode2()
+{
+	int iMode = m_comboBox_DisplayMode_2.GetCurSel();
+	ChangeImageMode(2, iMode);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode3()
+{
+	int iMode = m_comboBox_DisplayMode_3.GetCurSel();
+	ChangeImageMode(3, iMode);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode4()
+{
+	int iMode = m_comboBox_DisplayMode_4.GetCurSel();
+	ChangeImageMode(4, iMode);
+}
+
+
+void CSISO_APC_GbEDlg::OnCbnSelchangeComboDisplaymode5()
+{
+	int iMode = m_comboBox_DisplayMode_5.GetCurSel();
+	ChangeImageMode(5, iMode);
+}
+
+void CSISO_APC_GbEDlg::SetExposuretimeValue(unsigned iCameraIndex, int nID)
+{
+	unsigned int iExposureTime = GetDlgItemInt(nID);
+	if (iExposureTime < 10 || iExposureTime > 8000000) {
+		MessageBox(L"相机曝光时间必须介于10~8000000之间");
+		return;
+	}
+	TY_STATUS eStatus = SetExposureTime(iCameraIndex, iExposureTime);
+	
+	if (TY_OK == eStatus) {
+		MessageBox(L"设置相机曝光时间成功");
+	}
+	else {
+		MessageBox(L"设置相机曝光时间失败");
+	}
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime0()
+{
+	SetExposuretimeValue(0, IDC_EDIT_ExposureTime0);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime1()
+{
+	SetExposuretimeValue(1, IDC_EDIT_ExposureTime1);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime2()
+{
+	SetExposuretimeValue(2, IDC_EDIT_ExposureTime2);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime3()
+{
+	SetExposuretimeValue(3, IDC_EDIT_ExposureTime3);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime4()
+{
+	SetExposuretimeValue(4, IDC_EDIT_ExposureTime4);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonExposuretime5()
+{
+	SetExposuretimeValue(5, IDC_EDIT_ExposureTime5);
+}
+
+void CSISO_APC_GbEDlg::SetGainValue(unsigned iCameraIndex, int nID)
+{
+	unsigned int iGain = GetDlgItemInt(nID);
+	if (iGain < 100 || iGain > 1600) {
+		MessageBox(L"相机增益必须介于100~1600之间");
+		return;
+	}
+
+	TY_STATUS eStatus = SetGain(iCameraIndex, iGain);
+	
+	if (TY_OK == eStatus) {
+		MessageBox(L"设置相机增益成功");
+	}
+	else {
+		MessageBox(L"设置相机增益失败");
+	}
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain0()
+{
+	SetGainValue(0, IDC_EDIT_Gain0);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain1()
+{
+	SetGainValue(1, IDC_EDIT_Gain1);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain2()
+{
+	SetGainValue(2, IDC_EDIT_Gain2);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain3()
+{
+	SetGainValue(3, IDC_EDIT_Gain3);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain4()
+{
+	SetGainValue(4, IDC_EDIT_Gain4);
+}
+
+void CSISO_APC_GbEDlg::OnBnClickedButtonGain5()
+{
+	SetGainValue(5, IDC_EDIT_Gain5);
 }
