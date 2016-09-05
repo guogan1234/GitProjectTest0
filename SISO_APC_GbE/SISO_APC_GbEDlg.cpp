@@ -29,6 +29,10 @@
 CSISO_APC_GbEDlg* m_pthis;
 
 unsigned char msgType = '0';
+double bReturn = 0;//b的单个相机参数返回值
+CString bAllReturn = L"";//b和e的返回数据字符串
+bool cReturn = false;//c的返回数值
+bool bAllFlag = false;//b的返回类型
 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(test_lg, src::severity_logger< >)
 src::severity_logger< >& lg = test_lg::get();
@@ -296,6 +300,59 @@ CString madeReturnMsg(unsigned char msgType, TY_STATUS r, CString srcTimeStr)
 	return strMsg;
 }
 
+CString madeReturnMsg(unsigned char msgType, TY_STATUS r, CString srcTimeStr,CString strParam,double paramData)
+{
+	CString strMsg = L"{";
+	strMsg.AppendChar(msgType);
+	if (r == TY_ERROR)
+	{
+		strMsg.Append(L"0");
+	}
+	else
+	{
+		strMsg.Append(L"1");
+
+		if (msgType == 'b')
+		{
+			if (!bAllFlag)
+			{
+				CString strValue;
+				strValue.Format(L"%05.2lf", bReturn);
+				strMsg.Append(L"005");
+				strMsg.Append(strValue);
+			}
+			else
+			{
+				strMsg.Append(strParam);
+			}
+		}
+		if (msgType == 'c')
+		{
+			strMsg.Append(L"001");
+			if (cReturn)
+			{
+				strMsg.Append(L"1");
+			}
+			else
+			{
+				strMsg.AppendChar('0');
+			}
+		}
+		if (msgType == 'e')
+		{
+			strMsg.Append(strParam);
+		}
+	}
+	//拼接返回字符串，并发送
+	strMsg += srcTimeStr;
+	//Unicode下CString转char*
+	USES_CONVERSION;
+	//调用函数，T2A和W2A均支持ATL和MFC中的字符转换
+	char * ch_msg = T2A(strMsg);
+	//saveMsgToFile(ch_msg);
+	return strMsg;
+}
+
 unsigned int StartServer(LPVOID lParam)
 {
 	//初始化Winscok
@@ -409,7 +466,7 @@ unsigned int StartServer(LPVOID lParam)
 						str = szRecvMsg;
 						recvDataTimeMsg = str.Right(20);
 						//组成返回数据包
-						strMsg = madeReturnMsg(msgType, r, recvDataTimeMsg);
+						strMsg = madeReturnMsg(msgType, r, recvDataTimeMsg,bAllReturn,bReturn);
 
 						sprintf(szOutMsg, "Receive Msg: %s  ", szRecvMsg);
 						//aDlg->GetDlgItemText(IDC_EDIT_LOG, strText);//0x00b4f0e0	0x00b4f330
@@ -2145,7 +2202,7 @@ TY_STATUS CSISO_APC_GbEDlg::Y_Control_3(char * recvData, CSISO_APC_GbEDlg * dlg)
 			if (m_iCameraIndex[count] == BH)
 			{
 				//单个控制
-				r = dlg->SetExposureTime(BH, value);
+				r = dlg->SetExposureTime(count, value);
 			}
 		}	
 	}
@@ -2300,6 +2357,138 @@ TY_STATUS CSISO_APC_GbEDlg::Y_Control_a(char * recvData, CSISO_APC_GbEDlg * aDlg
 	return r;
 }
 
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_b(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString strBH;
+	strBH = str.Mid(5, 2);
+	int BH = -1;
+	BH = _ttoi(strBH);
+	if (BH == 0)
+	{
+		bAllReturn.Empty();
+		for (int count = 0; count < 6; count++)
+		{
+			double temp = dlg->GetFPS(count);			
+			int tempBH = m_iCameraIndex[count];
+
+			CString str;
+			str.Empty();
+			str.Format(_T("%02d%05.2f"), tempBH,temp);
+
+			bAllReturn += str;
+		}
+		bAllFlag = true;
+		r = TY_OK;
+	}
+	else
+	{
+		for (int count = 0; count < 6; count++)
+		{
+			if (m_iCameraIndex[count] == BH)
+			{
+				bReturn = dlg->GetFPS(count);
+				r = TY_OK;
+			}
+		}
+		bAllFlag = false;
+	}
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_c(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString strBH;
+	strBH = str.Mid(5, 2);
+	int BH = -1;
+	BH = _ttoi(strBH);
+	for (int count = 0; count < 6; count++)
+	{
+		if (m_iCameraIndex[count] == BH)
+		{
+			r = dlg->GetConnectStatus(count,cReturn);
+		}
+	}
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_d(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	CString str = L"";
+	str = recvData;
+	CString strValueLen, strValue = L"";
+	strValueLen = str.Mid(2, 3);
+	int valueLen = -1;
+	valueLen = _ttoi(strValueLen);
+	//获取上下行
+	CString part1;
+	//获取项目名称
+	strValue = str.Mid(5, valueLen);
+	CString partBegin = L"D:\\";
+	CString partEnd = L"\\Image";
+	strValue = partBegin + strValue + partEnd;
+	USES_CONVERSION;
+	//调用函数，T2A和W2A均支持ATL和MFC中的字符转换
+	char * ch_value = T2A(strValue);
+	//调用，设置
+	dlg->SetSaveDir(ch_value);
+	return r;
+}
+
+TY_STATUS CSISO_APC_GbEDlg::Y_Control_e(char * recvData, CSISO_APC_GbEDlg * dlg)
+{
+	TY_STATUS r;
+	r = TY_ERROR;//初始化
+
+	bAllReturn.Empty();
+	for (int count = 0; count < 6; count++)
+	{
+		int tempBH = m_iCameraIndex[count];
+		//获取快门速度
+		unsigned int value1 = 0;
+		GetExposureTime(count, value1);
+		//获取相机增益
+		unsigned int value2 = 0;
+		GetGain(count, value2);
+		//获取采集模式
+		CString strMode = L"";
+		COLLECT_MODE mode = GetCollectMode();
+		if (mode == COLLECT_MODE::MODE_TIMER)
+		{
+			strMode = L"1";
+		}
+		else if (mode == COLLECT_MODE::MODE_TRIGGER)
+		{
+			strMode = L"2";
+		}
+		//获取采集频率
+		double value3 = 0;
+		value3 = GetCollectFrequency();
+		//获取图片压缩率
+		unsigned int value4 = 0;
+		value4 = GetJpegQuality();
+
+		CString str;
+		str.Empty();
+		str.Format(_T("%02d%07u%03u%s%05.2lf%03u"), tempBH, value1, value2, strMode,value3, value4);
+		bAllReturn += str;
+	}
+	r = TY_OK;
+	return r;
+}
+
 TY_STATUS praseRecvData(char * recvData, CSISO_APC_GbEDlg * aDlg)
 {
 	TY_STATUS r;
@@ -2358,6 +2547,21 @@ TY_STATUS praseRecvData(char * recvData, CSISO_APC_GbEDlg * aDlg)
 		case 'a'://开始、结束采集
 			msgType = 'a';
 			r = aDlg->Y_Control_a(recvData, aDlg);
+			break;
+		case 'b'://获取FPS
+			msgType = 'b';
+			r = aDlg->Y_Control_b(recvData, aDlg);
+			break;
+		case 'c':
+			msgType = 'c';
+			r = aDlg->Y_Control_c(recvData, aDlg);
+			break;
+		case 'd':
+			msgType = 'd';
+			r = aDlg->Y_Control_d(recvData, aDlg);
+		case 'e':
+			msgType = 'e';
+			r = aDlg->Y_Control_e(recvData, aDlg);
 			break;
 		}
 	}

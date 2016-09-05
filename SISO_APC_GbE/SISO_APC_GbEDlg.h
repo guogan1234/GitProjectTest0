@@ -261,6 +261,10 @@ public:
 	TY_STATUS Y_Control_8(char* recvData, CSISO_APC_GbEDlg* dlg);
 	TY_STATUS Y_Control_9(char* recvData, CSISO_APC_GbEDlg* dlg);
 	TY_STATUS Y_Control_a(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_b(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_c(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_d(char* recvData, CSISO_APC_GbEDlg* dlg);
+	TY_STATUS Y_Control_e(char* recvData, CSISO_APC_GbEDlg* dlg);
 	afx_msg void OnCbnSelchangeComboDisplaymode1();
 	afx_msg void OnCbnSelchangeComboDisplaymode2();
 	afx_msg void OnCbnSelchangeComboDisplaymode3();
